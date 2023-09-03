@@ -78,6 +78,9 @@ ignore = ["tests/", "examples/", "docs/"]
 
 [tool.ruff]
 line-length = 100
+ignore = [
+"F403", # star imports
+]
 
 
 [tool.ruff.pydocstyle]
