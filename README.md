@@ -150,5 +150,5 @@ For more examples and documentation, please visit the following links:
 
 
 ## Contributing
-ALl contributions are welcome.  Feel free to open an issue or submit a pull request if you'd like to see something added.
+All contributions are welcome.  Feel free to open an issue or submit a pull request if you'd like to see something added.
 Contribution guidelines coming soon™
