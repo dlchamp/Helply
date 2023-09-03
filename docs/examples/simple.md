@@ -8,12 +8,12 @@ from typing import Optional
 import disnake
 from disnake.ext import commands
 
-from disnake_app_command_help import AppCommandHelp, utils
+from helply import Helply, utils
 
 bot = commands.InteractionBot()
 
 # construct the helper class with the bot and sequence of commands to ignore
-helper = AppCommandHelp(bot, commands_to_ignore=("help",))
+helply = Helply(bot, commands_to_ignore=("help",))
 
 
 @bot.slash_command_name(name="kick")
@@ -55,7 +55,7 @@ async def help_command(inter: disnake.GuildCommandInteraction, name: Optional[st
         # get all commands available to the command author
         # by passing in the inter.guild_id, we ensure only global commands and any commands
         # available only for this guild are retrieved.
-        commands = helper.get_all_commands(
+        commands = helply.get_all_commands(
             inter.guild_id, permissions=inter.author.guild_permissions
         )
 
@@ -74,8 +74,8 @@ async def help_command(inter: disnake.GuildCommandInteraction, name: Optional[st
 
     else:
         # Since autocomplete does not force a user to make a selection, we will try to get
-        # the command by the provided name, however, it could be None, so we handle it.
-        command = helper.get_command_named(name)
+        # the command by the provided name, however, it could result in `None`, so we handle it.
+        command = helply.get_command_named(name)
         if not command:
             await inter.response.send_message("Unable to find that command.", ephemeral=True)
             return

@@ -8,13 +8,12 @@ from typing import Optional, Tuple
 import disnake
 from disnake.ext import commands
 
-from disnake_app_command_help import AppCommandHelp, utils
+from helply import Helpy, utils
 
-intents = disnake.Intents.default()
 bot = commands.InteractionBot()
 
-# Construct the AppCommandHelp class and pass in the bot instance.
-app_command_help = AppCommandHelp(bot)
+# construct the Helpy instance with the passed in `bot`
+helpy = Helply(bot)
 
 
 @bot.slash_command(name="ping")
@@ -48,7 +47,7 @@ async def help_command(
     # Since autocomplete for name is a dict[name, str(id)], name in this case
     # will be the str(id), convert it to int and try to find the command.
     if name:
-        command = app_command_help.get_command(int(name))
+        command = helply.get_command(int(name))
         if command is None:
             await inter.response.send_message(
                 "It appears this command is not available.", ephemeral=True
@@ -63,7 +62,7 @@ async def help_command(
     elif category:
         guild_id, dm_only, nsfw, permissions = get_helper_query_attrs(inter)
 
-        commands = app_command_help.get_commands_by_category(
+        commands = helply.get_commands_by_category(
             category, guild_id=guild_id, permissions=permissions, dm_only=dm_only
         )
 
@@ -87,7 +86,7 @@ async def help_command(
     else:
         guild_id, dm_only, nsfw, permissions = get_helper_query_attrs(inter)
 
-        commands = app_command_help.get_all_commands(
+        commands = helply.get_all_commands(
             guild_id, dm_only=dm_only, include_nsfw=nsfw, permissions=permissions
         )
         if not commands:
@@ -119,7 +118,7 @@ async def autocomplete_command_names(
 
     guild_id, dm_only, nsfw, permissions = get_helper_query_attrs(inter)
 
-    commands = app_command_help.get_all_commands(
+    commands = helply.get_all_commands(
         guild_id, dm_only=dm_only, include_nsfw=nsfw, permissions=permissions
     )
 
@@ -134,7 +133,7 @@ async def autocomplete_command_categories(
 
     guild_id, dm_only, nsfw, permissions = get_helper_query_attrs(inter)
 
-    categories = app_command_help.get_categories(
+    categories = helply.get_categories(
         guild_id, dm_only=dm_only, include_nsfw=nsfw, permissions=permissions
     )
 

@@ -4,6 +4,9 @@ a description that is parsed, we can simply add their descriptions as `extras`
 
 
 
+### Setting `help` description
+
+#### User Command
 
 ```py
 @bot.user_command(name="User Avatar", extras={"help": "Display a user's avatar"})
@@ -18,12 +21,7 @@ async def user_avatar_menu(
 
 ```
 
-
-
-This method can also be used to provide a different description to your slash commands separate
-from the description displayed in the user's client allowing you to exceed the 100 character limit
-set by Discord.
-
+#### Message Command
 
 ```py
 @bot.slash_command(
@@ -39,4 +37,12 @@ async def example(inter: disnake.ApplicationCommandInteraction):
     """A shorter description that does not exceed the 100 character limit"""
     ...
 
-)```
+```
+
+### Setting category with Plugins
+If using [disnake-ext-plugins](https://github.com/DisnakeCommunity/disnake-ext-plugins) setting command categories is as easy as:
+
+```py
+@plugin.slash_command(name="command", extras={"category": "General"})
+async def some_command(inter: disnake.ApplicationCommandInteraction):
+```

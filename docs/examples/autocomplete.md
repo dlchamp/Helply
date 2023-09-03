@@ -2,10 +2,10 @@ Here are some examples using autocompletion with your created `/help` command
 
 All examples on this page assume you have the helper class and a help command defined like so:
 ```py
-from disnake_app_command_help import AppCommandHelp
+from helply import Helply
 
 
-helper = AppCommandHelper(bot)
+helper = Helply(bot)
 
 ...
 ...
@@ -29,7 +29,7 @@ async def helper_command_name(
 
     name = name.casefold()
 
-    commands = helper.get_all_commands(
+    commands = helply.get_all_commands(
         inter.guild.id, permissions=inter.author.guild_permissions
     )
 
@@ -50,7 +50,7 @@ async def helper_command_name(
 
     name = name.casefold()
 
-    commands = helper.get_all_commands(
+    commands = helply.get_all_commands(
         inter.guild.id, permissions=inter.author.guild_permissions
     )
 
