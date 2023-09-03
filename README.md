@@ -33,7 +33,7 @@ pip install git+https://github.com/dlchamp/helply
 After installing the package, you can use it in your project by importing it as follows:
 
 ```python
-from helply import AppCommandHelp
+from helply import Helply
 ```
 
 AppCommands will be created and cached upon first use of `helply` to retrieve commands.
@@ -113,9 +113,9 @@ including global commands, and only commands that the inter.author is able to us
     hides commands from members unable to use them, Passing permissions also allows `helply` to ensure
     these commands stay hidden, even in help responses.
 ```py
-# construct AppCommandHelp with the provided bot and a sequence of commands to ignore
+# construct Helply with the provided bot and a sequence of commands to ignore
 # ignore commands will not appear in any help responses.
-helper = AppCommandHelp(bot, commands_to_ignore=('help',))
+helply = Helply(bot, commands_to_ignore=('help',))
 
 @bot.slash_command(name='help')
 async def help_command(inter: disnake.ApplicationCommandInteraction):
@@ -130,7 +130,7 @@ async def help_command(inter: disnake.ApplicationCommandInteraction):
         permissions = None
         dm_only = True
 
-    commands = helper.get_all_commands(guild_id, permissions=permissions, dm_only=dm_only)
+    commands = helply.get_all_commands(guild_id, permissions=permissions, dm_only=dm_only)
 ```
 
 ## Examples and Documentation
