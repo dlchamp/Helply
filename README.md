@@ -92,7 +92,7 @@ async def kick_member(inter: disnake.GuildCommandInteraction, member: disnake.Me
 
 
 ### Cogs, Categories, and disnake-ext-plugin support
-`Helply` is able to parse the cog or category a command belongs to.  This is useful if you wish to display an overview of command available within a category.  If you are using cogs, you do not have to do anything extra.  The cog associated with a command will be parsed automatically. However, if you're using [disnake-ext-plugins](https://github.com/DisnakeCommunity/disnake-ext-plugins), a command's cog will always be None.  So, to set a commands category, we go back to the `extras` keyword to set the command's category:
+`Helply` is able to parse the cog or category a command belongs to.  This is useful if you wish to display an overview of commands available within a category.  If you are using cogs, you do not have to do anything extra.  The cog associated with a command will be parsed automatically. However, if you're using [disnake-ext-plugins](https://github.com/DisnakeCommunity/disnake-ext-plugins), a command's cog will always be None.  So, to set a commands category, we go back to the `extras` keyword to set the command's category:
 
 ```py
 @some_plugin.slash_command(name='command', extras={"category": "General"})
