@@ -25,7 +25,7 @@ To install the `helply` package, you will need git. If you don't have git instal
 Once you have git installed, run the following command inside your Python environment to install the package:
 
 ```
-pip install git+https://github.com/dlchamp/helply
+pip install git+https://github.com/dlchamp/Helply
 ```
 
 ## Usage
