@@ -115,7 +115,7 @@ including global commands, and only commands that the inter.author is able to us
 ```py
 # construct AppCommandHelp with the provided bot and a sequence of commands to ignore
 # ignore commands will not appear in any help responses.
-helper = AppCommandHelp(bot, commands_to_ignore=('help',))
+helply = Helply(bot, commands_to_ignore=('help',))
 
 @bot.slash_command(name='help')
 async def help_command(inter: disnake.ApplicationCommandInteraction):
@@ -130,7 +130,7 @@ async def help_command(inter: disnake.ApplicationCommandInteraction):
         permissions = None
         dm_only = True
 
-    commands = helper.get_all_commands(guild_id, permissions=permissions, dm_only=dm_only)
+    commands = helply.get_all_commands(guild_id, permissions=permissions, dm_only=dm_only)
 ```
 
 ## Examples and Documentation
