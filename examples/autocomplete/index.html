@@ -981,10 +981,10 @@
 
 <p>Here are some examples using autocompletion with your created <code>/help</code> command</p>
 <p>All examples on this page assume you have the helper class and a help command defined like so:
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">disnake_app_command_help</span> <span class="kn">import</span> <span class="n">AppCommandHelp</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">helply</span> <span class="kn">import</span> <span class="n">Helply</span>
 
 
-<span class="n">helper</span> <span class="o">=</span> <span class="n">AppCommandHelper</span><span class="p">(</span><span class="n">bot</span><span class="p">)</span>
+<span class="n">helper</span> <span class="o">=</span> <span class="n">Helply</span><span class="p">(</span><span class="n">bot</span><span class="p">)</span>
 
 <span class="o">...</span>
 <span class="o">...</span>
@@ -1004,7 +1004,7 @@ slice the return to return no more than 25 items.</p>
 
     <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span>
 
-    <span class="n">commands</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">get_all_commands</span><span class="p">(</span>
+    <span class="n">commands</span> <span class="o">=</span> <span class="n">helply</span><span class="o">.</span><span class="n">get_all_commands</span><span class="p">(</span>
         <span class="n">inter</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">permissions</span><span class="o">=</span><span class="n">inter</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">guild_permissions</span>
     <span class="p">)</span>
 
@@ -1021,7 +1021,7 @@ being passed to the `help.get_command(ID) method.</p>
 
     <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span>
 
-    <span class="n">commands</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">get_all_commands</span><span class="p">(</span>
+    <span class="n">commands</span> <span class="o">=</span> <span class="n">helply</span><span class="o">.</span><span class="n">get_all_commands</span><span class="p">(</span>
         <span class="n">inter</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">permissions</span><span class="o">=</span><span class="n">inter</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">guild_permissions</span>
     <span class="p">)</span>
 

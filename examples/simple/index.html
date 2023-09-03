@@ -902,12 +902,12 @@ and provides some basic insight into how to use this project.</p>
 <span class="kn">import</span> <span class="nn">disnake</span>
 <span class="kn">from</span> <span class="nn">disnake.ext</span> <span class="kn">import</span> <span class="n">commands</span>
 
-<span class="kn">from</span> <span class="nn">disnake_app_command_help</span> <span class="kn">import</span> <span class="n">AppCommandHelp</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">helply</span> <span class="kn">import</span> <span class="n">Helply</span><span class="p">,</span> <span class="n">utils</span>
 
 <span class="n">bot</span> <span class="o">=</span> <span class="n">commands</span><span class="o">.</span><span class="n">InteractionBot</span><span class="p">()</span>
 
 <span class="c1"># construct the helper class with the bot and sequence of commands to ignore</span>
-<span class="n">helper</span> <span class="o">=</span> <span class="n">AppCommandHelp</span><span class="p">(</span><span class="n">bot</span><span class="p">,</span> <span class="n">commands_to_ignore</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;help&quot;</span><span class="p">,))</span>
+<span class="n">helply</span> <span class="o">=</span> <span class="n">Helply</span><span class="p">(</span><span class="n">bot</span><span class="p">,</span> <span class="n">commands_to_ignore</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;help&quot;</span><span class="p">,))</span>
 
 
 <span class="nd">@bot</span><span class="o">.</span><span class="n">slash_command_name</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;kick&quot;</span><span class="p">)</span>
@@ -949,7 +949,7 @@ and provides some basic insight into how to use this project.</p>
         <span class="c1"># get all commands available to the command author</span>
         <span class="c1"># by passing in the inter.guild_id, we ensure only global commands and any commands</span>
         <span class="c1"># available only for this guild are retrieved.</span>
-        <span class="n">commands</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">get_all_commands</span><span class="p">(</span>
+        <span class="n">commands</span> <span class="o">=</span> <span class="n">helply</span><span class="o">.</span><span class="n">get_all_commands</span><span class="p">(</span>
             <span class="n">inter</span><span class="o">.</span><span class="n">guild_id</span><span class="p">,</span> <span class="n">permissions</span><span class="o">=</span><span class="n">inter</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">guild_permissions</span>
         <span class="p">)</span>
 
@@ -968,8 +968,8 @@ and provides some basic insight into how to use this project.</p>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Since autocomplete does not force a user to make a selection, we will try to get</span>
-        <span class="c1"># the command by the provided name, however, it could be None, so we handle it.</span>
-        <span class="n">command</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">get_command_named</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="c1"># the command by the provided name, however, it could result in `None`, so we handle it.</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">helply</span><span class="o">.</span><span class="n">get_command_named</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">command</span><span class="p">:</span>
             <span class="k">await</span> <span class="n">inter</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="s2">&quot;Unable to find that command.&quot;</span><span class="p">,</span> <span class="n">ephemeral</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">return</span>
