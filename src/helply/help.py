@@ -20,7 +20,7 @@ Bot = Union[
 ]
 
 
-class AppCommandHelp:
+class Helply:
     """Represents an application command helper.
 
     Parameters
