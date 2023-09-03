@@ -33,7 +33,7 @@ pip install git+https://github.com/dlchamp/Helply
 After installing the package, you can use it in your project by importing it as follows:
 
 ```python
-from helply import AppCommandHelp
+from helply import Helply
 ```
 
 AppCommands will be created and cached upon first use of `helply` to retrieve commands.
