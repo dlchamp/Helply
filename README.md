@@ -10,6 +10,14 @@ Please note that this library is not officially associated with the [disnake](ht
 rewrite the implementation each time.
 
 
+## Key Features
+- Consolidating various attributes from `InvokableApplicationCommand` and `APIApplicationCommand` into a single cached object.
+- Parsing role and permission checks.
+- Ready-to-use methods for populating autocomplete outputs.
+- Utility functions that provide ready-to-go embeds and pagination.
+
+
+
 ## Installation
 
 To install the `helply` package, you will need git. If you don't have git installed on your system, you can download it from [here](https://git-scm.com/downloads).
@@ -132,3 +140,15 @@ For more examples and documentation, please visit the following links:
 - [Example](https://dlchamp.github.io/helply/examples/basic/)
 - [Docs](https://dlchamp.github.io/helply/)
 - You may also join the [discord](https://discord.gg/nmwaDS35sC) to get support or just chat.
+
+
+
+## To-Do
+
+- add support for nextcord and py-cord
+- contribution guidelines
+
+
+## Contributing
+ALl contributions are welcome.  Feel free to open an issue or submit a pull request if you'd like to see something added.
+Contribution guidelines coming soon™
