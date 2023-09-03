@@ -133,22 +133,5 @@ async def help_command(inter: disnake.ApplicationCommandInteraction):
     commands = helply.get_all_commands(guild_id, permissions=permissions, dm_only=dm_only)
 ```
 
-## Examples and Documentation
-
-For more examples and documentation, please visit the following links:
-
-- [Example](https://dlchamp.github.io/Helply/examples/basic/)
-- [Docs](https://dlchamp.github.io/Helply/)
-- You may also join the [discord](https://discord.gg/nmwaDS35sC) to get support or just chat.
-
-
-
-## To-Do
-
-- add support for nextcord and py-cord
-- contribution guidelines
-
-
-## Contributing
-ALl contributions are welcome.  Feel free to open an issue or submit a pull request if you'd like to see something added.
-Contribution guidelines coming soon™
+## Support
+Join the [discord](https://discord.gg/nmwaDS35sC) to get support or just chat.
