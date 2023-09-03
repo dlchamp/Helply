@@ -1114,7 +1114,7 @@ rewrite the implementation each time.</p>
 </code></pre></div>
 <h2 id="usage">Usage</h2>
 <p>After installing the package, you can use it in your project by importing it as follows:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">helply</span> <span class="kn">import</span> <span class="n">AppCommandHelp</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">helply</span> <span class="kn">import</span> <span class="n">Helply</span>
 </code></pre></div>
 <p>AppCommands will be created and cached upon first use of <code>helply</code> to retrieve commands.
 This allows all commands to become registered with Discord before <code>helply</code> steps in to create it's own objects with the consolidated attributes provided by <code>InvokableApplicationCommand</code> and <code>APIApplicationCommand</code></p>
@@ -1176,7 +1176,7 @@ including global commands, and only commands that the inter.author is able to us
     these commands stay hidden, even in help responses.
 <div class="highlight"><pre><span></span><code><span class="c1"># construct AppCommandHelp with the provided bot and a sequence of commands to ignore</span>
 <span class="c1"># ignore commands will not appear in any help responses.</span>
-<span class="n">helper</span> <span class="o">=</span> <span class="n">AppCommandHelp</span><span class="p">(</span><span class="n">bot</span><span class="p">,</span> <span class="n">commands_to_ignore</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;help&#39;</span><span class="p">,))</span>
+<span class="n">helply</span> <span class="o">=</span> <span class="n">Helply</span><span class="p">(</span><span class="n">bot</span><span class="p">,</span> <span class="n">commands_to_ignore</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;help&#39;</span><span class="p">,))</span>
 
 <span class="nd">@bot</span><span class="o">.</span><span class="n">slash_command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;help&#39;</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">help_command</span><span class="p">(</span><span class="n">inter</span><span class="p">:</span> <span class="n">disnake</span><span class="o">.</span><span class="n">ApplicationCommandInteraction</span><span class="p">):</span>
@@ -1191,7 +1191,7 @@ including global commands, and only commands that the inter.author is able to us
         <span class="n">permissions</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">dm_only</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="n">commands</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">get_all_commands</span><span class="p">(</span><span class="n">guild_id</span><span class="p">,</span> <span class="n">permissions</span><span class="o">=</span><span class="n">permissions</span><span class="p">,</span> <span class="n">dm_only</span><span class="o">=</span><span class="n">dm_only</span><span class="p">)</span>
+    <span class="n">commands</span> <span class="o">=</span> <span class="n">helply</span><span class="o">.</span><span class="n">get_all_commands</span><span class="p">(</span><span class="n">guild_id</span><span class="p">,</span> <span class="n">permissions</span><span class="o">=</span><span class="n">permissions</span><span class="p">,</span> <span class="n">dm_only</span><span class="o">=</span><span class="n">dm_only</span><span class="p">)</span>
 </code></pre></div></p>
 </blockquote>
 <h2 id="examples-and-documentation">Examples and Documentation</h2>
