@@ -88,7 +88,7 @@ async def kick_member(inter: disnake.GuildCommandInteraction, member: disnake.Me
     member: Select a member to kick
     """
 ```
-![slash_command_detail_example.png](assets/example.png)
+![slash_command_detail_example.png](docs/assets/example.png)
 
 
 ### Cogs, Categories, and disnake-ext-plugin support
