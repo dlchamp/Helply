@@ -1,20 +1,31 @@
+# Helply
+
+
 A user-friendly Python library designed to streamline the creation of "help" commands for
 Discord bots using application commands within the disnake library. This library will automatically parse your commands
 and provide details for each command, such as name, description, role and permission checks, etc.
 
 !!! Disclaimer
-    This library is not officially associated with the [disnake](https://github.com/DisnakeDev/disnake) project or any of its maintainers. It is an independent creation by a user of the Disnake library who wanted to streamline the process of creating `/help` commands without needing to
+    Please note that this library is not officially associated with the [disnake](https://github.com/DisnakeDev/disnake) project or any of its maintainers. It is an independent creation by a user of the Disnake library who wanted to streamline the process of creating `/help` commands without needing to
     rewrite the implementation each time.
+
+
+## Key Features
+- Consolidating various attributes from `InvokableApplicationCommand` and `APIApplicationCommand` into a single cached object.
+- Parsing role and permission checks.
+- Ready-to-use methods for populating autocomplete outputs.
+- Utility functions that provide ready-to-go embeds and pagination.
+
 
 
 ## Installation
 
-To install the `disnake-app-command-help` package, you will need git. If you don't have git installed on your system, you can download it from [here](https://git-scm.com/downloads).
+To install the `helply` package, you will need git. If you don't have git installed on your system, you can download it from [here](https://git-scm.com/downloads).
 
 Once you have git installed, run the following command inside your Python environment to install the package:
 
 ```
-pip install git+https://github.com/dlchamp/disnake-app-command-help
+pip install git+https://github.com/dlchamp/helply
 ```
 
 ## Usage
@@ -22,14 +33,14 @@ pip install git+https://github.com/dlchamp/disnake-app-command-help
 After installing the package, you can use it in your project by importing it as follows:
 
 ```python
-from disnake_app_command_help import AppCommandHelp
+from helply import AppCommandHelp
 ```
 
-## Custom Descriptions
-The `disnake-app-command-help` extension enables you to provide custom descriptions for your command's help information using the `extras` feature. By utilizing the `extras` dictionary and assigning the description as the value to the "help" key, you can offer distinct and informative details separate from the main `description` provided to users when using the command.
+AppCommands will be created and cached upon first use of `helply` to retrieve commands.
+This allows all commands to become registered with Discord before `helply` steps in to create it's own objects with the consolidated attributes provided by `InvokableApplicationCommand` and `APIApplicationCommand`
 
-!!! Note
-    If a slash command already has a description set, extras are not required. However, you can use extras to provide additional helpful information beyond the 100 character limit. For user and message commands without inherent descriptions, you can use extras to provide the command's help info.
+## Description parsing
+Disnake will automatically parse your command descriptions from the docstring in your callback function, or by populating the `description` keyword argument. `Helply` uses that description, however, it also parses descriptions found in the `extras` key-word argument when it finds the "help" key.  This proves exceptionally useful for menu commands that do not normally have a description that is displayed by the user's client.
 
 **Example - User Command**:
 ```python
@@ -40,45 +51,104 @@ async def view_avatar(...):
     ...
 ```
 
-**Example - Slash Command**:
+While designed to allow command descriptions for your menu commands, you may also use this feature
+to create longer descriptions for your slash commands as it would appear in your help response.
+For slash commands, this is really only useful if you wish to provide more information that would normally exceed the 100 character limit set by Discord.
+
+!!! Important
+    Setting `extras` will override your command.description when displayed in the help response.
+
+In this example, the user will see *"Kick a member from the server"* when attempting to use the command
+while *"Removes the target member from the guild"* will appear as the command description in the help response.
+
 ```python
-# In this case, slash commands do have the ability to have a description set.  
-# The `description` is what appears in the client when the user calls the command.
-# In this case extras is optional, but allows you to provide a custom description
-# that will appear when a user views the command's help info.
 @bot.slash_command(
     name="kick",
     description="Kick the target member",
     extras={"help": "Removes the target member from the guild"}
 )
 async def kick_member(...):
-    ...
+    """Kick a member from the server"""
 ```
 
-This feature proves especially valuable for user and message commands, as they lack a native `description` keyword argument, enabling you to enrich the user experience by providing relevant details about each command.
-
-
-## Automatic Parsing
-
-This library makes the creation of help commands more convenient by automatically parsing all commands, both global and guild-specific, and extracting essential information such as role and permission requirements, sub-commands, and many other attributes. This ensures that only commands available to a guild are shown when calling from a guild.
 
 ### Support for `@commands` Checks
 
-The `disnake-app-command-help` extension also supports parsing of `@commands` style checks. For instance, if you are using `@commands.has_permissions()` to restrict command usage, the extension will recognize and display these permission requirements in the help command.
+The `helply` library also supports parsing of `@commands` style checks. For instance, if you are using `@commands.has_permissions()` to restrict command usage, the extension will recognize and display these permission requirements in the help response.
 
 **Example:**
 ```python
 @bot.slash_command(name="kick")
 @commands.has_permissions(kick_members=True)
 async def kick_member(inter: disnake.GuildCommandInteraction, member: disnake.Member):
+    """Kick a member from the server
+
+    Parameters
+    ----------
+    member: Select a member to kick
+    """
+```
+![slash_command_detail_example.png](assets/example.png){ align=center }
+
+
+### Cogs, Categories, and disnake-ext-plugin support
+`Helply` is able to parse the cog or category a command belongs to.  This is useful if you wish to display an overview of command available within a category.  If you are using cogs, you do not have to do anything extra.  The cog associated with a command will be parsed automatically. However, if you're using [disnake-ext-plugins](https://github.com/DisnakeCommunity/disnake-ext-plugins), a command's cog will always be None.  So, to set a commands category, we go back to the `extras` keyword to set the command's category:
+
+```py
+@some_plugin.slash_command(name='command', extras={"category": "General"})
+async def some_command(inter: disnake.ApplicationCommandInteractions):
     ...
+
 ```
 
-In this example, the help command would display that "Kick Members" is a required permission to use the `/kick` command.
+### Filtering Commands
+When retrieving commands from `Helply`, you may choose to pass in a member's `guild_permissions`.
+This will ensure that only commands the user has permissions to use will be retrieved.
+
+Here, if the command is used within a guild, we want to show all commands available within the guild,
+including global commands, and only commands that the inter.author is able to use.
+
+> Important
+    Permissions are compared against `default_member_permissions`.  Setting this by default
+    hides commands from members unable to use them, Passing permissions also allows `helply` to ensure
+    these commands stay hidden, even in help responses.
+```py
+# construct AppCommandHelp with the provided bot and a sequence of commands to ignore
+# ignore commands will not appear in any help responses.
+helper = AppCommandHelp(bot, commands_to_ignore=('help',))
+
+@bot.slash_command(name='help')
+async def help_command(inter: disnake.ApplicationCommandInteraction):
+
+    if inter.guild:
+        guild_id = inter.guild_id
+        permissions = inter.author.guild_permissions
+        dm_only = False
+    else:
+        # command likely used in direct message
+        guild_id = None
+        permissions = None
+        dm_only = True
+
+    commands = helper.get_all_commands(guild_id, permissions=permissions, dm_only=dm_only)
+```
 
 ## Examples and Documentation
 
-For more examples and detailed documentation on how to use the `disnake-app-command-help` extension, please visit the following links:
+For more examples and documentation, please visit the following links:
 
-- [Example](https://dlchamp.github.io/disnake-app-command-help/examples/basic/)
-- [Docs](https://dlchamp.github.io/disnake-app-command-help/)
+- [Example](https://dlchamp.github.io/helply/examples/basic/)
+- [Docs](https://dlchamp.github.io/helply/)
+- You may also join the [discord](https://discord.gg/nmwaDS35sC) to get support or just chat.
+
+
+
+## To-Do
+
+- add support for nextcord and py-cord
+- contribution guidelines
+
+
+## Contributing
+ALl contributions are welcome.  Feel free to open an issue or submit a pull request if you'd like to see something added.
+Contribution guidelines coming soon™
