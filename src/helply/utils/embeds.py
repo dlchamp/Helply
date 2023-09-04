@@ -114,6 +114,7 @@ def commands_overview_embeds(
     max_field_chars: int = MAX_CHARS_PER_FIELD,
     max_fields: int = MAX_FIELDS_PER_EMBED,
     color: Optional[disnake.Color] = None,
+    category: str = "",
 ) -> List[disnake.Embed]:
     """Create and return one or more embeds containing all commands and descriptions.
 
@@ -176,7 +177,11 @@ def commands_overview_embeds(
         )
 
         if current_embed is None:
-            title = "Commands Overview" if not embeds else "Commands Overview (continued)"
+            title = (
+                f"{category} Commands Overview"
+                if not embeds
+                else f"{category} Commands Overview (continued)"
+            )
             current_embed = _create_base_embed(title, color, thumbnail)
             current_field_chars = 0
 
@@ -202,7 +207,7 @@ def commands_overview_embeds(
 def _create_base_embed(
     title: str, color: Optional[disnake.Color] = None, thumbnail: Optional[disnake.File] = None
 ) -> disnake.Embed:
-    embed = disnake.Embed(title=title, color=color)
+    embed = disnake.Embed(title=title.strip(), color=color)
     if thumbnail:
         embed.set_thumbnail(file=thumbnail)
     return embed
