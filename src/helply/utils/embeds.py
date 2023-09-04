@@ -5,7 +5,7 @@ from typing import List, Optional
 
 import disnake
 
-from ..help import AppCommandHelp
+from ..help import Helply
 from ..types import AppCommand, SlashCommand, UserCommand
 
 MAX_CHARS_PER_FIELD = 1024
@@ -88,7 +88,7 @@ def command_detail_embed(
 
     if command.checks.roles:
         if guild:
-            roles = AppCommandHelp.roles_from_checks(command.checks, guild)
+            roles = Helply.roles_from_checks(command.checks, guild)
             role_checks = ", ".join(r.mention for r in roles)
         else:
             role_checks = ", ".join(str(check) for check in command.checks.roles)
