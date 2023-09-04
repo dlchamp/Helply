@@ -1365,7 +1365,7 @@ any role checks into role objects</p>
 
 
 <h2 id="helply.utils.embeds.commands_overview_embeds" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">commands_overview_embeds</span><span class="p">(</span><span class="n">commands</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">thumbnail</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_field_chars</span><span class="o">=</span><span class="n">MAX_CHARS_PER_FIELD</span><span class="p">,</span> <span class="n">max_fields</span><span class="o">=</span><span class="n">MAX_FIELDS_PER_EMBED</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">commands_overview_embeds</span><span class="p">(</span><span class="n">commands</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">thumbnail</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_field_chars</span><span class="o">=</span><span class="n">MAX_CHARS_PER_FIELD</span><span class="p">,</span> <span class="n">max_fields</span><span class="o">=</span><span class="n">MAX_FIELDS_PER_EMBED</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></code>
 
 </h2>
 
@@ -1546,13 +1546,19 @@ any role checks into role objects</p>
 <span class="normal">196</span>
 <span class="normal">197</span>
 <span class="normal">198</span>
-<span class="normal">199</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">commands_overview_embeds</span><span class="p">(</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">commands_overview_embeds</span><span class="p">(</span>
     <span class="n">commands</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AppCommand</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">thumbnail</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">disnake</span><span class="o">.</span><span class="n">File</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">max_field_chars</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">MAX_CHARS_PER_FIELD</span><span class="p">,</span>
     <span class="n">max_fields</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">MAX_FIELDS_PER_EMBED</span><span class="p">,</span>
     <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">disnake</span><span class="o">.</span><span class="n">Color</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">disnake</span><span class="o">.</span><span class="n">Embed</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create and return one or more embeds containing all commands and descriptions.</span>
 
@@ -1615,7 +1621,11 @@ any role checks into role objects</p>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">current_embed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Commands Overview&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">embeds</span> <span class="k">else</span> <span class="s2">&quot;Commands Overview (continued)&quot;</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2"> Commands Overview&quot;</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">embeds</span>
+                <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2"> Commands Overview (continued)&quot;</span>
+            <span class="p">)</span>
             <span class="n">current_embed</span> <span class="o">=</span> <span class="n">_create_base_embed</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">thumbnail</span><span class="p">)</span>
             <span class="n">current_field_chars</span> <span class="o">=</span> <span class="mi">0</span>
 
