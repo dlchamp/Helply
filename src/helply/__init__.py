@@ -12,6 +12,6 @@ in your disnake bot.
 __version__ = "0.2.0"
 
 
-from .help import Helply
+from .helply import Helply
 
 __all__ = ("Helply",)
