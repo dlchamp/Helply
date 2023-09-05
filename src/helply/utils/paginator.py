@@ -28,6 +28,8 @@ class Paginator(disnake.ui.View):
         Set the timeout for the `View` in seconds, default is 180.
     """
 
+    message: disnake.InteractionMessage
+
     def __init__(
         self,
         *,
@@ -41,6 +43,11 @@ class Paginator(disnake.ui.View):
         self.index = 0
 
         self._update_state()
+
+    async def on_timeout(self) -> None:
+        """Executed when the view times it of a message has been provided to the View"""
+        if message := getattr(self, "message", None):
+            await message.edit(view=None)
 
     async def interaction_check(self, interaction: disnake.MessageInteraction) -> bool:
         """A check that is performed when any button in this view is interacted with
