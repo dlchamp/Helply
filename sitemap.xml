@@ -2,62 +2,62 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://dlchamp.github.io/helply/</loc>
-         <lastmod>2023-09-04</lastmod>
+         <lastmod>2023-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dlchamp.github.io/helply/license/</loc>
-         <lastmod>2023-09-04</lastmod>
+         <lastmod>2023-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dlchamp.github.io/helply/examples/advanced/</loc>
-         <lastmod>2023-09-04</lastmod>
+         <lastmod>2023-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dlchamp.github.io/helply/examples/autocomplete/</loc>
-         <lastmod>2023-09-04</lastmod>
+         <lastmod>2023-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dlchamp.github.io/helply/examples/extras/</loc>
-         <lastmod>2023-09-04</lastmod>
+         <lastmod>2023-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dlchamp.github.io/helply/examples/simple/</loc>
-         <lastmod>2023-09-04</lastmod>
+         <lastmod>2023-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dlchamp.github.io/helply/reference/helply/help/</loc>
-         <lastmod>2023-09-04</lastmod>
+         <lastmod>2023-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dlchamp.github.io/helply/reference/helply/types/checks/</loc>
-         <lastmod>2023-09-04</lastmod>
+         <lastmod>2023-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dlchamp.github.io/helply/reference/helply/types/commands/</loc>
-         <lastmod>2023-09-04</lastmod>
+         <lastmod>2023-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dlchamp.github.io/helply/reference/helply/types/enums/</loc>
-         <lastmod>2023-09-04</lastmod>
+         <lastmod>2023-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dlchamp.github.io/helply/reference/helply/utils/embeds/</loc>
-         <lastmod>2023-09-04</lastmod>
+         <lastmod>2023-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dlchamp.github.io/helply/reference/helply/utils/paginator/</loc>
-         <lastmod>2023-09-04</lastmod>
+         <lastmod>2023-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
