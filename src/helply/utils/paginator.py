@@ -58,9 +58,11 @@ class Paginator(disnake.ui.View):
 
         Example
         --------
+        ```py
         view = utils.Paginator(embeds=embeds, timeout=300)
         await inter.response.send_message(view=view)
         view.message = await inter.original_response()
+        ```
         """
         if message := getattr(self, "message", None):
             try:
