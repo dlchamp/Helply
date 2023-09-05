@@ -1,10 +1,10 @@
 """
-Provides a basic Paginator `View` to provide a clean interface for users to navigator your
-multiple command embeds.
+Provides a basic Paginator to provide a clean interface for users to navigator your
+multiple embeds.
 
 !!! Note
-    This can be used for pretty much any embeds, but is designed specifically to work with
-    the list of embeds returned from `embeds.all_commands_overview()`
+    This can be used for pretty much any list of
+    [disnake.Embed](https://docs.disnake.dev/en/latest/api/messages.html#disnake.Embed)
 """
 from typing import List, Optional
 
@@ -13,7 +13,7 @@ import disnake
 
 class Paginator(disnake.ui.View):
 
-    """Provides a basic paginator that allows users to navigate over multiple embeds.
+    """Provides a basic paginator View that allows users to navigate over multiple embeds.
 
     Inspired by the paginator.py example provided by
     [disnake](https://github.com/DisnakeDev/disnake/blob/stable/examples/views/button/paginator.py)
@@ -54,7 +54,7 @@ class Paginator(disnake.ui.View):
     async def on_timeout(self) -> None:
         """Executed when the View has timed out.
 
-        Requires a View.message to be set and timeout to not be `None`
+        Requires a Paginator.message to be set and timeout to not be `None`
 
         Example
         --------
