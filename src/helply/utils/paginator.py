@@ -63,7 +63,11 @@ class Paginator(disnake.ui.View):
         view.message = await inter.original_response()
         """
         if message := getattr(self, "message", None):
-            await message.edit(view=None)
+            try:
+                await message.edit(view=None)
+            except disnake.NotFound:
+                # message may have already been deleted
+                pass
 
     async def interaction_check(self, interaction: disnake.MessageInteraction) -> bool:
         """A check that is performed when any button in this view is interacted with
