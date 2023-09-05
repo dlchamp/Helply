@@ -18,6 +18,13 @@ class Paginator(disnake.ui.View):
     Inspired by the paginator.py example provided by
     [disnake](https://github.com/DisnakeDev/disnake/blob/stable/examples/views/button/paginator.py)
 
+    Attributes
+    ----------
+    message: disnake.InteractionMessage
+        The interaction message associated with this Paginator.
+        Only useful if a timeout has been provided and the original response will need to be
+        edited.
+
     Parameters
     ----------
     embeds: List[disnake.Embed]
@@ -45,7 +52,16 @@ class Paginator(disnake.ui.View):
         self._update_state()
 
     async def on_timeout(self) -> None:
-        """Executed when the view times it of a message has been provided to the View"""
+        """Executed when the View has timed out.
+
+        Requires a View.message to be set and timeout to not be `None`
+
+        Example
+        --------
+        view = utils.Paginator(embeds=embeds, timeout=300)
+        await inter.response.send_message(view=view)
+        view.message = await inter.original_response()
+        """
         if message := getattr(self, "message", None):
             await message.edit(view=None)
 
