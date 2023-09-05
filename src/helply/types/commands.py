@@ -77,9 +77,6 @@ class AppCommand:
         The ID of the guild where the command is available.
     default_member_permissions : Permissions, optional
         Default member permissions required to use this command.
-
-    Properties
-    ----------
     mention : str
         Return the command as a mentionable if slash command, else returns bolded name.
     """
