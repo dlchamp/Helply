@@ -255,7 +255,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../help/" class="md-tabs__link">
+        <a href="../../helply/" class="md-tabs__link">
           
   
   Code Reference
@@ -508,11 +508,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../help/" class="md-nav__link">
+      <a href="../../helply/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    help
+    helply
   </span>
   
 
@@ -1044,12 +1044,12 @@
 <a id="helply.utils.paginator"></a>
   <div class="doc doc-contents first">
   
-      <p>Provides a basic Paginator <code>View</code> to provide a clean interface for users to navigator your
-multiple command embeds.</p>
+      <p>Provides a basic Paginator to provide a clean interface for users to navigator your
+multiple embeds.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This can be used for pretty much any embeds, but is designed specifically to work with
-the list of embeds returned from <code>embeds.all_commands_overview()</code></p>
+<p>This can be used for pretty much any list of
+<a href="https://docs.disnake.dev/en/latest/api/messages.html#disnake.Embed">disnake.Embed</a></p>
 </div>
 
   
@@ -1080,7 +1080,7 @@ the list of embeds returned from <code>embeds.all_commands_overview()</code></p>
             Bases: <code><span title="disnake.ui.View">View</span></code></p>
 
   
-      <p>Provides a basic paginator that allows users to navigate over multiple embeds.</p>
+      <p>Provides a basic paginator View that allows users to navigate over multiple embeds.</p>
 <p>Inspired by the paginator.py example provided by
 <a href="https://github.com/DisnakeDev/disnake/blob/stable/examples/views/button/paginator.py">disnake</a></p>
 
@@ -1124,12 +1124,12 @@ edited.</p>
       </li>
       <li class="field-body">
         <b>timeout</b>
-            (<code>int</code>, default:
-                <code>180</code>
+            (<code>float</code>, default:
+                <code>180.0</code>
 )
         –
         <div class="doc-md-description">
-          <p>Set the timeout for the <code>View</code> in seconds, default is 180.</p>
+          <p>Set the timeout in seconds.</p>
         </div>
       </li>
   </ul>
@@ -1265,7 +1265,7 @@ edited.</p>
 <span class="normal">140</span>
 <span class="normal">141</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Paginator</span><span class="p">(</span><span class="n">disnake</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">View</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provides a basic paginator that allows users to navigate over multiple embeds.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provides a basic paginator View that allows users to navigate over multiple embeds.</span>
 
 <span class="sd">    Inspired by the paginator.py example provided by</span>
 <span class="sd">    [disnake](https://github.com/DisnakeDev/disnake/blob/stable/examples/views/button/paginator.py)</span>
@@ -1283,8 +1283,8 @@ edited.</p>
 <span class="sd">        List of embeds that will be cycled through</span>
 <span class="sd">    user: disnake.User, optional</span>
 <span class="sd">        Include a user to prevent others from using buttons.</span>
-<span class="sd">    timeout: int, optional</span>
-<span class="sd">        Set the timeout for the `View` in seconds, default is 180.</span>
+<span class="sd">    timeout: float</span>
+<span class="sd">        Set the timeout in seconds.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">message</span><span class="p">:</span> <span class="n">disnake</span><span class="o">.</span><span class="n">InteractionMessage</span>
@@ -1294,7 +1294,7 @@ edited.</p>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">embeds</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">disnake</span><span class="o">.</span><span class="n">Embed</span><span class="p">],</span>
         <span class="n">user</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">disnake</span><span class="o">.</span><span class="n">Member</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">180</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">180.0</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
@@ -1306,7 +1306,7 @@ edited.</p>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">on_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Executed when the View has timed out.</span>
 
-<span class="sd">        Requires a View.message to be set and timeout to not be `None`</span>
+<span class="sd">        Requires a Paginator.message to be set and timeout to not be `None`</span>
 
 <span class="sd">        Example</span>
 <span class="sd">        --------</span>
@@ -1524,7 +1524,7 @@ else False and the callback will not be invoked.</p>
   <div class="doc doc-contents ">
   
       <p>Executed when the View has timed out.</p>
-<p>Requires a View.message to be set and timeout to not be <code>None</code></p>
+<p>Requires a Paginator.message to be set and timeout to not be <code>None</code></p>
 <h5 id="helply.utils.paginator.Paginator.on_timeout--example">Example</h5>
 <div class="highlight"><pre><span></span><code><span class="n">view</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">Paginator</span><span class="p">(</span><span class="n">embeds</span><span class="o">=</span><span class="n">embeds</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 <span class="k">await</span> <span class="n">inter</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">view</span><span class="o">=</span><span class="n">view</span><span class="p">)</span>
@@ -1554,7 +1554,7 @@ else False and the callback will not be invoked.</p>
 <span class="normal">72</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">on_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Executed when the View has timed out.</span>
 
-<span class="sd">    Requires a View.message to be set and timeout to not be `None`</span>
+<span class="sd">    Requires a Paginator.message to be set and timeout to not be `None`</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    --------</span>
