@@ -42,7 +42,7 @@ theme:
 extra_css:
   - css/material.css
   - css/mkdocstrings.css
-  - css/logo.css
+  # - css/logo.css
 
 
 markdown_extensions:
