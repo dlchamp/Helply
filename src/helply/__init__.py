@@ -1,5 +1,5 @@
 """
-disnake-app-command-help
+helply
 =========================
 A library that simplifies 'help' command creation for application commands
 in your disnake bot.
