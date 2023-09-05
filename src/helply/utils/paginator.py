@@ -31,8 +31,8 @@ class Paginator(disnake.ui.View):
         List of embeds that will be cycled through
     user: disnake.User, optional
         Include a user to prevent others from using buttons.
-    timeout: int, optional
-        Set the timeout for the `View` in seconds, default is 180.
+    timeout: float
+        Set the timeout in seconds.
     """
 
     message: disnake.InteractionMessage
@@ -42,7 +42,7 @@ class Paginator(disnake.ui.View):
         *,
         embeds: List[disnake.Embed],
         user: Optional[disnake.Member] = None,
-        timeout: int = 180,
+        timeout: float = 180.0,
     ) -> None:
         super().__init__(timeout=timeout)
         self.user = user
