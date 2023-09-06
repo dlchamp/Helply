@@ -605,8 +605,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#helply.helply.Helply.get_guild_only_commands" class="md-nav__link">
-    get_guild_only_commands()
+  <a href="#helply.helply.Helply.get_guild_commands" class="md-nav__link">
+    get_guild_commands()
   </a>
   
 </li>
@@ -1053,8 +1053,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#helply.helply.Helply.get_guild_only_commands" class="md-nav__link">
-    get_guild_only_commands()
+  <a href="#helply.helply.Helply.get_guild_commands" class="md-nav__link">
+    get_guild_commands()
   </a>
   
 </li>
@@ -2364,18 +2364,18 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_commands</span><span class="p">(</span><span class="n">dm_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_nsfw</span><span class="o">=</span><span class="n">include_nsfw</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_guild_only_commands</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">get_guild_commands</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">guild_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">include_nsfw</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">permissions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">disnake</span><span class="o">.</span><span class="n">Permissions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">AppCommand</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;This method returns global and guild-specific commands available within a guild context.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This method returns global and guild-specific commands available to a guild.</span>
 
 <span class="sd">        !!! Note</span>
-<span class="sd">            Including `permissions` will restrict the command list further to commands that</span>
-<span class="sd">            do not require more, or higher, permissions than the permissions specified.</span>
+<span class="sd">            Including `permissions` will restrict the command list to prevent commands hidden by</span>
+<span class="sd">            default_command_permissions from appearing to the command author.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        guild_id: int</span>
@@ -3334,19 +3334,19 @@ commands will not be filtered by permissions.</p>
 
 
 
-<h3 id="helply.helply.Helply.get_guild_only_commands" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">get_guild_only_commands</span><span class="p">(</span><span class="n">guild_id</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">include_nsfw</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">permissions</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<h3 id="helply.helply.Helply.get_guild_commands" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">get_guild_commands</span><span class="p">(</span><span class="n">guild_id</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">include_nsfw</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">permissions</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h3>
 
 
   <div class="doc doc-contents ">
   
-      <p>This method returns global and guild-specific commands available within a guild context.</p>
+      <p>This method returns global and guild-specific commands available to a guild.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Including <code>permissions</code> will restrict the command list further to commands that
-do not require more, or higher, permissions than the permissions specified.</p>
+<p>Including <code>permissions</code> will restrict the command list to prevent commands hidden by
+default_command_permissions from appearing to the command author.</p>
 </div>
 <p>Parameters
 guild_id: int
@@ -3381,18 +3381,18 @@ permissions: Optional[disnake.Permissions]
 <span class="normal">623</span>
 <span class="normal">624</span>
 <span class="normal">625</span>
-<span class="normal">626</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_guild_only_commands</span><span class="p">(</span>
+<span class="normal">626</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_guild_commands</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">guild_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">include_nsfw</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">permissions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">disnake</span><span class="o">.</span><span class="n">Permissions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">AppCommand</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This method returns global and guild-specific commands available within a guild context.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This method returns global and guild-specific commands available to a guild.</span>
 
 <span class="sd">    !!! Note</span>
-<span class="sd">        Including `permissions` will restrict the command list further to commands that</span>
-<span class="sd">        do not require more, or higher, permissions than the permissions specified.</span>
+<span class="sd">        Including `permissions` will restrict the command list to prevent commands hidden by</span>
+<span class="sd">        default_command_permissions from appearing to the command author.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    guild_id: int</span>
