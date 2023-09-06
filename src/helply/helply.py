@@ -601,18 +601,18 @@ class Helply:
         """
         return self.get_all_commands(dm_only=True, include_nsfw=include_nsfw)
 
-    def get_guild_only_commands(
+    def get_guild_commands(
         self,
         guild_id: int,
         *,
         include_nsfw: bool = False,
         permissions: Optional[disnake.Permissions] = None,
     ) -> List[AppCommand]:
-        """This method returns global and guild-specific commands available within a guild context.
+        """This method returns global and guild-specific commands available to a guild.
 
         !!! Note
-            Including `permissions` will restrict the command list further to commands that
-            do not require more, or higher, permissions than the permissions specified.
+            Including `permissions` will restrict the command list to prevent commands hidden by
+            default_command_permissions from appearing to the command author.
 
         Parameters
         guild_id: int
