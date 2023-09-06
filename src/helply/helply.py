@@ -35,9 +35,7 @@ class Helply:
         self.bot = bot
 
         if commands_to_ignore is not None:
-            self.commands_to_ignore = set(commands_to_ignore)
-        else:
-            self.commands_to_ignore = None
+            self.commands_to_ignore: set[str] = set(commands_to_ignore)
 
         self._app_commands: Dict[int, AppCommand] = {}
 
@@ -609,7 +607,7 @@ class Helply:
         *,
         include_nsfw: bool = False,
         permissions: Optional[disnake.Permissions] = None,
-    ):
+    ) -> List[AppCommand]:
         """This method returns global and guild-specific commands available within a guild context.
 
         !!! Note
