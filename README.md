@@ -3,11 +3,9 @@
 
 A user-friendly Python library designed to streamline the creation of "help" commands for
 Discord bots using application commands within the disnake library. This library will automatically parse your commands
-and provide details for each command, such as name, description, role and permission checks, etc.
+and provide details for each command, such as name, description, role and permission checks, etc.  As I'm a user of the [disnake](https://disnake.dev) library, this is designed to be used with that project, but I do plan to add support for others in the future
 
->**Disclaimer**  
-Please note that this library is not officially associated with the [disnake](https://github.com/DisnakeDev/disnake) project or any of its maintainers. It is an independent creation by a user of the Disnake library who wanted to streamline the process of creating `/help` commands without needing to
-rewrite the implementation each time.
+
 
 
 ## Key Features
