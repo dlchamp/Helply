@@ -34,6 +34,28 @@ async def kick_member(inter: disnake.GuildCommandInteraction, member: disnake.Me
     """
 
 
+@bot.slash_command(name="command1")
+async def command1(inter):
+    """A cool slash command"""
+
+
+@bot.slash_command(name="command2")
+async def command2(inter, arg1: str, arg2: int | None = None):
+    """Another command with args
+
+    Parameters
+    ----------
+    arg1: A string argument
+    arg2: An optional int argument
+    """
+
+
+@bot.user_command(name="command3", extras={"help": "A user command with checks"})
+@commands.has_guild_permissions(moderate_members=True)
+async def command3(inter, user: disnake.Member):
+    ...
+
+
 @bot.slash_command(name="help")
 async def help_command(
     inter: disnake.GuildCommandInteraction,
@@ -85,7 +107,7 @@ async def help_command(
         category_embeds = utils.commands_overview_embeds(
             commands,
             max_fields=3,
-            max_field_chars=100,
+            max_field_chars=300,
             color=disnake.Color.random(),
             category=category,
         )
@@ -110,7 +132,7 @@ async def help_command(
             return
 
         command_embeds = utils.commands_overview_embeds(
-            commands, max_fields=3, max_field_chars=100, color=disnake.Color.random()
+            commands, max_fields=3, max_field_chars=300, color=disnake.Color.random()
         )
 
         if len(command_embeds) > 1:
