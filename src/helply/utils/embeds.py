@@ -5,7 +5,7 @@ from typing import List, Optional
 
 import disnake
 
-from ..help import Helply
+from ..helply import Helply
 from ..types import AppCommand, SlashCommand, UserCommand
 
 MAX_CHARS_PER_FIELD = 1024
