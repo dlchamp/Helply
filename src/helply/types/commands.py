@@ -65,8 +65,7 @@ class AppCommand:
     type: AppCommandType
         Type of command
     category: str
-        Name of cog command belongs to. Also parses `.extras['category']` for implementations using
-        [disnake-ext-plugins](https://github.com/DisnakeCommunity/disnake-ext-plugins)
+        Name of cog or category the command belongs to
     description : str
         A brief description of the command.
     dm_permission : bool
