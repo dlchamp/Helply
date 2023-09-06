@@ -45,9 +45,9 @@ class Paginator(disnake.ui.View):
         timeout: float = 180.0,
     ) -> None:
         super().__init__(timeout=timeout)
-        self.user = user
-        self.embeds = embeds
-        self.index = 0
+        self.user: Optional[disnake.Member] = user
+        self.embeds: List[disnake.Embed] = embeds
+        self.index: int = 0
 
         self._update_state()
 
