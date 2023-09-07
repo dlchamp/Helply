@@ -1,10 +1,9 @@
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from disnake import Locale, LocalizationValue, Permissions
 
 from .abc_ import AppCommandBase, ArgumentBase
 from .checks import CommandChecks
-from .enums import AppCommandType
 from .localized import (
     LocalizedAppCommand,
     LocalizedArgument,
@@ -12,6 +11,9 @@ from .localized import (
     LocalizedSlashCommand,
     LocalizedUserCommand,
 )
+
+if TYPE_CHECKING:
+    from .enums import AppCommandType
 
 __all__ = (
     "Argument",
@@ -134,9 +136,9 @@ class AppCommand(AppCommandBase):
     id : int
         The command's unique identifier.
     name: str
-        Command's non-localized name
+        Command's  name
     description: str
-        Command's non-localized description
+        Command's description
     name_localizations: disnake.LocalizationValue
         Contains localizations for the command's name. (*New in version 0.3.0*)
     checks : CommandChecks
@@ -172,7 +174,7 @@ class AppCommand(AppCommandBase):
         name: str,
         description: str,
         checks: CommandChecks,
-        type: AppCommandType,
+        type: "AppCommandType",
         name_localizations: LocalizationValue,
         category: str,
         dm_permission: bool,
@@ -335,7 +337,7 @@ class SlashCommand(AppCommand):
         name: str,
         description: str,
         checks: CommandChecks,
-        type: AppCommandType,
+        type: "AppCommandType",
         args: List[Argument],
         name_localizations: LocalizationValue,
         description_localizations: LocalizationValue,
@@ -410,7 +412,7 @@ class UserCommand(AppCommand):
         name: str,
         description: str,
         checks: CommandChecks,
-        type: AppCommandType,
+        type: "AppCommandType",
         name_localizations: LocalizationValue,
         category: str,
         dm_permission: bool,
@@ -479,7 +481,7 @@ class MessageCommand(AppCommand):
         name: str,
         description: str,
         checks: CommandChecks,
-        type: AppCommandType,
+        type: "AppCommandType",
         name_localizations: LocalizationValue,
         category: str,
         dm_permission: bool,
