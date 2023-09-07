@@ -31,16 +31,16 @@ class Argument:
     required: bool
         Whether or not the argument is required.
     name_localizations: disnake.LocalizationValue
-        Contains localizations for the argument's name
+        Contains localizations for the argument's name. (*New in version 0.3.0*)
     description_localizations: disnake.LocalizationValue
-        Contains localizations for the argument's description.
+        Contains localizations for the argument's description. (*New in version 0.3.0*)
 
     Methods
     -------
     get_localized_name(locale: disnake.Locale)
-        Returns localized or non-localized name.
+        Returns localized or non-localized name. (*New in version 0.3.0*)
     get_localized_description(locale: disnake.Locale)
-        Returns localized or non-localized description.
+        Returns localized or non-localized description. (*New in version 0.3.0*)
     """
 
     name: str
@@ -106,9 +106,9 @@ class AppCommand:
     description: str
         Command's non-localized description
     name_localizations: disnake.LocalizationValue
-        Contains localizations for the command's name
+        Contains localizations for the command's name. (*New in version 0.3.0*)
     description_localizations: Optional[disnake.LocalizationValue]
-        Contains localizations for the command's description.
+        Contains localizations for the command's description. (*New in version 0.3.0*)
     checks : CommandChecks
         The command's permission and role requirements.
     type: AppCommandType
@@ -128,11 +128,10 @@ class AppCommand:
 
     Methods
     -------
-    get_localized_mention(locale: disnake.Locale)
     get_localized_name(locale: Optional[Locale])
-        Returns localized or non-localized name.
+        Returns localized or non-localized name. (*New in version 0.3.0*)
     get_localized_description(locale: disnake.Locale)
-        Returns localized or non-localized description.
+        Returns localized or non-localized description. (*New in version 0.3.0*)
     """
 
     id: int
@@ -150,10 +149,10 @@ class AppCommand:
 
     @property
     def mention(self) -> str:
-        """Returns the"""
+        """Returns the a clickable tagged command or bolded command name if not SlashCommand"""
         if isinstance(self, SlashCommand):
             return f"</{self.name}:{self.id}>"
-        return f"**{self.name}**"
+        return f"*{self.name}*"
 
     def get_localized_name(self, locale: Locale) -> str:
         """Returns localized or non-localized name. specified by the provided locale.
