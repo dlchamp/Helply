@@ -17,6 +17,12 @@ from .types import (
 Bot = Union[
     commands.Bot,
     commands.InteractionBot,
+    commands.AutoShardedBot,
+    commands.AutoShardedInteractionBot,
+]
+
+APIApplicationCommand = Union[
+    disnake.APIMessageCommand, disnake.APISlashCommand, disnake.APIUserCommand
 ]
 
 
@@ -36,6 +42,8 @@ class Helply:
 
         if commands_to_ignore is not None:
             self.commands_to_ignore: set[str] = set(commands_to_ignore)
+        else:
+            self.commands_to_ignore = set()
 
         self._app_commands: Dict[int, AppCommand] = {}
 
@@ -63,7 +71,13 @@ class Helply:
                 continue
 
             args.append(
-                Argument(name=option.name, required=option.required, description=option.description)
+                Argument(
+                    name=option.name,
+                    name_localizations=option.name_localizations,
+                    description=option.description,
+                    description_localizations=option.description_localizations,
+                    required=option.required,
+                )
             )
 
         return args
@@ -147,6 +161,8 @@ class Helply:
                         id=command_id,
                         name=name,
                         description=desc,
+                        name_localizations=command.name_localizations,
+                        description_localizations=command.description_localizations,
                         args=args,
                         checks=checks,
                         type=AppCommandType.slash,
@@ -248,6 +264,8 @@ class Helply:
                 id=command.id,
                 name=command.name,
                 description=desc,
+                name_localizations=command.name_localizations,
+                description_localizations=command.description_localizations,
                 args=args,
                 checks=checks,
                 type=AppCommandType.slash,
@@ -285,13 +303,14 @@ class Helply:
         return MessageCommand(
             id=command.id,
             name=command.name,
+            description=desc,
+            name_localizations=command.name_localizations,
             checks=checks,
             type=AppCommandType.message,
-            description=desc,
             dm_permission=command.dm_permission,
             nsfw=command.nsfw,
             guild_id=command.guild_id,
-            default_member_permissions=command.default_member_permissions,
+            default_member_permissions=invokable.default_member_permissions,
             category=category,
         )
 
@@ -320,13 +339,14 @@ class Helply:
         return UserCommand(
             id=command.id,
             name=command.name,
-            type=AppCommandType.user,
-            checks=checks,
             description=desc,
+            name_localizations=command.name_localizations,
+            checks=checks,
+            type=AppCommandType.user,
             dm_permission=command.dm_permission,
             nsfw=command.nsfw,
             guild_id=command.guild_id,
-            default_member_permissions=command.default_member_permissions,
+            default_member_permissions=invokable.default_member_permissions,
             category=category,
         )
 
@@ -445,7 +465,7 @@ class Helply:
     def get_command_named(
         self, name: str, cmd_type: Optional[AppCommandType] = None
     ) -> Optional[AppCommand]:
-        """Get a command by its name.
+        """Get a command by its non-localized name
 
         Parameters
         ----------
