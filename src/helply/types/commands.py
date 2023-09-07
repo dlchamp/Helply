@@ -1,25 +1,28 @@
-import dataclasses
-from typing import TYPE_CHECKING, List, Optional
+from typing import List, Optional
 
 from disnake import Locale, LocalizationValue, Permissions
 
+from .abc_ import AppCommandBase, ArgumentBase
 from .checks import CommandChecks
-
-if TYPE_CHECKING:
-    from .enums import AppCommandType
-
+from .enums import AppCommandType
+from .localized import (
+    LocalizedAppCommand,
+    LocalizedArgument,
+    LocalizedMessageCommand,
+    LocalizedSlashCommand,
+    LocalizedUserCommand,
+)
 
 __all__ = (
-    "AppCommand",
     "Argument",
+    "AppCommand",
     "SlashCommand",
     "UserCommand",
     "MessageCommand",
 )
 
 
-@dataclasses.dataclass
-class Argument:
+class Argument(ArgumentBase):
     """Represents a SlashCommand argument.
 
     Attributes
@@ -41,13 +44,22 @@ class Argument:
         Returns localized or non-localized name. (*New in version 0.3.0*)
     get_localized_description(locale: disnake.Locale)
         Returns localized or non-localized description. (*New in version 0.3.0*)
+    localized(locale: disnake.Locale)
+        Returns a LocalizedArgument
     """
 
-    name: str
-    name_localizations: LocalizationValue
-    description: str
-    description_localizations: LocalizationValue
-    required: bool
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        required: bool,
+        name_localizations: LocalizationValue,
+        description_localizations: LocalizationValue,
+    ) -> None:
+        super().__init__(name=name, description=description, required=required)
+
+        self.name_localizations: LocalizationValue = name_localizations
+        self.description_localizations: LocalizationValue = description_localizations
 
     def get_localized_name(self, locale: Locale) -> str:
         """Returns localized or non-localized name. specified by the provided locale.
@@ -89,12 +101,32 @@ class Argument:
 
         return self.description_localizations.data.get(str(locale), self.description)
 
+    def localized(self, locale: Locale) -> LocalizedArgument:
+        """Returns a LocalizedArgument instance from this Argument.
 
-@dataclasses.dataclass
-class AppCommand:
+        LocalizedArument instances are just simplified Arguments with localized attribute values
+
+        Parameters
+        ----------
+        locale: disnake.Locale
+            The locale that should be used to localize the argument.
+
+        Returns
+        -------
+        LocalizedArgument
+            This argument with localized name and description
+        """
+        return LocalizedArgument(
+            name=self.get_localized_name(locale),
+            description=self.get_localized_description(locale),
+            required=self.required,
+        )
+
+
+class AppCommand(AppCommandBase):
     """Represents an AppCommand.
 
-    AppCommands are dataclasses that include various attributes from both
+    AppCommands are classes that include various attributes from both
     `.ApplicationCommand` and `.InvokableApplicationCommand`
 
     Attributes
@@ -119,7 +151,7 @@ class AppCommand:
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
-    guild_id : int, optional
+    guild_id : Optional[int]
         The ID of the guild where the command is available.
     default_member_permissions : Permissions, optional
         Default member permissions required to use this command.
@@ -132,27 +164,46 @@ class AppCommand:
         Returns localized or non-localized name. (*New in version 0.3.0*)
     get_localized_description(locale: disnake.Locale)
         Returns localized or non-localized description. (*New in version 0.3.0*)
+    localized(locale: disnake.Locale)
+        Returns a LocalizedAppcommand, or sub-variant
     """
 
-    id: int
-    name: str
-    description: str
-    checks: CommandChecks
-    type: "AppCommandType"
-    name_localizations: LocalizationValue
-    description_localizations: Optional[LocalizationValue] = None
-    category: str = "None"
-    dm_permission: bool = True
-    nsfw: bool = False
-    guild_id: Optional[int] = None
-    default_member_permissions: Optional[Permissions] = None
+    def __init__(
+        self,
+        id: int,
+        name: str,
+        description: str,
+        checks: CommandChecks,
+        type: AppCommandType,
+        name_localizations: LocalizationValue,
+        category: str,
+        dm_permission: bool,
+        nsfw: bool,
+        guild_id: Optional[int] = None,
+        default_member_permissions: Optional[Permissions] = None,
+        description_localizations: Optional[LocalizationValue] = None,
+    ) -> None:
+        super().__init__(
+            id=id,
+            name=name,
+            description=description,
+            checks=checks,
+            type=type,
+            category=category,
+            dm_permission=dm_permission,
+            nsfw=nsfw,
+            guild_id=guild_id,
+            default_member_permissions=default_member_permissions,
+        )
+
+        self.name_localizations: LocalizationValue = name_localizations
+        self.description_localizations: Optional[LocalizationValue] = description_localizations
 
     @property
     def mention(self) -> str:
-        """Returns the a clickable tagged command or bolded command name if not SlashCommand"""
         if isinstance(self, SlashCommand):
             return f"</{self.name}:{self.id}>"
-        return f"*{self.name}*"
+        return f"**{self.name}**"
 
     def get_localized_name(self, locale: Locale) -> str:
         """Returns localized or non-localized name. specified by the provided locale.
@@ -194,29 +245,154 @@ class AppCommand:
 
         return self.description_localizations.data.get(str(locale), self.description)
 
+    def localize(self, locale: Locale) -> LocalizedAppCommand:
+        name = self.get_localized_name(locale)
+        description = self.get_localized_description(locale)
 
-@dataclasses.dataclass
+        if isinstance(self, SlashCommand):
+            args = [a.localized(locale) for a in self.args]
+            return LocalizedSlashCommand(
+                id=self.id,
+                name=name,
+                description=description,
+                args=args,
+                checks=self.checks,
+                type=self.type,
+                category=self.category,
+                nsfw=self.nsfw,
+                dm_permission=self.dm_permission,
+                guild_id=self.guild_id,
+                default_member_permissions=self.default_member_permissions,
+            )
+
+        if isinstance(self, UserCommand):
+            return LocalizedUserCommand(
+                id=self.id,
+                name=name,
+                description=description,
+                checks=self.checks,
+                type=self.type,
+                dm_permission=self.dm_permission,
+                category=self.category,
+                nsfw=self.nsfw,
+                guild_id=self.guild_id,
+                default_member_permissions=self.default_member_permissions,
+            )
+
+        return LocalizedMessageCommand(
+            id=self.id,
+            name=name,
+            description=description,
+            checks=self.checks,
+            type=self.type,
+            dm_permission=self.dm_permission,
+            category=self.category,
+            nsfw=self.nsfw,
+            guild_id=self.guild_id,
+            default_member_permissions=self.default_member_permissions,
+        )
+
+
 class SlashCommand(AppCommand):
-    """Represents a SlashCommand type AppCommand.
+    """Represents a slash command type AppCommand
 
     Attributes
     ----------
-    args : List[Argument]
-        A list of the command's Arguments, if any.
-    """
+    args: List[Argument]"""
 
-    args: List[Argument] = dataclasses.field(default_factory=list)
+    def __init__(
+        self,
+        id: int,
+        name: str,
+        description: str,
+        checks: CommandChecks,
+        type: AppCommandType,
+        args: List[Argument],
+        name_localizations: LocalizationValue,
+        description_localizations: LocalizationValue,
+        category: str,
+        dm_permission: bool,
+        nsfw: bool,
+        guild_id: Optional[int] = None,
+        default_member_permissions: Optional[Permissions] = None,
+    ) -> None:
+        super().__init__(
+            id=id,
+            name=name,
+            description=description,
+            checks=checks,
+            type=type,
+            name_localizations=name_localizations,
+            description_localizations=description_localizations,
+            category=category,
+            dm_permission=dm_permission,
+            nsfw=nsfw,
+            guild_id=guild_id,
+            default_member_permissions=default_member_permissions,
+        )
+
+        self.args: List[Argument] = args
 
 
-@dataclasses.dataclass
 class UserCommand(AppCommand):
-    """Represents a UserCommand type of AppCommand."""
+    """Represents a user command type AppCommand"""
 
-    ...
+    def __init__(
+        self,
+        id: int,
+        name: str,
+        description: str,
+        checks: CommandChecks,
+        type: AppCommandType,
+        name_localizations: LocalizationValue,
+        category: str,
+        dm_permission: bool,
+        nsfw: bool,
+        guild_id: Optional[int] = None,
+        default_member_permissions: Optional[Permissions] = None,
+    ) -> None:
+        super().__init__(
+            id=id,
+            name=name,
+            description=description,
+            checks=checks,
+            type=type,
+            name_localizations=name_localizations,
+            category=category,
+            dm_permission=dm_permission,
+            nsfw=nsfw,
+            guild_id=guild_id,
+            default_member_permissions=default_member_permissions,
+        )
 
 
-@dataclasses.dataclass
 class MessageCommand(AppCommand):
-    """Represents a MessageCommand type of AppCommand."""
+    """Represents a message command type AppCommand"""
 
-    ...
+    def __init__(
+        self,
+        id: int,
+        name: str,
+        description: str,
+        checks: CommandChecks,
+        type: AppCommandType,
+        name_localizations: LocalizationValue,
+        category: str,
+        dm_permission: bool,
+        nsfw: bool,
+        guild_id: Optional[int] = None,
+        default_member_permissions: Optional[Permissions] = None,
+    ) -> None:
+        super().__init__(
+            id=id,
+            name=name,
+            description=description,
+            checks=checks,
+            type=type,
+            name_localizations=name_localizations,
+            category=category,
+            dm_permission=dm_permission,
+            nsfw=nsfw,
+            guild_id=guild_id,
+            default_member_permissions=default_member_permissions,
+        )
