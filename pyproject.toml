@@ -74,7 +74,7 @@ combine-as-imports = true
 [tool.pyright]
 typeCheckingMode = "strict"
 pythonVersion = "3.8"
-ignore = ["tests/", "examples/", "docs/"]
+ignore = ["tests/", "examples/", "docs/", "site/"]
 
 [tool.ruff]
 line-length = 100
