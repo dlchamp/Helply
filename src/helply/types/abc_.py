@@ -13,7 +13,7 @@ __all__ = (
 
 
 class ArgumentBase(ABC):
-    """Base class for slash command arguments
+    """Base class for Argument.
 
     Attributes
     ----------
@@ -32,7 +32,7 @@ class ArgumentBase(ABC):
 
 
 class AppCommandBase(ABC):
-    """Base class for all AppCommand and LocalizedAppCommand
+    """Base class for AppCommand and LocalizedAppCommand
 
     AppCommands are classes that include various attributes from both
     `.ApplicationCommand` and `.InvokableApplicationCommand`
@@ -42,13 +42,9 @@ class AppCommandBase(ABC):
     id : int
         The command's unique identifier.
     name: str
-        Command's non-localized name
+        Command's name
     description: str
-        Command's non-localized description
-    name_localizations: disnake.LocalizationValue
-        Contains localizations for the command's name. (*New in version 0.3.0*)
-    description_localizations: Optional[disnake.LocalizationValue]
-        Contains localizations for the command's description. (*New in version 0.3.0*)
+        Command's description
     checks : CommandChecks
         The command's permission and role requirements.
     type: AppCommandType
@@ -93,6 +89,6 @@ class AppCommandBase(ABC):
 
     @property
     def mention(self) -> str:
-        if self.type is AppCommandType.slash:
+        if self.type is AppCommandType.SLASH:
             return f"</{self.name}:{self.id}>"
         return f"**{self.name}**"
