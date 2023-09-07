@@ -44,7 +44,7 @@ class Argument(ArgumentBase):
         Returns localized or non-localized name. (*New in version 0.3.0*)
     get_localized_description(locale: disnake.Locale)
         Returns localized or non-localized description. (*New in version 0.3.0*)
-    localized(locale: disnake.Locale)
+    localize(locale: disnake.Locale)
         Returns a LocalizedArgument
     """
 
@@ -101,7 +101,7 @@ class Argument(ArgumentBase):
 
         return self.description_localizations.data.get(str(locale), self.description)
 
-    def localized(self, locale: Locale) -> LocalizedArgument:
+    def localize(self, locale: Locale) -> LocalizedArgument:
         """Returns a LocalizedArgument instance from this Argument.
 
         LocalizedArument instances are just simplified Arguments with localized attribute values
@@ -139,8 +139,6 @@ class AppCommand(AppCommandBase):
         Command's non-localized description
     name_localizations: disnake.LocalizationValue
         Contains localizations for the command's name. (*New in version 0.3.0*)
-    description_localizations: Optional[disnake.LocalizationValue]
-        Contains localizations for the command's description. (*New in version 0.3.0*)
     checks : CommandChecks
         The command's permission and role requirements.
     type: AppCommandType
@@ -164,7 +162,7 @@ class AppCommand(AppCommandBase):
         Returns localized or non-localized name. (*New in version 0.3.0*)
     get_localized_description(locale: disnake.Locale)
         Returns localized or non-localized description. (*New in version 0.3.0*)
-    localized(locale: disnake.Locale)
+    localize(locale: disnake.Locale)
         Returns a LocalizedAppcommand, or sub-variant
     """
 
@@ -198,12 +196,6 @@ class AppCommand(AppCommandBase):
 
         self.name_localizations: LocalizationValue = name_localizations
         self.description_localizations: Optional[LocalizationValue] = description_localizations
-
-    @property
-    def mention(self) -> str:
-        if isinstance(self, SlashCommand):
-            return f"</{self.name}:{self.id}>"
-        return f"**{self.name}**"
 
     def get_localized_name(self, locale: Locale) -> str:
         """Returns localized or non-localized name. specified by the provided locale.
@@ -250,7 +242,7 @@ class AppCommand(AppCommandBase):
         description = self.get_localized_description(locale)
 
         if isinstance(self, SlashCommand):
-            args = [a.localized(locale) for a in self.args]
+            args = [a.localize(locale) for a in self.args]
             return LocalizedSlashCommand(
                 id=self.id,
                 name=name,
@@ -298,7 +290,44 @@ class SlashCommand(AppCommand):
 
     Attributes
     ----------
-    args: List[Argument]"""
+    id : int
+        The command's unique identifier.
+    name: str
+        Command's non-localized name
+    description: str
+        Command's non-localized description
+    name_localizations: disnake.LocalizationValue
+        Contains localizations for the command's name. (*New in version 0.3.0*)
+    description_localizations: disnake.LocalizationValue
+        Contains localizations for the command's description. (*New in version 0.3.0*)
+    args: List[Argument]
+        Contains the command's arguments
+    checks : CommandChecks
+        The command's permission and role requirements.
+    type: AppCommandType
+        Type of command
+    category: str
+        Name of cog or category the command belongs to
+    dm_permission : bool
+        Whether the command is available in DMs or not.
+    nsfw : bool
+        Whether the command is NSFW (Not Safe For Work).
+    guild_id : Optional[int]
+        The ID of the guild where the command is available.
+    default_member_permissions : Permissions, optional
+        Default member permissions required to use this command.
+    mention : str
+        Get the command as a mentionable if slash command, else returns bolded name.
+
+    Methods
+    -------
+    get_localized_name(locale: Optional[Locale])
+        Returns localized or non-localized name. (*New in version 0.3.0*)
+    get_localized_description(locale: disnake.Locale)
+        Returns localized or non-localized description. (*New in version 0.3.0*)
+    localize(locale: disnake.Locale)
+        Returns a LocalizedSlashCommand
+    """
 
     def __init__(
         self,
@@ -335,7 +364,45 @@ class SlashCommand(AppCommand):
 
 
 class UserCommand(AppCommand):
-    """Represents a user command type AppCommand"""
+    """Represents a user command type AppCommand
+
+
+    Attributes
+    ----------
+    id : int
+        The command's unique identifier.
+    name: str
+        Command's non-localized name
+    description: str
+        Command's non-localized description
+    name_localizations: disnake.LocalizationValue
+        Contains localizations for the command's name. (*New in version 0.3.0*)
+    checks : CommandChecks
+        The command's permission and role requirements.
+    type: AppCommandType
+        Type of command
+    category: str
+        Name of cog or category the command belongs to
+    dm_permission : bool
+        Whether the command is available in DMs or not.
+    nsfw : bool
+        Whether the command is NSFW (Not Safe For Work).
+    guild_id : Optional[int]
+        The ID of the guild where the command is available.
+    default_member_permissions : Permissions, optional
+        Default member permissions required to use this command.
+    mention : str
+        Get the command as a mentionable if slash command, else returns bolded name.
+
+    Methods
+    -------
+    get_localized_name(locale: Optional[Locale])
+        Returns localized or non-localized name. (*New in version 0.3.0*)
+    get_localized_description(locale: disnake.Locale)
+        Returns localized or non-localized description. (*New in version 0.3.0*)
+    localize(locale: disnake.Locale)
+        Returns a LocalizedAppcommand, or sub-variant
+    """
 
     def __init__(
         self,
@@ -367,7 +434,44 @@ class UserCommand(AppCommand):
 
 
 class MessageCommand(AppCommand):
-    """Represents a message command type AppCommand"""
+    """Represents a message command type AppCommand
+
+    Attributes
+    ----------
+    id : int
+        The command's unique identifier.
+    name: str
+        Command's non-localized name
+    description: str
+        Command's non-localized description
+    name_localizations: disnake.LocalizationValue
+        Contains localizations for the command's name. (*New in version 0.3.0*)
+    checks : CommandChecks
+        The command's permission and role requirements.
+    type: AppCommandType
+        Type of command
+    category: str
+        Name of cog or category the command belongs to
+    dm_permission : bool
+        Whether the command is available in DMs or not.
+    nsfw : bool
+        Whether the command is NSFW (Not Safe For Work).
+    guild_id : Optional[int]
+        The ID of the guild where the command is available.
+    default_member_permissions : Permissions, optional
+        Default member permissions required to use this command.
+    mention : str
+        Get the command as a mentionable if slash command, else returns bolded name.
+
+    Methods
+    -------
+    get_localized_name(locale: Optional[Locale])
+        Returns localized or non-localized name. (*New in version 0.3.0*)
+    get_localized_description(locale: disnake.Locale)
+        Returns localized or non-localized description. (*New in version 0.3.0*)
+    localize(locale: disnake.Locale)
+        Returns a LocalizedAppcommand, or sub-variant
+    """
 
     def __init__(
         self,
