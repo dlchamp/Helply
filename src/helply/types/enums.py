@@ -1,20 +1,22 @@
 import enum
 
-from .commands import MessageCommand, SlashCommand, UserCommand
-
 __all__ = ("AppCommandType",)
 
 
-class AppCommandType(enum.Enum):
-    """Enum for AppCommandType
+class AppCommandType(str, enum.Enum):
+    """Represents a command type.
 
     Attributes
     ----------
-    slash: SlashCommand
-    message: MessageCommand
-    user UserCommand
+    SLASH
+        "slash"
+    MESSAGE
+        "message"
+    USER
+        "user"
+
     """
 
-    slash = SlashCommand
-    message = MessageCommand
-    user = UserCommand
+    SLASH = "slash"
+    MESSAGE = "message"
+    USER = "user"
