@@ -11,7 +11,7 @@ and provide details for each command, such as name, description, role and permis
 ## Key Features
 - Consolidating various attributes from `InvokableApplicationCommand` and `APIApplicationCommand` into a single cached object.
 - Parsing role and permission checks.
-- Ready-to-use methods for populating autocomplete outputs.
+- Support localizing commands and arguments (*New in version 0.3.0*)
 - Utility functions that provide ready-to-go embeds and pagination.
 
 
