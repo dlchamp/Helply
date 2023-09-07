@@ -60,14 +60,14 @@ async def help_command(
     _command: str = commands.Param(None, name="command"),
 ):
     if _command:
-        command = helply.get_command(int(_command))
+        command = helply.get_command(int(_command), locale=inter.locale)
+        embed = utils.command_detail_embed(command)
 
-        embed = utils.command_detail_embed(command, locale=disnake.Locale.de)
         await inter.send(embed=embed)
         return
 
-    commands = helply.get_all_commands()
-    embeds = utils.commands_overview_embeds(commands, locale=disnake.Locale.de)
+    commands = helply.get_all_commands(locale=inter.locale)
+    embeds = utils.commands_overview_embeds(commands)
     embed = embeds[0]
 
     await inter.send(embed=embed)
