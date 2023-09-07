@@ -1,12 +1,12 @@
 """
 Embeds module adds some pre-configured embeds to streamline the creation of your help command
 """
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import disnake
 
 from ..helply import Helply
-from ..types import AppCommand, SlashCommand, UserCommand
+from ..types import AppCommand, AppCommandType, LocalizedAppCommand, SlashCommand
 
 MAX_CHARS_PER_FIELD = 1024
 """
@@ -30,8 +30,7 @@ as well.
 
 
 def command_detail_embed(
-    command: AppCommand,
-    locale: disnake.Locale,
+    command: Union[AppCommand, LocalizedAppCommand],
     *,
     thumbnail: Optional[disnake.File] = None,
     guild: Optional[disnake.Guild] = None,
@@ -43,8 +42,6 @@ def command_detail_embed(
     ----------
     command: AppCommand
         The `AppCommand` retrieved from `AppCommandHelp.get_command_named`
-    locale: disnake.Locale
-            The interaction locale
     thumbnail: Optional[disnake.File]
         A `disnake.File` converted image to be set as the embed thumbnail.
     guild: Optional[disnake.Guild]
@@ -74,15 +71,13 @@ def command_detail_embed(
     """
     type_ = (
         "Slash Command Details"
-        if isinstance(command, SlashCommand)
+        if command.type is AppCommandType.SLASH
         else "User Command Details"
-        if isinstance(command, UserCommand)
+        if command.type is AppCommandType.USER
         else "Message Command Details"
     )
 
-    embed = disnake.Embed(
-        description=f"{command.mention}\n{command.get_localized_description(locale)}", color=color
-    )
+    embed = disnake.Embed(description=f"{command.mention}\n{command.description}", color=color)
     embed.set_author(name=f'{type_} {"(NSFW)" if command.nsfw else ""}')
     if thumbnail:
         embed.set_thumbnail(file=thumbnail)
@@ -107,11 +102,8 @@ def command_detail_embed(
             args: str = ""
 
             for arg in command.args:
-                name = arg.get_localized_name(locale)
-                description = arg.get_localized_description(locale)
-
-                name = f"**[{name}]**" if arg.required else f"**({name})**"
-                args += f"{name}: *{description}*\n"
+                name = f"**[{arg.name}]**" if arg.required else f"**({arg.name})**"
+                args += f"{name}: *{arg.description}*\n"
 
             embed.add_field(name="Parameters", value=args, inline=False)
         else:
@@ -121,8 +113,7 @@ def command_detail_embed(
 
 
 def commands_overview_embeds(
-    commands: List[AppCommand],
-    locale: disnake.Locale,
+    commands: List[Union[AppCommand, LocalizedAppCommand]],
     *,
     thumbnail: Optional[disnake.File] = None,
     max_field_chars: int = MAX_CHARS_PER_FIELD,
@@ -136,8 +127,6 @@ def commands_overview_embeds(
     ----------
     commands: List[AppCommand]
         List of `AppCommand` received from `AppCommandHelp.get_all_commands`
-    locale: disnake.Locale
-            The inter.author's locale
     thumbnail: Optional[disnake.File]
         A `disnake.File` converted image to be set as the embed thumbnail.
     max_field_chars: int
@@ -180,20 +169,17 @@ def commands_overview_embeds(
     current_field_chars: int = 0
 
     for command in commands:
-        command_type = (
-            "Slash Command"
-            if isinstance(command, SlashCommand)
-            else "User Command"
-            if isinstance(command, UserCommand)
-            else "Message Command"
+        type_ = (
+            "Slash Command Details"
+            if command.type is AppCommandType.SLASH
+            else "User Command Details"
+            if command.type is AppCommandType.USER
+            else "Message Command Details"
         )
 
         nsfw = "*(NSFW)*" if command.nsfw else ""
 
-        command_lines = (
-            f"{command.mention} *({command_type})* {nsfw}\n"
-            f"{command.get_localized_description(locale)}\n\n"
-        )
+        command_lines = f"{command.mention} *({type_})* {nsfw}\n" f"{command.description}\n\n"
 
         if current_embed is None:
             title = (
