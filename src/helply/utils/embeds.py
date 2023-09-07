@@ -31,6 +31,7 @@ as well.
 
 def command_detail_embed(
     command: AppCommand,
+    locale: disnake.Locale,
     *,
     thumbnail: Optional[disnake.File] = None,
     guild: Optional[disnake.Guild] = None,
@@ -42,12 +43,14 @@ def command_detail_embed(
     ----------
     command: AppCommand
         The `AppCommand` retrieved from `AppCommandHelp.get_command_named`
-    thumbnail: disnake.File, optional
+    locale: disnake.Locale
+            The interaction locale
+    thumbnail: Optional[disnake.File]
         A `disnake.File` converted image to be set as the embed thumbnail.
-    guild: disnake.Guild, optional
+    guild: Optional[disnake.Guild]
         Guild where this embed will be displayed. Used to convert
         any role checks into role objects
-    color: disnake.Color, optional
+    color: Optional[disnake.Color]
         Set the color the embed. Default is None
 
     Examples
@@ -77,7 +80,9 @@ def command_detail_embed(
         else "Message Command Details"
     )
 
-    embed = disnake.Embed(description=f"{command.mention}\n{command.description}", color=color)
+    embed = disnake.Embed(
+        description=f"{command.mention}\n{command.get_localized_description(locale)}", color=color
+    )
     embed.set_author(name=f'{type_} {"(NSFW)" if command.nsfw else ""}')
     if thumbnail:
         embed.set_thumbnail(file=thumbnail)
@@ -99,7 +104,15 @@ def command_detail_embed(
     if isinstance(command, SlashCommand):
         embed.set_footer(text="[ required ] | ( optional )")
         if command.args:
-            args = "\n".join(f"**{arg}**: *{arg.description}*" for arg in command.args)
+            args: str = ""
+
+            for arg in command.args:
+                name = arg.get_localized_name(locale)
+                description = arg.get_localized_description(locale)
+
+                name = f"**[{name}]**" if arg.required else f"**({name})**"
+                args += f"{name}: *{description}*\n"
+
             embed.add_field(name="Parameters", value=args, inline=False)
         else:
             embed.add_field(name="Parameters", value="None", inline=True)
@@ -109,6 +122,7 @@ def command_detail_embed(
 
 def commands_overview_embeds(
     commands: List[AppCommand],
+    locale: disnake.Locale,
     *,
     thumbnail: Optional[disnake.File] = None,
     max_field_chars: int = MAX_CHARS_PER_FIELD,
@@ -122,14 +136,18 @@ def commands_overview_embeds(
     ----------
     commands: List[AppCommand]
         List of `AppCommand` received from `AppCommandHelp.get_all_commands`
-    thumbnail: disnake.File, optional
+    locale: disnake.Locale
+            The inter.author's locale
+    thumbnail: Optional[disnake.File]
         A `disnake.File` converted image to be set as the embed thumbnail.
     max_field_chars: int
         Max number of characters per embed field description, default is MAX_CHARS_PER_FIELD (1024)
     max_fields: int
         Max number of fields per embed. default is MAX_FIELDS_PER_EMBED (10)
-    color: disnake.Color, optional
+    color: Optional[disnake.Color]
         Set the color the embed(s). Default is None
+
+
     Examples
     --------
     ```py
@@ -173,7 +191,8 @@ def commands_overview_embeds(
         nsfw = "*(NSFW)*" if command.nsfw else ""
 
         command_lines = (
-            f"{command.mention} *({command_type})* {nsfw}\n" f"{command.description}\n\n"
+            f"{command.mention} *({command_type})* {nsfw}\n"
+            f"{command.get_localized_description(locale)}\n\n"
         )
 
         if current_embed is None:
