@@ -18,9 +18,9 @@ class ArgumentBase(ABC):
     Attributes
     ----------
     name: str
-        Argument's non-localized name
+        Argument's name
     description: str
-        Argument's non-localized description
+        Argument's description
     required: bool
         Whether or not the argument is required
     """
@@ -55,7 +55,7 @@ class AppCommandBase(ABC):
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
-    guild_id : int, optional
+    guild_id : Optional[int]
         The ID of the guild where the command is available.
     default_member_permissions : Permissions, optional
         Default member permissions required to use this command.
