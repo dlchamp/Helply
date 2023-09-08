@@ -40,11 +40,9 @@ class LocalizedAppCommand(AppCommandBase):
     id : int
         The command's unique identifier.
     name: str
-        Command's name
+        Command's localized name
     description: str
-        Command's description
-    name_localizations: disnake.LocalizationValue
-        Contains localizations for the command's name. (*New in version 0.3.0*)
+        Command's localized description
     checks : CommandChecks
         The command's permission and role requirements.
     type: AppCommandType
@@ -57,7 +55,7 @@ class LocalizedAppCommand(AppCommandBase):
         Whether the command is NSFW (Not Safe For Work).
     guild_id : Optional[int]
         The ID of the guild where the command is available.
-    default_member_permissions : Permissions, optional
+    default_member_permissions : Optional[Permissions]
         Default member permissions required to use this command.
     mention : str
         Get the command as a mentionable if slash command, else returns bolded name.
@@ -66,6 +64,7 @@ class LocalizedAppCommand(AppCommandBase):
     def __init__(
         self,
         id: int,
+        _name: str,
         name: str,
         description: str,
         checks: CommandChecks,
@@ -89,18 +88,52 @@ class LocalizedAppCommand(AppCommandBase):
             default_member_permissions=default_member_permissions,
         )
 
+        self._name: str = _name
+
+    @property
+    def mention(self) -> str:
+        """Returns the mentionable command if slash type, else bolded name"""
+        if self.type is AppCommandType.SLASH:
+            return f"</{self._name}:{self.id}>"
+
+        return f"**{self._name}**"
+
 
 class LocalizedSlashCommand(LocalizedAppCommand):
     """Represents a slash command type AppCommand
 
     Attributes
     ----------
-    args: List[Argument]
+    id : int
+        The command's unique identifier.
+    name: str
+        Command's localized name
+    description: str
+        Command's localized description
+    args: List[LocalizedArgument]
+        Command's localized arguments.
+    checks : CommandChecks
+        The command's permission and role requirements.
+    type: AppCommandType
+        Type of command
+    category: str
+        Name of cog or category the command belongs to
+    dm_permission : bool
+        Whether the command is available in DMs or not.
+    nsfw : bool
+        Whether the command is NSFW (Not Safe For Work).
+    guild_id : Optional[int]
+        The ID of the guild where the command is available.
+    default_member_permissions : Optional[Permissions]
+        Default member permissions required to use this command.
+    mention : str
+        Get the command as selectable tag.
     """
 
     def __init__(
         self,
         id: int,
+        _name: str,
         name: str,
         description: str,
         checks: CommandChecks,
@@ -114,6 +147,7 @@ class LocalizedSlashCommand(LocalizedAppCommand):
     ) -> None:
         super().__init__(
             id=id,
+            _name=_name,
             name=name,
             description=description,
             checks=checks,
@@ -129,11 +163,39 @@ class LocalizedSlashCommand(LocalizedAppCommand):
 
 
 class LocalizedUserCommand(LocalizedAppCommand):
-    """Represents a user command type AppCommand"""
+    """Represents a UserCommand with localized attributes.
+
+        Attributes
+    ----------
+    id : int
+        The command's unique identifier.
+    name: str
+        Command's localized name
+    description: str
+        Command's localized description
+    checks : CommandChecks
+        The command's permission and role requirements.
+    type: AppCommandType
+        Type of command
+    category: str
+        Name of cog or category the command belongs to
+    dm_permission : bool
+        Whether the command is available in DMs or not.
+    nsfw : bool
+        Whether the command is NSFW (Not Safe For Work).
+    guild_id : Optional[int]
+        The ID of the guild where the command is available.
+    default_member_permissions : Optional[Permissions]
+        Default member permissions required to use this command.
+    mention : str
+        Get the command name, bolded.
+
+    """
 
     def __init__(
         self,
         id: int,
+        _name: str,
         name: str,
         description: str,
         checks: CommandChecks,
@@ -146,6 +208,7 @@ class LocalizedUserCommand(LocalizedAppCommand):
     ) -> None:
         super().__init__(
             id=id,
+            _name=_name,
             name=name,
             description=description,
             checks=checks,
@@ -159,11 +222,38 @@ class LocalizedUserCommand(LocalizedAppCommand):
 
 
 class LocalizedMessageCommand(LocalizedAppCommand):
-    """Represents a message command type AppCommand"""
+    """Represents a MessageCommand with localized attributes
+
+        Attributes
+    ----------
+    id : int
+        The command's unique identifier.
+    name: str
+        Command's localized name
+    description: str
+        Command's localized description
+    checks : CommandChecks
+        The command's permission and role requirements.
+    type: AppCommandType
+        Type of command
+    category: str
+        Name of cog or category the command belongs to
+    dm_permission : bool
+        Whether the command is available in DMs or not.
+    nsfw : bool
+        Whether the command is NSFW (Not Safe For Work).
+    guild_id : Optional[int]
+        The ID of the guild where the command is available.
+    default_member_permissions : Optional[Permissions]
+        Default member permissions required to use this command.
+    mention : str
+        Get the command name, bolded.
+    """
 
     def __init__(
         self,
         id: int,
+        _name: str,
         name: str,
         description: str,
         checks: CommandChecks,
@@ -176,6 +266,7 @@ class LocalizedMessageCommand(LocalizedAppCommand):
     ) -> None:
         super().__init__(
             id=id,
+            _name=_name,
             name=name,
             description=description,
             checks=checks,
