@@ -35,7 +35,7 @@ async def kick_member(inter: disnake.GuildCommandInteraction, member: disnake.Me
     """
 
 
-@bot.slash_command(name="command1")
+@bot.slash_command(name="command1", guild_ids=[947543739671412878, 1041563016199680090])
 @commands.cooldown(1, 15, commands.BucketType.default)
 async def command1(inter):
     """A cool slash command"""
@@ -136,9 +136,7 @@ async def help_command(
     else:
         guild_id, dm_only, nsfw, permissions = get_helper_query_attrs(inter)
 
-        commands = helply.get_all_commands(
-            guild_id, dm_only=dm_only, include_nsfw=nsfw, permissions=permissions
-        )
+        commands = helply.get_commands(dm_only=dm_only, include_nsfw=nsfw, permissions=permissions)
         if not commands:
             await inter.response.send_message(
                 "Could not find any available commands.", ephemeral=True
@@ -168,7 +166,7 @@ async def autocomplete_command_names(
 
     guild_id, dm_only, nsfw, permissions = get_helper_query_attrs(inter)
 
-    commands = helply.get_all_commands(
+    commands = helply.get_commands(
         guild_id, dm_only=dm_only, include_nsfw=nsfw, permissions=permissions
     )
 
