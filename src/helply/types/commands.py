@@ -47,7 +47,7 @@ class Argument(ArgumentBase):
     get_localized_description(locale: disnake.Locale)
         Returns localized or non-localized description. (*New in version 0.3.0*)
     localize(locale: disnake.Locale)
-        Returns a LocalizedArgument
+        Returns a LocalizedArgument (*New in version 0.3.0*)
     """
 
     def __init__(
@@ -131,6 +131,7 @@ class AppCommand(AppCommandBase):
     AppCommands are classes that include various attributes from both
     `.ApplicationCommand` and `.InvokableApplicationCommand`
 
+
     Attributes
     ----------
     id : int
@@ -151,9 +152,12 @@ class AppCommand(AppCommandBase):
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
+    description_localizations: Optional[LocalizationValue]
+        Contains localization information for the command's description. (*SlashCommand only*)
+        (*New in version 0.3.0*)
     guild_id : Optional[int]
         The ID of the guild where the command is available.
-    default_member_permissions : Permissions, optional
+    default_member_permissions : Optional[Permissions]
         Default member permissions required to use this command.
     mention : str
         Get the command as a mentionable if slash command, else returns bolded name.
@@ -165,7 +169,7 @@ class AppCommand(AppCommandBase):
     get_localized_description(locale: disnake.Locale)
         Returns localized or non-localized description. (*New in version 0.3.0*)
     localize(locale: disnake.Locale)
-        Returns a LocalizedAppcommand, or sub-variant
+        Returns a LocalizedAppcommand, or sub-variant (*New in version 0.3.0*)
     """
 
     def __init__(
@@ -179,9 +183,9 @@ class AppCommand(AppCommandBase):
         category: str,
         dm_permission: bool,
         nsfw: bool,
+        description_localizations: Optional[LocalizationValue] = None,
         guild_id: Optional[int] = None,
         default_member_permissions: Optional[Permissions] = None,
-        description_localizations: Optional[LocalizationValue] = None,
     ) -> None:
         super().__init__(
             id=id,
@@ -247,6 +251,7 @@ class AppCommand(AppCommandBase):
             args = [a.localize(locale) for a in self.args]
             return LocalizedSlashCommand(
                 id=self.id,
+                _name=self.name,
                 name=name,
                 description=description,
                 args=args,
@@ -262,6 +267,7 @@ class AppCommand(AppCommandBase):
         if isinstance(self, UserCommand):
             return LocalizedUserCommand(
                 id=self.id,
+                _name=self.name,
                 name=name,
                 description=description,
                 checks=self.checks,
@@ -275,6 +281,7 @@ class AppCommand(AppCommandBase):
 
         return LocalizedMessageCommand(
             id=self.id,
+            _name=self.name,
             name=name,
             description=description,
             checks=self.checks,
@@ -316,7 +323,7 @@ class SlashCommand(AppCommand):
         Whether the command is NSFW (Not Safe For Work).
     guild_id : Optional[int]
         The ID of the guild where the command is available.
-    default_member_permissions : Permissions, optional
+    default_member_permissions : Optional[Permissions]
         Default member permissions required to use this command.
     mention : str
         Get the command as a mentionable if slash command, else returns bolded name.
@@ -391,7 +398,7 @@ class UserCommand(AppCommand):
         Whether the command is NSFW (Not Safe For Work).
     guild_id : Optional[int]
         The ID of the guild where the command is available.
-    default_member_permissions : Permissions, optional
+    default_member_permissions : Optional[Permissions]
         Default member permissions required to use this command.
     mention : str
         Get the command as a mentionable if slash command, else returns bolded name.
@@ -403,7 +410,7 @@ class UserCommand(AppCommand):
     get_localized_description(locale: disnake.Locale)
         Returns localized or non-localized description. (*New in version 0.3.0*)
     localize(locale: disnake.Locale)
-        Returns a LocalizedAppcommand, or sub-variant
+        Returns a LocalizedAppcommand, or sub-variant. (*New in version 0.3.0*)
     """
 
     def __init__(
@@ -460,7 +467,7 @@ class MessageCommand(AppCommand):
         Whether the command is NSFW (Not Safe For Work).
     guild_id : Optional[int]
         The ID of the guild where the command is available.
-    default_member_permissions : Permissions, optional
+    default_member_permissions : Optional[Permissions]
         Default member permissions required to use this command.
     mention : str
         Get the command as a mentionable if slash command, else returns bolded name.
