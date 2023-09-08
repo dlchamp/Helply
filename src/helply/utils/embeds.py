@@ -82,6 +82,11 @@ def command_detail_embed(
     if thumbnail:
         embed.set_thumbnail(file=thumbnail)
 
+    if command.cooldown:
+        cooldown = command.cooldown
+        text = f"{cooldown.rate} / {cooldown.per}s / {cooldown.type}"
+        embed.add_field(name="Cooldown", value=text, inline=False)
+
     if command.checks.permissions:
         permissions = ", ".join(command.checks.permissions)
         embed.add_field(name="Required Permissions", value=permissions, inline=True)
@@ -147,7 +152,7 @@ def commands_overview_embeds(
 
     ...
     commands = app_command_help.get_all_commands(inter.guild)
-    embeds = utils.commands_overview_embeds()
+    embeds = utils.commands_overview_embeds(commands)
     await inter.response.send_message(embeds=embeds)
     ```
 
