@@ -6,7 +6,13 @@ from typing import List, Optional, Union
 import disnake
 
 from ..helply import Helply
-from ..types import AppCommand, AppCommandType, LocalizedAppCommand, SlashCommand
+from ..types import (
+    AppCommand,
+    AppCommandType,
+    LocalizedAppCommand,
+    LocalizedSlashCommand,
+    SlashCommand,
+)
 
 MAX_CHARS_PER_FIELD = 1024
 """
@@ -101,7 +107,7 @@ def command_detail_embed(
         roles_as_string = f"**Required Roles**:\n{role_checks}"
         embed.add_field(name="Required Role(s)", value=roles_as_string, inline=True)
 
-    if isinstance(command, SlashCommand):
+    if isinstance(command, (SlashCommand, LocalizedSlashCommand)):
         embed.set_footer(text="[ required ] | ( optional )")
         if command.args:
             args: str = ""
