@@ -403,7 +403,7 @@ class Helply:
                     self._app_commands[user_command.id] = user_command
 
     @overload
-    def get_all_commands(
+    def get_commands(
         self,
         guild_id: Optional[int] = None,
         *,
@@ -416,7 +416,7 @@ class Helply:
         ...
 
     @overload
-    def get_all_commands(
+    def get_commands(
         self,
         guild_id: Optional[int] = None,
         *,
@@ -428,7 +428,7 @@ class Helply:
     ) -> List[AppCommand]:
         ...
 
-    def get_all_commands(
+    def get_commands(
         self,
         guild_id: Optional[int] = None,
         *,
@@ -698,7 +698,7 @@ class Helply:
                 Should not specify `guild_id` or `permissions` if setting this to True
 
         Example:
-        ```py
+        ```python
         @some_command.autocomplete('category')
         async def some_command_group_autocomplete(
             inter: disnake.ApplicationCommandInteraction, string: str
