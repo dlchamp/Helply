@@ -142,7 +142,7 @@ For more examples and documentation, please visit the following links:
 
 
 ## To-Do
-- add localization support
+- ~~add localization support~~ (*added in version 0.3.0*)
 - add support for nextcord and py-cord
 - contribution guidelines
 
