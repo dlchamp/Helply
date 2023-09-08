@@ -3,7 +3,7 @@ from typing import Optional
 
 from disnake import Permissions
 
-from .checks import CommandChecks
+from .checks import CommandChecks, Cooldown
 from .enums import AppCommandType
 
 __all__ = (
@@ -55,6 +55,8 @@ class AppCommandBase(ABC):
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
+    cooldown: Optional[Cooldown]
+        The configured cooldown, if available
     guild_id : Optional[int]
         The ID of the guild where the command is available.
     default_member_permissions : Permissions, optional
@@ -73,6 +75,7 @@ class AppCommandBase(ABC):
         category: str,
         dm_permission: bool,
         nsfw: bool,
+        cooldown: Optional[Cooldown],
         guild_id: Optional[int] = None,
         default_member_permissions: Optional[Permissions] = None,
     ) -> None:
@@ -84,6 +87,7 @@ class AppCommandBase(ABC):
         self.category = category
         self.dm_permission = dm_permission
         self.nsfw = nsfw
+        self.cooldown = cooldown
         self.guild_id = guild_id
         self.default_member_permissions = default_member_permissions
 

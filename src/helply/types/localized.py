@@ -3,7 +3,7 @@ from typing import List, Optional
 from disnake import Permissions
 
 from .abc_ import AppCommandBase, ArgumentBase
-from .checks import CommandChecks
+from .checks import CommandChecks, Cooldown
 from .enums import AppCommandType
 
 __all__ = (
@@ -53,6 +53,8 @@ class LocalizedAppCommand(AppCommandBase):
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
+    cooldown: Optional[Cooldown]
+        The configured cooldown, if available
     guild_id : Optional[int]
         The ID of the guild where the command is available.
     default_member_permissions : Optional[Permissions]
@@ -72,6 +74,7 @@ class LocalizedAppCommand(AppCommandBase):
         category: str,
         dm_permission: bool,
         nsfw: bool,
+        cooldown: Optional[Cooldown],
         guild_id: Optional[int] = None,
         default_member_permissions: Optional[Permissions] = None,
     ) -> None:
@@ -84,6 +87,7 @@ class LocalizedAppCommand(AppCommandBase):
             category=category,
             dm_permission=dm_permission,
             nsfw=nsfw,
+            cooldown=cooldown,
             guild_id=guild_id,
             default_member_permissions=default_member_permissions,
         )
@@ -122,6 +126,8 @@ class LocalizedSlashCommand(LocalizedAppCommand):
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
+    cooldown: Optional[Cooldown]
+        The configured cooldown, if available
     guild_id : Optional[int]
         The ID of the guild where the command is available.
     default_member_permissions : Optional[Permissions]
@@ -142,6 +148,7 @@ class LocalizedSlashCommand(LocalizedAppCommand):
         category: str,
         dm_permission: bool,
         nsfw: bool,
+        cooldown: Optional[Cooldown],
         guild_id: Optional[int] = None,
         default_member_permissions: Optional[Permissions] = None,
     ) -> None:
@@ -155,6 +162,7 @@ class LocalizedSlashCommand(LocalizedAppCommand):
             category=category,
             dm_permission=dm_permission,
             nsfw=nsfw,
+            cooldown=cooldown,
             guild_id=guild_id,
             default_member_permissions=default_member_permissions,
         )
@@ -183,6 +191,8 @@ class LocalizedUserCommand(LocalizedAppCommand):
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
+    cooldown: Optional[Cooldown]
+        The configured cooldown, if available
     guild_id : Optional[int]
         The ID of the guild where the command is available.
     default_member_permissions : Optional[Permissions]
@@ -203,6 +213,7 @@ class LocalizedUserCommand(LocalizedAppCommand):
         category: str,
         dm_permission: bool,
         nsfw: bool,
+        cooldown: Optional[Cooldown],
         guild_id: Optional[int] = None,
         default_member_permissions: Optional[Permissions] = None,
     ) -> None:
@@ -216,6 +227,7 @@ class LocalizedUserCommand(LocalizedAppCommand):
             category=category,
             dm_permission=dm_permission,
             nsfw=nsfw,
+            cooldown=cooldown,
             guild_id=guild_id,
             default_member_permissions=default_member_permissions,
         )
@@ -242,6 +254,8 @@ class LocalizedMessageCommand(LocalizedAppCommand):
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
+    cooldown: Optional[Cooldown]
+        The configured cooldown, if available
     guild_id : Optional[int]
         The ID of the guild where the command is available.
     default_member_permissions : Optional[Permissions]
@@ -261,6 +275,7 @@ class LocalizedMessageCommand(LocalizedAppCommand):
         category: str,
         dm_permission: bool,
         nsfw: bool,
+        cooldown: Optional[Cooldown],
         guild_id: Optional[int] = None,
         default_member_permissions: Optional[Permissions] = None,
     ) -> None:
@@ -274,6 +289,7 @@ class LocalizedMessageCommand(LocalizedAppCommand):
             category=category,
             dm_permission=dm_permission,
             nsfw=nsfw,
+            cooldown=cooldown,
             guild_id=guild_id,
             default_member_permissions=default_member_permissions,
         )

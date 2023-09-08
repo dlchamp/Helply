@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, List, Optional
 from disnake import Locale, LocalizationValue, Permissions
 
 from .abc_ import AppCommandBase, ArgumentBase
-from .checks import CommandChecks
+from .checks import CommandChecks, Cooldown
 from .localized import (
     LocalizedAppCommand,
     LocalizedArgument,
@@ -155,6 +155,8 @@ class AppCommand(AppCommandBase):
     description_localizations: Optional[LocalizationValue]
         Contains localization information for the command's description. (*SlashCommand only*)
         (*New in version 0.3.0*)
+    cooldown: Optional[Cooldown]
+        The configured cooldown, if available
     guild_id : Optional[int]
         The ID of the guild where the command is available.
     default_member_permissions : Optional[Permissions]
@@ -183,6 +185,7 @@ class AppCommand(AppCommandBase):
         category: str,
         dm_permission: bool,
         nsfw: bool,
+        cooldown: Optional[Cooldown],
         description_localizations: Optional[LocalizationValue] = None,
         guild_id: Optional[int] = None,
         default_member_permissions: Optional[Permissions] = None,
@@ -196,6 +199,7 @@ class AppCommand(AppCommandBase):
             category=category,
             dm_permission=dm_permission,
             nsfw=nsfw,
+            cooldown=cooldown,
             guild_id=guild_id,
             default_member_permissions=default_member_permissions,
         )
@@ -259,6 +263,7 @@ class AppCommand(AppCommandBase):
                 type=self.type,
                 category=self.category,
                 nsfw=self.nsfw,
+                cooldown=self.cooldown,
                 dm_permission=self.dm_permission,
                 guild_id=self.guild_id,
                 default_member_permissions=self.default_member_permissions,
@@ -275,6 +280,7 @@ class AppCommand(AppCommandBase):
                 dm_permission=self.dm_permission,
                 category=self.category,
                 nsfw=self.nsfw,
+                cooldown=self.cooldown,
                 guild_id=self.guild_id,
                 default_member_permissions=self.default_member_permissions,
             )
@@ -289,6 +295,7 @@ class AppCommand(AppCommandBase):
             dm_permission=self.dm_permission,
             category=self.category,
             nsfw=self.nsfw,
+            cooldown=self.cooldown,
             guild_id=self.guild_id,
             default_member_permissions=self.default_member_permissions,
         )
@@ -321,6 +328,8 @@ class SlashCommand(AppCommand):
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
+    cooldown: Optional[Cooldown]
+        The configured cooldown, if available
     guild_id : Optional[int]
         The ID of the guild where the command is available.
     default_member_permissions : Optional[Permissions]
@@ -351,6 +360,7 @@ class SlashCommand(AppCommand):
         category: str,
         dm_permission: bool,
         nsfw: bool,
+        cooldown: Optional[Cooldown],
         guild_id: Optional[int] = None,
         default_member_permissions: Optional[Permissions] = None,
     ) -> None:
@@ -365,6 +375,7 @@ class SlashCommand(AppCommand):
             category=category,
             dm_permission=dm_permission,
             nsfw=nsfw,
+            cooldown=cooldown,
             guild_id=guild_id,
             default_member_permissions=default_member_permissions,
         )
@@ -396,6 +407,8 @@ class UserCommand(AppCommand):
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
+    cooldown: Optional[Cooldown]
+        The configured cooldown, if available
     guild_id : Optional[int]
         The ID of the guild where the command is available.
     default_member_permissions : Optional[Permissions]
@@ -424,6 +437,7 @@ class UserCommand(AppCommand):
         category: str,
         dm_permission: bool,
         nsfw: bool,
+        cooldown: Optional[Cooldown],
         guild_id: Optional[int] = None,
         default_member_permissions: Optional[Permissions] = None,
     ) -> None:
@@ -437,6 +451,7 @@ class UserCommand(AppCommand):
             category=category,
             dm_permission=dm_permission,
             nsfw=nsfw,
+            cooldown=cooldown,
             guild_id=guild_id,
             default_member_permissions=default_member_permissions,
         )
@@ -465,6 +480,8 @@ class MessageCommand(AppCommand):
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
+    cooldown: Optional[Cooldown]
+        The configured cooldown, if available
     guild_id : Optional[int]
         The ID of the guild where the command is available.
     default_member_permissions : Optional[Permissions]
@@ -493,6 +510,7 @@ class MessageCommand(AppCommand):
         category: str,
         dm_permission: bool,
         nsfw: bool,
+        cooldown: Optional[Cooldown],
         guild_id: Optional[int] = None,
         default_member_permissions: Optional[Permissions] = None,
     ) -> None:
@@ -506,6 +524,7 @@ class MessageCommand(AppCommand):
             category=category,
             dm_permission=dm_permission,
             nsfw=nsfw,
+            cooldown=cooldown,
             guild_id=guild_id,
             default_member_permissions=default_member_permissions,
         )
