@@ -9,6 +9,7 @@ from .types import (
     AppCommandType,
     Argument,
     CommandChecks,
+    Cooldown,
     LocalizedAppCommand,
     MessageCommand,
     SlashCommand,
@@ -87,26 +88,52 @@ class Helply:
 
         return args
 
-    def _get_command_desc(self, name: str) -> str:
+    def _get_command_desc(
+        self,
+        command: commands.InvokableSlashCommand,
+    ) -> str:
         """Get the description for a command.
 
         Parameters
         ----------
-        name : str
-            The name of the command.
+        command: commands.InvokableSlashCommand,
+            The invokable command to parse descriptions from
 
         Returns
         -------
         str
             The description of the command.
         """
-        desc = "-"
-        command = self.bot.get_slash_command(name)
+        return command.extras.get("help", "") or command.description
 
-        if command and isinstance(command, (commands.InvokableSlashCommand, commands.SubCommand)):
-            desc = command.extras.get("help", "") or command.description
+    def _parse_cooldowns(
+        self,
+        command: Union[commands.InvokableApplicationCommand, commands.SubCommand],
+    ) -> Optional[Cooldown]:
+        """Parses the configured cooldown for an ApplicationCommand and returns the Cooldown
 
-        return desc
+        Parameters
+        ----------
+        command: Union[commands.InvokableApplicationCommand, commands.SubCommand]
+            The application command to parse cooldowns from.
+
+        Retruns
+        -------
+        Optional[Cooldown]
+            Returns the Cooldown if configured, else None
+        """
+
+        cooldown = command._buckets._cooldown  # type: ignore
+        if cooldown is None:
+            return None
+
+        rate = cooldown.rate
+        per = cooldown.per
+        type_ = str(command._buckets._type)  # type: ignore
+
+        type_ = type_.replace("BucketType.", "").title()
+
+        return Cooldown(rate=rate, per=per, type=type_)
 
     def _get_sub_commands(
         self,
@@ -123,8 +150,10 @@ class Helply:
             The registered slash command or the command's SubCommand.
         checks : CommandChecks
             The permission and role checks assigned to the parent command.
-        parent_name : Optional[str]
-            Parent command's name. Only used if sub_group is used and this function is called
+        category : str
+            The category of the commands.
+        parent_command : Optional[disnake.APISlashCommand]
+            Parent command. Only used if sub_group is used and this function is called
             recursively.
 
         Returns
@@ -134,51 +163,54 @@ class Helply:
         """
         sub_commands: List[SlashCommand] = []
 
+        # ensure we always have access to the original parent command.
+        if parent_command is None and isinstance(command, disnake.APISlashCommand):
+            original_command = command
+        elif parent_command:
+            original_command = parent_command
+        else:
+            raise ValueError(
+                "Invalid input. Either command must be an instance of `disnake.APISlashCommand"
+                "or parent_command must be provided."
+            )
+
         for option in command.options:
             name = (
-                f"{parent_command.name} {command.name} {option.name}"
+                f"{original_command.name} {command.name} {option.name}"
                 if parent_command
-                else f"{command.name} {option.name}"
+                else f"{original_command.name} {option.name}"
             )
-            if option.type == disnake.OptionType.sub_command:
+            if option.type == disnake.OptionType.sub_command_group:
+                sub_commands.extend(
+                    self._get_sub_commands(option, checks, category, original_command)
+                )
+
+            elif option.type == disnake.OptionType.sub_command:
                 args = self._get_command_args(option)
+                command_id = original_command.id
+                dm_permissions = original_command.dm_permission
+                nsfw = original_command.nsfw
 
-                if parent_command:
-                    command_id = parent_command.id
-                    dm_permissions = parent_command.dm_permission
-                    nsfw = parent_command.nsfw
-
-                elif isinstance(command, disnake.APISlashCommand):
-                    command_id = command.id
-                    dm_permissions = command.dm_permission
-                    nsfw = command.nsfw
-
-                else:
-                    # should realistically never be reached
-                    raise TypeError(
-                        "Command must be an instance of `disnake.APISlashCommand` "
-                        "if parent_command is `None`"
-                    ) from None
-
-                desc = self._get_command_desc(name)
+                invokable = self.bot.get_slash_command(name)
+                if not invokable:
+                    return []
+                desc = self._get_command_desc(invokable)  # type: ignore
+                cooldown = self._parse_cooldowns(invokable)  # type: ignore
                 sub_commands.append(
                     SlashCommand(
                         id=command_id,
                         name=name,
                         description=desc,
-                        name_localizations=command.name_localizations,
-                        description_localizations=command.description_localizations,
+                        name_localizations=original_command.name_localizations,
+                        description_localizations=original_command.description_localizations,
                         args=args,
                         checks=checks,
                         type=AppCommandType.SLASH,
                         dm_permission=dm_permissions,
                         nsfw=nsfw,
+                        cooldown=cooldown,
                         category=category,
                     )
-                )
-            elif option.type == disnake.OptionType.sub_command_group:
-                sub_commands.extend(
-                    self._get_sub_commands(option, checks, category, parent_command)
                 )
 
         return sub_commands
@@ -256,7 +288,8 @@ class Helply:
             return []
 
         checks = self._parse_checks(invokable)
-        desc = self._get_command_desc(invokable.qualified_name)
+        cooldown = self._parse_cooldowns(invokable)
+        desc = self._get_command_desc(invokable)
         category = self._get_command_category(invokable)
         args = self._get_command_args(command)
         sub_commands = self._get_sub_commands(command, checks, category)
@@ -276,6 +309,7 @@ class Helply:
                 type=AppCommandType.SLASH,
                 dm_permission=command.dm_permission,
                 nsfw=command.nsfw,
+                cooldown=cooldown,
                 guild_id=command.guild_id,
                 default_member_permissions=invokable.default_member_permissions,
                 category=category,
@@ -302,6 +336,7 @@ class Helply:
             return
 
         checks = self._parse_checks(invokable)
+        cooldown = self._parse_cooldowns(invokable)
         desc = invokable.extras.get("help", "-")
         category = self._get_command_category(invokable)
 
@@ -314,6 +349,7 @@ class Helply:
             type=AppCommandType.MESSAGE,
             dm_permission=command.dm_permission,
             nsfw=command.nsfw,
+            cooldown=cooldown,
             guild_id=command.guild_id,
             default_member_permissions=invokable.default_member_permissions,
             category=category,
@@ -338,6 +374,7 @@ class Helply:
             return
 
         checks = self._parse_checks(invokable)
+        cooldown = self._parse_cooldowns(invokable)
         desc = invokable.extras.get("help", "-")
         category = self._get_command_category(invokable)
 
@@ -350,6 +387,7 @@ class Helply:
             type=AppCommandType.USER,
             dm_permission=command.dm_permission,
             nsfw=command.nsfw,
+            cooldown=cooldown,
             guild_id=command.guild_id,
             default_member_permissions=invokable.default_member_permissions,
             category=category,
@@ -506,6 +544,9 @@ class Helply:
             commands.append(command)
 
         return commands  # type: ignore - I don't know how to fix this yet ;)
+
+    # temporary alias - will be deprecated
+    get_all_commands = get_commands
 
     @overload
     def get_command(self, id: int, locale: None = None) -> Optional[AppCommand]:
