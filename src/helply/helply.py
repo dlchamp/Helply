@@ -545,7 +545,8 @@ class Helply:
             if locale:
                 command = command.localize(locale)
 
-            commands.append(command)
+            if command not in commands:
+                commands.append(command)
 
         return commands  # type: ignore - I don't know how to fix this yet ;)
 
