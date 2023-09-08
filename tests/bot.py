@@ -25,6 +25,7 @@ async def ping(inter: disnake.ApplicationCommandInteraction):
     description="Kick the target member",
     extras={"help": "Removes the target member from the guild", "category": "Admin"},
 )
+@commands.cooldown(1, 1, type=commands.BucketType.member)
 async def kick_member(inter: disnake.GuildCommandInteraction, member: disnake.Member):
     """Kick a member from the server
 
@@ -34,9 +35,22 @@ async def kick_member(inter: disnake.GuildCommandInteraction, member: disnake.Me
     """
 
 
-@bot.slash_command(name="command1")
+@bot.slash_command(name="command1", guild_ids=[947543739671412878, 1041563016199680090])
+@commands.cooldown(1, 15, commands.BucketType.default)
 async def command1(inter):
     """A cool slash command"""
+
+
+@command1.sub_command_group(name="child")
+@commands.cooldown(1, 10, commands.BucketType.user)
+async def command_group(inter):
+    ...
+
+
+@command_group.sub_command(name="grandchild")
+@commands.cooldown(1, 20, commands.BucketType.channel)
+async def command_grandchild(inter):
+    ...
 
 
 @bot.slash_command(name="command2")
@@ -122,9 +136,7 @@ async def help_command(
     else:
         guild_id, dm_only, nsfw, permissions = get_helper_query_attrs(inter)
 
-        commands = helply.get_all_commands(
-            guild_id, dm_only=dm_only, include_nsfw=nsfw, permissions=permissions
-        )
+        commands = helply.get_commands(dm_only=dm_only, include_nsfw=nsfw, permissions=permissions)
         if not commands:
             await inter.response.send_message(
                 "Could not find any available commands.", ephemeral=True
@@ -154,7 +166,7 @@ async def autocomplete_command_names(
 
     guild_id, dm_only, nsfw, permissions = get_helper_query_attrs(inter)
 
-    commands = helply.get_all_commands(
+    commands = helply.get_commands(
         guild_id, dm_only=dm_only, include_nsfw=nsfw, permissions=permissions
     )
 
@@ -202,3 +214,12 @@ if __name__ == "__main__":
 
     dotenv.load_dotenv()
     bot.run(os.getenv("TOKEN"))
+
+    # for command in bot.application_commands:
+    #     cooldown = command._buckets._cooldown
+    #     type_ = command._buckets._type
+    #     if not cooldown:
+    #         continue
+
+    #     print(type(type_), str(type_))
+    #     print(cooldown, type_)

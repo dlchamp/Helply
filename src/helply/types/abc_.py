@@ -1,9 +1,9 @@
 from abc import ABC
-from typing import Optional
+from typing import Any, Optional
 
 from disnake import Permissions
 
-from .checks import CommandChecks
+from .checks import CommandChecks, Cooldown
 from .enums import AppCommandType
 
 __all__ = (
@@ -55,6 +55,8 @@ class AppCommandBase(ABC):
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
+    cooldown: Optional[Cooldown]
+        The configured cooldown, if available (*New in 0.4.0*)
     guild_id : Optional[int]
         The ID of the guild where the command is available.
     default_member_permissions : Permissions, optional
@@ -73,22 +75,36 @@ class AppCommandBase(ABC):
         category: str,
         dm_permission: bool,
         nsfw: bool,
+        cooldown: Optional[Cooldown],
         guild_id: Optional[int] = None,
         default_member_permissions: Optional[Permissions] = None,
     ) -> None:
-        self.id = id
-        self.name = name
-        self.description = description
-        self.checks = checks
-        self.type = type
-        self.category = category
-        self.dm_permission = dm_permission
-        self.nsfw = nsfw
-        self.guild_id = guild_id
-        self.default_member_permissions = default_member_permissions
+        self.id: int = id
+        self.name: str = name
+        self.description: str = description
+        self.checks: CommandChecks = checks
+        self.type: AppCommandType = type
+        self.category: str = category
+        self.dm_permission: bool = dm_permission
+        self.nsfw: bool = nsfw
+        self.cooldown: Optional[Cooldown] = cooldown
+        self.guild_id: Optional[int] = guild_id
+        self.default_member_permissions: Optional[Permissions] = default_member_permissions
 
     @property
     def mention(self) -> str:
         if self.type is AppCommandType.SLASH:
             return f"</{self.name}:{self.id}>"
         return f"**{self.name}**"
+
+    def __eq__(self, other: Any) -> bool:
+        if not isinstance(other, self.__class__):
+            return False
+
+        return (
+            self.name == other.name
+            and self.type == other.type
+            and self.category == other.category
+            and self.nsfw == other.nsfw
+            and self.default_member_permissions == other.default_member_permissions
+        )
