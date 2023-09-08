@@ -156,7 +156,7 @@ class AppCommand(AppCommandBase):
         Contains localization information for the command's description. (*SlashCommand only*)
         (*New in version 0.3.0*)
     cooldown: Optional[Cooldown]
-        The configured cooldown, if available
+        The configured cooldown, if available. (*New in 0.4.0*)
     guild_id : Optional[int]
         The ID of the guild where the command is available.
     default_member_permissions : Optional[Permissions]
@@ -329,7 +329,7 @@ class SlashCommand(AppCommand):
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
     cooldown: Optional[Cooldown]
-        The configured cooldown, if available
+        The configured cooldown, if available. (*New in 0.4.0*)
     guild_id : Optional[int]
         The ID of the guild where the command is available.
     default_member_permissions : Optional[Permissions]
@@ -408,7 +408,7 @@ class UserCommand(AppCommand):
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
     cooldown: Optional[Cooldown]
-        The configured cooldown, if available
+        The configured cooldown, if available. (*New in 0.4.0*)
     guild_id : Optional[int]
         The ID of the guild where the command is available.
     default_member_permissions : Optional[Permissions]
@@ -481,7 +481,7 @@ class MessageCommand(AppCommand):
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
     cooldown: Optional[Cooldown]
-        The configured cooldown, if available
+        The configured cooldown, if available. (*New in 0.4.0*)
     guild_id : Optional[int]
         The ID of the guild where the command is available.
     default_member_permissions : Optional[Permissions]

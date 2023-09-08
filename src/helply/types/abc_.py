@@ -56,7 +56,7 @@ class AppCommandBase(ABC):
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
     cooldown: Optional[Cooldown]
-        The configured cooldown, if available
+        The configured cooldown, if available (*New in 0.4.0*)
     guild_id : Optional[int]
         The ID of the guild where the command is available.
     default_member_permissions : Permissions, optional
