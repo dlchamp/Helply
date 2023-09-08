@@ -441,7 +441,7 @@ class Helply:
                     self._app_commands[user_command.id] = user_command
 
     @overload
-    def get_commands(
+    def get_all_commands(
         self,
         guild_id: Optional[int] = None,
         *,
@@ -454,7 +454,7 @@ class Helply:
         ...
 
     @overload
-    def get_commands(
+    def get_all_commands(
         self,
         guild_id: Optional[int] = None,
         *,
@@ -466,7 +466,7 @@ class Helply:
     ) -> List[AppCommand]:
         ...
 
-    def get_commands(
+    def get_all_commands(
         self,
         guild_id: Optional[int] = None,
         *,
@@ -480,6 +480,10 @@ class Helply:
 
         By default, this method should return all registered commands. Specify filters
         to narrow down the output results.
+
+        !!! Warning
+            This method is deprecated as of *version 0.4.0* and will be replaced by it's current
+            alias `get_commands`.
 
         Parameters
         ----------
@@ -545,8 +549,8 @@ class Helply:
 
         return commands  # type: ignore - I don't know how to fix this yet ;)
 
-    # temporary alias - will be deprecated
-    get_all_commands = get_commands
+    # temporary alias - get_all_commands will be removed, eventually
+    get_commands = get_all_commands
 
     @overload
     def get_command(self, id: int, locale: None = None) -> Optional[AppCommand]:
