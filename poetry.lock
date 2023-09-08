@@ -343,6 +343,16 @@ files = [
 ]
 
 [[package]]
+name = "csscompressor"
+version = "0.9.5"
+description = "A python port of YUI CSS Compressor"
+optional = false
+python-versions = "*"
+files = [
+    {file = "csscompressor-0.9.5.tar.gz", hash = "sha256:afa22badbcf3120a4f392e4d22f9fff485c044a1feda4a950ecc5eba9dd31a05"},
+]
+
+[[package]]
 name = "disnake"
 version = "2.9.0"
 description = "A Python wrapper for the Discord API"
@@ -493,6 +503,16 @@ files = [
 colorama = ">=0.4"
 
 [[package]]
+name = "htmlmin2"
+version = "0.1.13"
+description = "An HTML Minifier"
+optional = false
+python-versions = "*"
+files = [
+    {file = "htmlmin2-0.1.13-py3-none-any.whl", hash = "sha256:75609f2a42e64f7ce57dbff28a39890363bde9e7e5885db633317efbdf8c79a2"},
+]
+
+[[package]]
 name = "identify"
 version = "2.5.27"
 description = "File identification library for Python"
@@ -571,6 +591,16 @@ MarkupSafe = ">=2.0"
 i18n = ["Babel (>=2.7)"]
 
 [[package]]
+name = "jsmin"
+version = "3.0.1"
+description = "JavaScript minifier."
+optional = false
+python-versions = "*"
+files = [
+    {file = "jsmin-3.0.1.tar.gz", hash = "sha256:c0959a121ef94542e807a674142606f7e90214a2b3d1eb17300244bbb5cc2bfc"},
+]
+
+[[package]]
 name = "markdown"
 version = "3.4.4"
 description = "Python implementation of John Gruber's Markdown."
@@ -646,20 +676,6 @@ files = [
     {file = "MarkupSafe-2.1.3-cp39-cp39-win_amd64.whl", hash = "sha256:3fd4abcb888d15a94f32b75d8fd18ee162ca0c064f35b11134be77050296d6ba"},
     {file = "MarkupSafe-2.1.3.tar.gz", hash = "sha256:af598ed32d6ae86f1b747b82783958b1a4ab8f617b06fe68795c7f026abbdcad"},
 ]
-
-[[package]]
-name = "mdx-truly-sane-lists"
-version = "1.3"
-description = "Extension for Python-Markdown that makes lists truly sane. Custom indents for nested lists and fix for messy linebreaks."
-optional = false
-python-versions = "*"
-files = [
-    {file = "mdx_truly_sane_lists-1.3-py3-none-any.whl", hash = "sha256:b9546a4c40ff8f1ab692f77cee4b6bfe8ddf9cccf23f0a24e71f3716fe290a37"},
-    {file = "mdx_truly_sane_lists-1.3.tar.gz", hash = "sha256:b661022df7520a1e113af7c355c62216b384c867e4f59fb8ee7ad511e6e77f45"},
-]
-
-[package.dependencies]
-Markdown = ">=2.6"
 
 [[package]]
 name = "mergedeep"
@@ -794,6 +810,23 @@ files = [
     {file = "mkdocs_material_extensions-1.1.1-py3-none-any.whl", hash = "sha256:e41d9f38e4798b6617ad98ca8f7f1157b1e4385ac1459ca1e4ea219b556df945"},
     {file = "mkdocs_material_extensions-1.1.1.tar.gz", hash = "sha256:9c003da71e2cc2493d910237448c672e00cefc800d3d6ae93d2fc69979e3bd93"},
 ]
+
+[[package]]
+name = "mkdocs-minify-plugin"
+version = "0.7.1"
+description = "An MkDocs plugin to minify HTML, JS or CSS files prior to being written to disk"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "mkdocs-minify-plugin-0.7.1.tar.gz", hash = "sha256:6abf8f5a0fddb476bddd38faba28390fd8c41ab63b0d7202e3ce3deeb9ab98cb"},
+    {file = "mkdocs_minify_plugin-0.7.1-py3-none-any.whl", hash = "sha256:29bd6a1aa5b0217a55b08333194e20cf1ff83b63fb6a22a33f10f8fa9745c28a"},
+]
+
+[package.dependencies]
+csscompressor = ">=0.9.5"
+htmlmin2 = ">=0.1.13"
+jsmin = ">=3.0.1"
+mkdocs = ">=1.4.1"
 
 [[package]]
 name = "mkdocstrings"
@@ -1536,4 +1569,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4.0"
-content-hash = "c42a7b45391b747de82d1d2ed7b733e449dab314fa2c8030587d60c81b4ba160"
+content-hash = "0ff24539c447a456907baf4c1f0195dc8d99f2c678485fed7ed30e29990db607"
