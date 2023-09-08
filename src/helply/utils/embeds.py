@@ -1,12 +1,12 @@
 """
 Embeds module adds some pre-configured embeds to streamline the creation of your help command
 """
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import disnake
 
 from ..helply import Helply
-from ..types import AppCommand, SlashCommand, UserCommand
+from ..types import AppCommand, AppCommandType, LocalizedAppCommand, SlashCommand
 
 MAX_CHARS_PER_FIELD = 1024
 """
@@ -30,7 +30,7 @@ as well.
 
 
 def command_detail_embed(
-    command: AppCommand,
+    command: Union[AppCommand, LocalizedAppCommand],
     *,
     thumbnail: Optional[disnake.File] = None,
     guild: Optional[disnake.Guild] = None,
@@ -42,12 +42,12 @@ def command_detail_embed(
     ----------
     command: AppCommand
         The `AppCommand` retrieved from `AppCommandHelp.get_command_named`
-    thumbnail: disnake.File, optional
+    thumbnail: Optional[disnake.File]
         A `disnake.File` converted image to be set as the embed thumbnail.
-    guild: disnake.Guild, optional
+    guild: Optional[disnake.Guild]
         Guild where this embed will be displayed. Used to convert
         any role checks into role objects
-    color: disnake.Color, optional
+    color: Optional[disnake.Color]
         Set the color the embed. Default is None
 
     Examples
@@ -71,9 +71,9 @@ def command_detail_embed(
     """
     type_ = (
         "Slash Command Details"
-        if isinstance(command, SlashCommand)
+        if command.type is AppCommandType.SLASH
         else "User Command Details"
-        if isinstance(command, UserCommand)
+        if command.type is AppCommandType.USER
         else "Message Command Details"
     )
 
@@ -99,7 +99,12 @@ def command_detail_embed(
     if isinstance(command, SlashCommand):
         embed.set_footer(text="[ required ] | ( optional )")
         if command.args:
-            args = "\n".join(f"**{arg}**: *{arg.description}*" for arg in command.args)
+            args: str = ""
+
+            for arg in command.args:
+                name = f"**[{arg.name}]**" if arg.required else f"**({arg.name})**"
+                args += f"{name}: *{arg.description}*\n"
+
             embed.add_field(name="Parameters", value=args, inline=False)
         else:
             embed.add_field(name="Parameters", value="None", inline=True)
@@ -108,7 +113,7 @@ def command_detail_embed(
 
 
 def commands_overview_embeds(
-    commands: List[AppCommand],
+    commands: List[Union[AppCommand, LocalizedAppCommand]],
     *,
     thumbnail: Optional[disnake.File] = None,
     max_field_chars: int = MAX_CHARS_PER_FIELD,
@@ -122,14 +127,16 @@ def commands_overview_embeds(
     ----------
     commands: List[AppCommand]
         List of `AppCommand` received from `AppCommandHelp.get_all_commands`
-    thumbnail: disnake.File, optional
+    thumbnail: Optional[disnake.File]
         A `disnake.File` converted image to be set as the embed thumbnail.
     max_field_chars: int
         Max number of characters per embed field description, default is MAX_CHARS_PER_FIELD (1024)
     max_fields: int
         Max number of fields per embed. default is MAX_FIELDS_PER_EMBED (10)
-    color: disnake.Color, optional
+    color: Optional[disnake.Color]
         Set the color the embed(s). Default is None
+
+
     Examples
     --------
     ```py
@@ -162,19 +169,17 @@ def commands_overview_embeds(
     current_field_chars: int = 0
 
     for command in commands:
-        command_type = (
-            "Slash Command"
-            if isinstance(command, SlashCommand)
-            else "User Command"
-            if isinstance(command, UserCommand)
-            else "Message Command"
+        type_ = (
+            "Slash Command Details"
+            if command.type is AppCommandType.SLASH
+            else "User Command Details"
+            if command.type is AppCommandType.USER
+            else "Message Command Details"
         )
 
         nsfw = "*(NSFW)*" if command.nsfw else ""
 
-        command_lines = (
-            f"{command.mention} *({command_type})* {nsfw}\n" f"{command.description}\n\n"
-        )
+        command_lines = f"{command.mention} *({type_})* {nsfw}\n" f"{command.description}\n\n"
 
         if current_embed is None:
             title = (

@@ -9,7 +9,7 @@ in your disnake bot.
 """
 
 
-__version__ = "0.2.1"
+__version__ = "0.3.3"
 
 
 from .helply import Helply

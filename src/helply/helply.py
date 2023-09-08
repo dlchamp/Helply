@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Union, overload
 
 import disnake
 import disnake.app_commands
@@ -9,14 +9,25 @@ from .types import (
     AppCommandType,
     Argument,
     CommandChecks,
+    LocalizedAppCommand,
     MessageCommand,
     SlashCommand,
     UserCommand,
 )
 
+if TYPE_CHECKING:
+    from .types.abc_ import AppCommandBase
+
+
 Bot = Union[
     commands.Bot,
     commands.InteractionBot,
+    commands.AutoShardedBot,
+    commands.AutoShardedInteractionBot,
+]
+
+APIApplicationCommand = Union[
+    disnake.APIMessageCommand, disnake.APISlashCommand, disnake.APIUserCommand
 ]
 
 
@@ -36,6 +47,8 @@ class Helply:
 
         if commands_to_ignore is not None:
             self.commands_to_ignore: set[str] = set(commands_to_ignore)
+        else:
+            self.commands_to_ignore = set()
 
         self._app_commands: Dict[int, AppCommand] = {}
 
@@ -63,7 +76,13 @@ class Helply:
                 continue
 
             args.append(
-                Argument(name=option.name, required=option.required, description=option.description)
+                Argument(
+                    name=option.name,
+                    name_localizations=option.name_localizations,
+                    description=option.description,
+                    description_localizations=option.description_localizations,
+                    required=option.required,
+                )
             )
 
         return args
@@ -147,9 +166,11 @@ class Helply:
                         id=command_id,
                         name=name,
                         description=desc,
+                        name_localizations=command.name_localizations,
+                        description_localizations=command.description_localizations,
                         args=args,
                         checks=checks,
-                        type=AppCommandType.slash,
+                        type=AppCommandType.SLASH,
                         dm_permission=dm_permissions,
                         nsfw=nsfw,
                         category=category,
@@ -248,9 +269,11 @@ class Helply:
                 id=command.id,
                 name=command.name,
                 description=desc,
+                name_localizations=command.name_localizations,
+                description_localizations=command.description_localizations,
                 args=args,
                 checks=checks,
-                type=AppCommandType.slash,
+                type=AppCommandType.SLASH,
                 dm_permission=command.dm_permission,
                 nsfw=command.nsfw,
                 guild_id=command.guild_id,
@@ -285,13 +308,14 @@ class Helply:
         return MessageCommand(
             id=command.id,
             name=command.name,
-            checks=checks,
-            type=AppCommandType.message,
             description=desc,
+            name_localizations=command.name_localizations,
+            checks=checks,
+            type=AppCommandType.MESSAGE,
             dm_permission=command.dm_permission,
             nsfw=command.nsfw,
             guild_id=command.guild_id,
-            default_member_permissions=command.default_member_permissions,
+            default_member_permissions=invokable.default_member_permissions,
             category=category,
         )
 
@@ -320,13 +344,14 @@ class Helply:
         return UserCommand(
             id=command.id,
             name=command.name,
-            type=AppCommandType.user,
-            checks=checks,
             description=desc,
+            name_localizations=command.name_localizations,
+            checks=checks,
+            type=AppCommandType.USER,
             dm_permission=command.dm_permission,
             nsfw=command.nsfw,
             guild_id=command.guild_id,
-            default_member_permissions=command.default_member_permissions,
+            default_member_permissions=invokable.default_member_permissions,
             category=category,
         )
 
@@ -343,7 +368,7 @@ class Helply:
         Returns
         -------
         str
-            `Cog's` name or str value set in `.extras['category']` or 'None'
+            Command's cog_name or value of extras['catetory'], else "None"
 
         """
         name = invokable.cog_name or invokable.extras.get("category")
@@ -377,14 +402,42 @@ class Helply:
                 if user_command:
                     self._app_commands[user_command.id] = user_command
 
-    def get_all_commands(
+    @overload
+    def get_commands(
         self,
         guild_id: Optional[int] = None,
         *,
+        category: Optional[str] = None,
         permissions: Optional[disnake.Permissions] = None,
         include_nsfw: bool = True,
         dm_only: bool = False,
+        locale: disnake.Locale,
+    ) -> List[LocalizedAppCommand]:
+        ...
+
+    @overload
+    def get_commands(
+        self,
+        guild_id: Optional[int] = None,
+        *,
+        category: Optional[str] = None,
+        permissions: Optional[disnake.Permissions] = None,
+        include_nsfw: bool = True,
+        dm_only: bool = False,
+        locale: None = None,
     ) -> List[AppCommand]:
+        ...
+
+    def get_commands(
+        self,
+        guild_id: Optional[int] = None,
+        *,
+        category: Optional[str] = None,
+        permissions: Optional[disnake.Permissions] = None,
+        include_nsfw: bool = True,
+        dm_only: bool = False,
+        locale: Optional[disnake.Locale] = None,
+    ) -> Union[List[AppCommand], List[LocalizedAppCommand]]:
         """Retrieve a filtered list of AppCommand based on specified criteria.
 
         By default, this method should return all registered commands. Specify filters
@@ -395,6 +448,8 @@ class Helply:
         guild_id : Optional[int]
             Filter commands registered to the specified guild_id.  If not specified,
             all commands may be returned.
+        category: Optional[str]
+            Filter commands by only a specified category
         permissions: Optional[disnake.Permissions]
             Filter commands that do not exceed permissions. If not specified,
             commands will not be filtered by permissions.
@@ -406,19 +461,26 @@ class Helply:
             Whether or not to include only commands with direct message enabled.
             !!! Note
                 Should not specify `guild_id` or `permissions` if setting this to True
+        locale: Optional[disnake.Locale]
+            Specify locale to get localized commands and arguments.
+
 
         Returns
         -------
-        List[AppCommand]
-            Resulting list of AppCommands after filters have been applied.
+        Union[List[AppCommand], List[LocalizedAppCommand]]
+            Resulting list of `AppCommand` or `LocalizedAppCommand`, if locale specified,
+            after filters have been applied.
         """
 
         if not self._app_commands:
             self._walk_app_commands()
 
-        commands: List[AppCommand] = []
+        commands: List[AppCommandBase] = []
 
         for command in self._app_commands.values():
+            if category and command.category != category:
+                continue
+
             if guild_id and command.guild_id and command.guild_id != guild_id:
                 continue
 
@@ -438,19 +500,77 @@ class Helply:
             if not include_nsfw and command.nsfw:
                 continue
 
+            if locale:
+                command = command.localize(locale)
+
             commands.append(command)
 
-        return commands
+        return commands  # type: ignore - I don't know how to fix this yet ;)
+
+    @overload
+    def get_command(self, id: int, locale: None = None) -> Optional[AppCommand]:
+        ...
+
+    @overload
+    def get_command(self, id: int, locale: disnake.Locale) -> Optional[LocalizedAppCommand]:
+        ...
+
+    def get_command(
+        self, id: int, locale: Optional[disnake.Locale] = None
+    ) -> Optional[Union[AppCommand, LocalizedAppCommand]]:
+        """Get a command by its ID
+
+        Parameters
+        ----------
+        id: int
+            ID of the AppCommand
+        locale: Optional[disnake.Locale]
+            Specify locale to get a localized command instead.
+
+        Returns
+        --------
+        Optional[Union[AppCommand, LocalizedAppCommand]]
+            The retrieved `AppCommand` or `LocalizedAppCommand` if locale specified.
+        """
+        command = self._app_commands.get(id)
+        if locale and command:
+            command = command.localize(locale)
+
+        return command
+
+    @overload
+    def get_command_named(
+        self,
+        name: str,
+        locale: None = None,
+        cmd_type: Optional[AppCommandType] = None,
+    ) -> Optional[AppCommand]:
+        ...
+
+    @overload
+    def get_command_named(
+        self,
+        name: str,
+        locale: disnake.Locale,
+        cmd_type: Optional[AppCommandType] = None,
+    ) -> Optional[LocalizedAppCommand]:
+        ...
 
     def get_command_named(
-        self, name: str, cmd_type: Optional[AppCommandType] = None
-    ) -> Optional[AppCommand]:
-        """Get a command by its name.
+        self,
+        name: str,
+        locale: Optional[disnake.Locale] = None,
+        cmd_type: Optional[AppCommandType] = None,
+    ) -> Optional[Union[AppCommand, LocalizedAppCommand]]:
+        """Get a command by its name. if locale is provided, the provided name should
+        match the localized name.
 
         Parameters
         ----------
         name : str
             Name of the ApplicationCommand.
+        locale: Optional[disnake.Locale]
+            Specify locale to get a localized command and arguments.
         cmd_type: Optional[AppCommandType]
             Specify the type of command to be returned. If not specified, the first matching
             command will be returned regardless of its type.
@@ -458,38 +578,54 @@ class Helply:
 
         Returns
         -------
-        Optional[AppCommand]
+        Optional[Union[AppCommand, LocalizedAppCommand]]
             The command that matches the provided name, if found.
         """
         for command in self._app_commands.values():
+            if locale:
+                command = command.localize(locale)
+
             if command.name == name and (cmd_type is None or command.type is cmd_type):
                 return command
 
-    def get_command(self, id: int) -> Optional[AppCommand]:
-        """Get a command by its ID
-
-        Parameters
-        ----------
-        id: int
-            ID of the AppCommand
-
-        Returns
-        --------
-        Optional[AppCommand]
-            The retrieved AppCommand or None of not found.
-        """
-        return self._app_commands.get(id)
-
+    @overload
     def get_commands_by_category(
         self,
         category: str,
         *,
+        locale: disnake.Locale,
+        guild_id: Optional[int] = None,
+        permissions: Optional[disnake.Permissions] = None,
+        include_nsfw: bool = True,
+        dm_only: bool = False,
+    ) -> List[LocalizedAppCommand]:
+        ...
+
+    @overload
+    def get_commands_by_category(
+        self,
+        category: str,
+        *,
+        locale: None = None,
         guild_id: Optional[int] = None,
         permissions: Optional[disnake.Permissions] = None,
         include_nsfw: bool = True,
         dm_only: bool = False,
     ) -> List[AppCommand]:
-        """Retrieve a filtered list of AppCommand based on specified criteria within a category.
+        ...
+
+    def get_commands_by_category(
+        self,
+        category: str,
+        *,
+        locale: Optional[disnake.Locale] = None,
+        guild_id: Optional[int] = None,
+        permissions: Optional[disnake.Permissions] = None,
+        include_nsfw: bool = True,
+        dm_only: bool = False,
+    ) -> Union[List[AppCommand], List[LocalizedAppCommand]]:
+        """Retrieve a list of `AppCommand` or `LocalizedAppCommand`, if locale specified
+        within the specified category.
 
         By default, this method should return all registered commands within a category.
         Specify filters to narrow down the output results.
@@ -498,6 +634,8 @@ class Helply:
         ----------
         category: str
             Category for which commands are in.
+        locale: Optional[disnake.Locale]
+            Include locale to get localized commands.
         guild_id : Optional[int]
             Filter commands registered to the specified guild_id.  If not specified,
             all commands may be returned.
@@ -515,17 +653,19 @@ class Helply:
 
         Returns
         --------
-        List[AppCommand]
-            A list of commands within the specified group name.
+        Union[List[AppCommand], List[LocalizedAppCommand]]
+            A list of commands within the specified category name.
+            If locale provided, a list of LocalizedAppCommand will be returned instead
 
         """
-        commands = self.get_all_commands(
+        return self.get_all_commands(
             guild_id,
+            category=category,
             permissions=permissions,
             include_nsfw=include_nsfw,
             dm_only=dm_only,
+            locale=locale,
         )
-        return [command for command in commands if command.category == category]
 
     def get_categories(
         self,
@@ -535,10 +675,10 @@ class Helply:
         include_nsfw: bool = True,
         dm_only: bool = False,
     ) -> List[str]:
-        """Return a unique list of command group names.
+        """Return a unique list of command categories.
 
         Useful if you wish to have an autocomplete for users to select from available
-        command groups
+        command categories.
 
         Parameters
         ----------
@@ -558,7 +698,7 @@ class Helply:
                 Should not specify `guild_id` or `permissions` if setting this to True
 
         Example:
-        ```py
+        ```python
         @some_command.autocomplete('category')
         async def some_command_group_autocomplete(
             inter: disnake.ApplicationCommandInteraction, string: str
@@ -586,20 +726,69 @@ class Helply:
 
         return categories
 
-    def get_dm_only_commands(self, *, include_nsfw: bool = False) -> List[AppCommand]:
+    @overload
+    def get_dm_only_commands(
+        self,
+        *,
+        include_nsfw: bool = False,
+        locale: None = None,
+    ) -> List[AppCommand]:
+        ...
+
+    @overload
+    def get_dm_only_commands(
+        self,
+        *,
+        include_nsfw: bool = False,
+        locale: disnake.Locale,
+    ) -> List[LocalizedAppCommand]:
+        ...
+
+    def get_dm_only_commands(
+        self,
+        *,
+        include_nsfw: bool = False,
+        locale: Optional[disnake.Locale] = None,
+    ) -> Union[List[AppCommand], List[LocalizedAppCommand]]:
         """A shortcut method for returning only commands with direct message enabled.
 
         Parameters
         ----------
         include_nsfw: bool
             Whether or not to include NSFW commands.
+        locale: Optional[disnake.Locale]
+            Include local to get localized commands.
+
 
         Returns
         -------
-        List[AppCommand]
-            A list of commands with `.dm_permissions` set to True
+        Union[List[AppCommand], List[LocalizedAppCommand]]]
+            A list of `AppCommand`, or `LocalizedAppCommand` if locale specified, where
+            dm_permission = True
         """
-        return self.get_all_commands(dm_only=True, include_nsfw=include_nsfw)
+        return self.get_all_commands(dm_only=True, locale=locale, include_nsfw=include_nsfw)
+
+    @overload
+    def get_guild_commands(
+        self,
+        guild_id: int,
+        *,
+        include_nsfw: bool = False,
+        permissions: Optional[disnake.Permissions] = None,
+        locale: None = None,
+    ) -> List[AppCommand]:
+        ...
+
+    @overload
+    def get_guild_commands(
+        self,
+        guild_id: int,
+        *,
+        include_nsfw: bool = False,
+        permissions: Optional[disnake.Permissions] = None,
+        locale: disnake.Locale,
+    ) -> List[LocalizedAppCommand]:
+        ...
 
     def get_guild_commands(
         self,
@@ -607,8 +796,9 @@ class Helply:
         *,
         include_nsfw: bool = False,
         permissions: Optional[disnake.Permissions] = None,
-    ) -> List[AppCommand]:
-        """This method returns global and guild-specific commands available to a guild.
+        locale: Optional[disnake.Locale] = None,
+    ) -> Union[List[AppCommand], List[LocalizedAppCommand]]:
+        """A shortcut method to returning global and guild-specific commands.
 
         !!! Note
             Including `permissions` will restrict the command list to prevent commands hidden by
@@ -622,8 +812,18 @@ class Helply:
         permissions: Optional[disnake.Permissions]
             Set the permission limit of the resulting commands.  Any commands that exceed specified
             permissions will be omitted
+        locale: Optional[disnake.Locale]
+            Specify locale to get localized commands and arguments.
+
+        Returns
+        -------
+        Union[List[AppCommand], List[LocalizedAppCommand]]
+            A list of `AppCommand`, or `LocalizedAppCommand` if locale specified, where
+            guild_id is not specified (global) or guild_id matches the specified guild_id.
         """
-        return self.get_all_commands(guild_id, include_nsfw=include_nsfw, permissions=permissions)
+        return self.get_all_commands(
+            guild_id, locale=locale, include_nsfw=include_nsfw, permissions=permissions
+        )
 
     @staticmethod
     def roles_from_checks(checks: CommandChecks, guild: disnake.Guild) -> List[disnake.Role]:

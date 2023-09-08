@@ -1,0 +1,16 @@
+{
+    "HIGHSCORE_COMMAND_NAME": "puntuación",
+    "HIGHSCORE_COMMAND_DESCRIPTION": "Muestra la puntuación récord del usuario en el período elegido.",
+    "HIGHSCORE_USER_NAME": "usuario",
+    "HIGHSCORE_USER_DESCRIPTION": "Usuario cuya puntuación se mostrará.",
+    "HIGHSCORE_GAME_NAME": "juego",
+    "HIGHSCORE_GAME_DESCRIPTION": "Juego para filtrar las puntuaciones.",
+    "HIGHSCORE_RANGE_NAME": "período",
+    "HIGHSCORE_RANGE_DESCRIPTION": "Período para calcular la puntuación récord.",
+    "CHOICE_DAY": "Último día",
+    "CHOICE_WEEK": "Última semana",
+    "CHOICE_MONTH": "Último mes",
+    "GAME_TIC-TAC-TOE": "Tres en raya",
+    "GAME_CHESS": "Ajedrez",
+    "GAME_RISK": "Riesgo"
+}

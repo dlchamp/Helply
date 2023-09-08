@@ -16,12 +16,20 @@ nav:
 
 
 
+
 theme:
   favicon: assets/favicon.svg
   name: material
   features:
+  - content.code.copy
+  - navigation.sections
   - navigation.tabs
   - navigation.top
+  - search.share
+  - search.suggest
+  font:
+    text: Roboto
+    code: Roboto Mono
   palette:
   - media: "(prefers-color-scheme: light)"
     scheme: default
@@ -39,29 +47,22 @@ theme:
       name: Switch to light mode
 
 
-extra_css:
-  - css/material.css
-  - css/mkdocstrings.css
-  # - css/logo.css
-
-
 markdown_extensions:
   - pymdownx.superfences
-  - pymdownx.details
-  - pymdownx.tilde
-  - pymdownx.emoji
-  - mdx_truly_sane_lists
-  - tables
-  - def_list
   - admonition
   - attr_list
   - md_in_html
+  - toc:
+      permalink: true
 
 
 
 plugins:
-  - search
-  - autorefs
+  - search:
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - minify:
+      minify_html: true
+
   - gen-files:
       scripts:
       - docs/gen_raf_nav.py
