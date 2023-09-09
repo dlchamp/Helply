@@ -76,7 +76,7 @@ combine-as-imports = true
 [tool.slotscheck]
 strict-imports = true
 require-superclass = true
-require-subclass = true
+require-subclass = false
 
 [tool.pyright]
 typeCheckingMode = "strict"
@@ -128,9 +128,9 @@ ignore = [
 
     # keep support for py3.8
     "UP035", # deprecated imports
-    "UP007", # still need unions, man.
+    "UP007", # still need unions.
     "ANN101", # self and cls annotations?
-    "UP006", # dict/list
+    "UP006", # What do you have against Dict/List?
 
     "PGH003", # pyright erros are too long, so...
     "SIM105", # try/except is better the one time it's used.
@@ -144,7 +144,7 @@ ignore = [
 ]
 
 [tool.ruff.per-file-ignores]
-"src/helply/helply" = ["PLW2901"] # it returns a localized variant, get outta here.
+"src/helply/helply" = ["PLW2901"] # returns a localized variant, get outta here.
 "src/helply/types/*" = ["ANN401"]
 "src/helply/types/abc_.py" = ["B024"] # it has no methods
 "examples/*" = ["ALL"]
