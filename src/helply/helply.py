@@ -1,3 +1,7 @@
+"""# Helply
+
+Handles the creation and storing of the app commands and provides the methods to retrive them
+"""
 from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Union, overload
 
 import disnake
@@ -42,6 +46,12 @@ class Helply:
     commands_to_ignore: Iterable[str]
         Provide a list of command names to ignore when walking all app commands.
     """
+
+    __slots__ = (
+        "bot",
+        "commands_to_ignore",
+        "_app_commands",
+    )
 
     def __init__(self, bot: Bot, commands_to_ignore: Optional[Sequence[str]] = None) -> None:
         self.bot = bot
@@ -90,7 +100,7 @@ class Helply:
 
     def _get_command_desc(
         self,
-        command: commands.InvokableSlashCommand,
+        command: commands.InvokableApplicationCommand,
     ) -> str:
         """Get the description for a command.
 
@@ -104,25 +114,27 @@ class Helply:
         str
             The description of the command.
         """
-        return command.extras.get("help", "") or command.description
+        extras = command.extras.get("help")
+        description = getattr(command, "description", "-")
+
+        return extras or description
 
     def _parse_cooldowns(
         self,
         command: Union[commands.InvokableApplicationCommand, commands.SubCommand],
     ) -> Optional[Cooldown]:
-        """Parses the configured cooldown for an ApplicationCommand and returns the Cooldown
+        """Parse the configured cooldown for an ApplicationCommand.
 
         Parameters
         ----------
         command: Union[commands.InvokableApplicationCommand, commands.SubCommand]
             The application command to parse cooldowns from.
 
-        Retruns
+        Returns
         -------
         Optional[Cooldown]
-            Returns the Cooldown if configured, else None
+            Return the Cooldown if configured, else None
         """
-
         cooldown = command._buckets._cooldown  # type: ignore
         if cooldown is None:
             return None
@@ -169,10 +181,11 @@ class Helply:
         elif parent_command:
             original_command = parent_command
         else:
-            raise ValueError(
+            msg = (
                 "Invalid input. Either command must be an instance of `disnake.APISlashCommand"
                 "or parent_command must be provided."
             )
+            raise ValueError(msg)
 
         for option in command.options:
             name = (
@@ -232,7 +245,6 @@ class Helply:
             A NamedTuple containing a list of permissions and/or role names or IDs
             required to invoke the command.
         """
-
         permissions: List[str] = []
         roles: List[Union[str, int]] = []
 
@@ -333,7 +345,7 @@ class Helply:
         """
         invokable = self.bot.get_message_command(command.name)
         if invokable is None:
-            return
+            return invokable
 
         checks = self._parse_checks(invokable)
         cooldown = self._parse_cooldowns(invokable)
@@ -371,7 +383,7 @@ class Helply:
         invokable = self.bot.get_user_command(command.name)
 
         if invokable is None:
-            return
+            return invokable
 
         checks = self._parse_checks(invokable)
         cooldown = self._parse_cooldowns(invokable)
@@ -504,8 +516,7 @@ class Helply:
             !!! Note
                 Should not specify `guild_id` or `permissions` if setting this to True
         locale: Optional[disnake.Locale]
-            Specify locale to get localized commands and arguments.
-
+            Specify locale to get localized commands and arguments, where available.
 
         Returns
         -------
@@ -513,7 +524,6 @@ class Helply:
             Resulting list of `AppCommand` or `LocalizedAppCommand`, if locale specified,
             after filters have been applied.
         """
-
         if not self._app_commands:
             self._walk_app_commands()
 
@@ -543,7 +553,7 @@ class Helply:
                 continue
 
             if locale:
-                command = command.localize(locale)
+                command = command.localize(locale)  # noqa: PLW2901
 
             if command not in commands:
                 commands.append(command)
@@ -574,7 +584,7 @@ class Helply:
             Specify locale to get a localized command instead.
 
         Returns
-        --------
+        -------
         Optional[Union[AppCommand, LocalizedAppCommand]]
             The retrieved `AppCommand` or `LocalizedAppCommand` if locale specified.
         """
@@ -628,10 +638,10 @@ class Helply:
             The command that matches the provided name, if found.
         """
         for command in self._app_commands.values():
-            if locale:
-                command = command.localize(locale)
-
             if command.name == name and (cmd_type is None or command.type is cmd_type):
+                if locale:
+                    return command.localize(locale)
+
                 return command
 
     @overload
@@ -698,7 +708,7 @@ class Helply:
                 Should not specify `guild_id` or `permissions` if setting this to True
 
         Returns
-        --------
+        -------
         Union[List[AppCommand], List[LocalizedAppCommand]]
             A list of commands within the specified category name.
             If locale provided, a list of LocalizedAppCommand will be returned instead
@@ -796,7 +806,7 @@ class Helply:
         include_nsfw: bool = False,
         locale: Optional[disnake.Locale] = None,
     ) -> Union[List[AppCommand], List[LocalizedAppCommand]]:
-        """A shortcut method for returning only commands with direct message enabled.
+        """Return only commands with dm_permission set to True.
 
         Parameters
         ----------
@@ -844,13 +854,14 @@ class Helply:
         permissions: Optional[disnake.Permissions] = None,
         locale: Optional[disnake.Locale] = None,
     ) -> Union[List[AppCommand], List[LocalizedAppCommand]]:
-        """A shortcut method to returning global and guild-specific commands.
+        """Return commands where guild_id is None or guild_id matches specified guild_id.
 
         !!! Note
             Including `permissions` will restrict the command list to prevent commands hidden by
             default_command_permissions from appearing to the command author.
 
         Parameters
+        ----------
         guild_id: int
             ID for the guild for which guild-specific command are registered.
         include_nsfw: bool

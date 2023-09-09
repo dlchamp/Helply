@@ -1,4 +1,5 @@
-from typing import List, Optional
+"""Localized variants of Helply app command types"""
+from typing import Any, List, Optional
 
 from disnake import Permissions
 
@@ -16,7 +17,7 @@ __all__ = (
 
 
 class LocalizedArgument(ArgumentBase):
-    """Represents a slash command argument with localized attributes
+    """Represents a slash command argument with localized attributes.
 
     Attributes
     ----------
@@ -33,7 +34,7 @@ class LocalizedArgument(ArgumentBase):
 
 
 class LocalizedAppCommand(AppCommandBase):
-    """Represents an AppCommand with localized attributes
+    """Represents an AppCommand with localized attributes.
 
     Attributes
     ----------
@@ -60,8 +61,10 @@ class LocalizedAppCommand(AppCommandBase):
     default_member_permissions : Optional[Permissions]
         Default member permissions required to use this command.
     mention : str
-        Get the command as a mentionable if slash command, else returns bolded name.
+        Get the command as a mentionable if slash command, else return bolded name.
     """
+
+    __slots__ = ("_name",)
 
     def __init__(
         self,
@@ -96,15 +99,29 @@ class LocalizedAppCommand(AppCommandBase):
 
     @property
     def mention(self) -> str:
-        """Returns the mentionable command if slash type, else bolded name"""
+        """Return clickable mention if slash, else bolded name."""
         if self.type is AppCommandType.SLASH:
             return f"</{self._name}:{self.id}>"
 
         return f"**{self._name}**"
 
+    def __eq__(self, other: Any) -> bool:
+        """Return True if self == other, else False"""
+        if not isinstance(other, self.__class__):
+            return False
+
+        return self.id == other.id or (
+            self._name in (other.name, other._name)
+            and self.type == other.type
+            and self.category == other.category
+            and self.nsfw == other.nsfw
+            and self.default_member_permissions == other.default_member_permissions
+            and self.cooldown == other.cooldown
+        )
+
 
 class LocalizedSlashCommand(LocalizedAppCommand):
-    """Represents a slash command type AppCommand
+    """Represents a slash command type AppCommand.
 
     Attributes
     ----------
@@ -135,6 +152,8 @@ class LocalizedSlashCommand(LocalizedAppCommand):
     mention : str
         Get the command as selectable tag.
     """
+
+    __slots__ = ("args",)
 
     def __init__(
         self,
@@ -167,13 +186,13 @@ class LocalizedSlashCommand(LocalizedAppCommand):
             default_member_permissions=default_member_permissions,
         )
 
-        self.args: List[LocalizedArgument] = args
+        self.args: list[LocalizedArgument] = args
 
 
 class LocalizedUserCommand(LocalizedAppCommand):
     """Represents a UserCommand with localized attributes.
 
-        Attributes
+    Attributes
     ----------
     id : int
         The command's unique identifier.
@@ -199,7 +218,6 @@ class LocalizedUserCommand(LocalizedAppCommand):
         Default member permissions required to use this command.
     mention : str
         Get the command name, bolded.
-
     """
 
     def __init__(
@@ -234,9 +252,9 @@ class LocalizedUserCommand(LocalizedAppCommand):
 
 
 class LocalizedMessageCommand(LocalizedAppCommand):
-    """Represents a MessageCommand with localized attributes
+    """Represents a MessageCommand with localized attributes.
 
-        Attributes
+    Attributes
     ----------
     id : int
         The command's unique identifier.

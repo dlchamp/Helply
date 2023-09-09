@@ -1,4 +1,6 @@
-from abc import ABC
+"""Base classes for the types used within Helply."""
+
+from abc import ABC, abstractmethod, abstractproperty
 from typing import Any, Optional
 
 from disnake import Permissions
@@ -25,6 +27,12 @@ class ArgumentBase(ABC):
         Whether or not the argument is required
     """
 
+    __slots__ = (
+        "name",
+        "description",
+        "required",
+    )
+
     def __init__(self, name: str, description: str, required: bool) -> None:
         self.name = name
         self.description = description
@@ -32,7 +40,7 @@ class ArgumentBase(ABC):
 
 
 class AppCommandBase(ABC):
-    """Base class for AppCommand and LocalizedAppCommand
+    """Base class for AppCommand and LocalizedAppCommand.
 
     AppCommands are classes that include various attributes from both
     `.ApplicationCommand` and `.InvokableApplicationCommand`
@@ -62,8 +70,22 @@ class AppCommandBase(ABC):
     default_member_permissions : Permissions, optional
         Default member permissions required to use this command.
     mention : str
-        Get the command as a mentionable if slash command, else returns bolded name.
+        Get the command as a mentionable if slash command, else return bolded name.
     """
+
+    __slots__ = (
+        "id",
+        "name",
+        "description",
+        "checks",
+        "type",
+        "category",
+        "dm_permission",
+        "nsfw",
+        "cooldown",
+        "guild_id",
+        "default_member_permissions",
+    )
 
     def __init__(
         self,
@@ -91,20 +113,12 @@ class AppCommandBase(ABC):
         self.guild_id: Optional[int] = guild_id
         self.default_member_permissions: Optional[Permissions] = default_member_permissions
 
-    @property
+    @abstractproperty
     def mention(self) -> str:
-        if self.type is AppCommandType.SLASH:
-            return f"</{self.name}:{self.id}>"
-        return f"**{self.name}**"
+        """Return clickable mention if slash, else bolded name."""
+        ...
 
+    @abstractmethod
     def __eq__(self, other: Any) -> bool:
-        if not isinstance(other, self.__class__):
-            return False
-
-        return (
-            self.name == other.name
-            and self.type == other.type
-            and self.category == other.category
-            and self.nsfw == other.nsfw
-            and self.default_member_permissions == other.default_member_permissions
-        )
+        """Return True if self == other, else False"""
+        ...
