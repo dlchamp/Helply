@@ -135,7 +135,7 @@ async def help_command(inter: disnake.ApplicationCommandInteraction):
 
 For more examples and documentation, please visit the following links:
 
-- [Example](https://dlchamp.github.io/Helply/examples/simple/)
+- [Examples](https://github.com/dlchamp/Helply/blob/main/examples/)
 - [Docs](https://dlchamp.github.io/Helply/)
 - You may also join the [discord](https://discord.gg/nmwaDS35sC) to get support or just chat.
 
