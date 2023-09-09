@@ -6,13 +6,14 @@ multiple embeds.
     This can be used for pretty much any list of
     [disnake.Embed](https://docs.disnake.dev/en/latest/api/messages.html#disnake.Embed)
 """
+from __future__ import annotations
+
 from typing import List, Optional
 
 import disnake
 
 
 class Paginator(disnake.ui.View):
-
     """Provides a basic paginator View that allows users to navigate over multiple embeds.
 
     Inspired by the paginator.py example provided by
@@ -52,7 +53,7 @@ class Paginator(disnake.ui.View):
         self._update_state()
 
     async def on_timeout(self) -> None:
-        """Executed when the View has timed out.
+        """Call when Paginator has timed out.
 
         Requires a Paginator.message to be set and timeout to not be `None`
 
@@ -72,8 +73,9 @@ class Paginator(disnake.ui.View):
                 pass
 
     async def interaction_check(self, interaction: disnake.MessageInteraction) -> bool:
-        """A check that is performed when any button in this view is interacted with
+        """Check if interaction.author is allowed to interact.
 
+        If no member is provided to Paginator, this check always returns True
 
         Parameters
         ----------
@@ -105,36 +107,46 @@ class Paginator(disnake.ui.View):
         self._last_page.disabled = self._next_page.disabled = self.index == len(self.embeds) - 1
 
     @disnake.ui.button(label="First Page", style=disnake.ButtonStyle.primary)
-    async def _first_page(self, _, inter: disnake.MessageInteraction) -> None:
-        """Jump to the first embed"""
+    async def _first_page(
+        self, _: disnake.ui.Button[Paginator], inter: disnake.MessageInteraction
+    ) -> None:
+        """Jump to the first embed."""
         self.index = 0
         self._update_state()
 
         await inter.response.edit_message(embed=self.embeds[self.index], view=self)
 
     @disnake.ui.button(label="Prev Page", style=disnake.ButtonStyle.primary)
-    async def _prev_page(self, _, inter: disnake.MessageInteraction) -> None:
-        """Go back one page"""
+    async def _prev_page(
+        self, _: disnake.ui.Button[Paginator], inter: disnake.MessageInteraction
+    ) -> None:
+        """Go back one page."""
         self.index -= 1
         self._update_state()
 
         await inter.response.edit_message(embed=self.embeds[self.index], view=self)
 
     @disnake.ui.button(label="", style=disnake.ButtonStyle.primary, disabled=True)
-    async def _page_counter(self, _, inter: disnake.MessageInteraction) -> None:
-        """Just a page counter and cannot be interacted with"""
+    async def _page_counter(
+        self, _: disnake.ui.Button[Paginator], inter: disnake.MessageInteraction
+    ) -> None:
+        """Just a page counter and cannot be interacted with."""
 
     @disnake.ui.button(label="Next Page", style=disnake.ButtonStyle.primary)
-    async def _next_page(self, _, inter: disnake.MessageInteraction) -> None:
-        """Go to next page"""
+    async def _next_page(
+        self, _: disnake.ui.Button[Paginator], inter: disnake.MessageInteraction
+    ) -> None:
+        """Go to next page."""
         self.index += 1
         self._update_state()
 
         await inter.response.edit_message(embed=self.embeds[self.index], view=self)
 
     @disnake.ui.button(label="Last Page", style=disnake.ButtonStyle.primary)
-    async def _last_page(self, _, inter: disnake.MessageInteraction) -> None:
-        """Go to last page"""
+    async def _last_page(
+        self, _: disnake.ui.Button[Paginator], inter: disnake.MessageInteraction
+    ) -> None:
+        """Go to last page."""
         self.index = len(self.embeds) - 1
         self._update_state()
 

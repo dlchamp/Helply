@@ -1,7 +1,5 @@
-"""
-Embeds module adds some pre-configured embeds to streamline the creation of your help command
-"""
-from typing import List, Optional, Union
+"""Embeds module adds some pre-configured embeds to streamline the creation of your help command."""
+from typing import Optional, Union
 
 import disnake
 
@@ -107,7 +105,7 @@ def command_detail_embed(
         roles_as_string = f"**Required Roles**:\n{role_checks}"
         embed.add_field(name="Required Role(s)", value=roles_as_string, inline=True)
 
-    if isinstance(command, (SlashCommand, LocalizedSlashCommand)):
+    if isinstance(command, SlashCommand | LocalizedSlashCommand):
         embed.set_footer(text="[ required ] | ( optional )")
         if command.args:
             args: str = ""
@@ -124,14 +122,14 @@ def command_detail_embed(
 
 
 def commands_overview_embeds(
-    commands: List[Union[AppCommand, LocalizedAppCommand]],
+    commands: list[Union[AppCommand, LocalizedAppCommand]],
     *,
     thumbnail: Optional[disnake.File] = None,
     max_field_chars: int = MAX_CHARS_PER_FIELD,
     max_fields: int = MAX_FIELDS_PER_EMBED,
     color: Optional[disnake.Color] = None,
     category: str = "",
-) -> List[disnake.Embed]:
+) -> list[disnake.Embed]:
     """Create and return one or more embeds containing all commands and descriptions.
 
     Parameters
@@ -163,18 +161,17 @@ def commands_overview_embeds(
     ```
 
     Returns
-    ------
+    -------
     List[disnake.Embed]
         A list of disnake.Embed containing an overview of the commands.
     """
-
     if max_field_chars > MAX_CHARS_PER_FIELD:
         max_field_chars = MAX_CHARS_PER_FIELD
 
     if max_fields > MAX_FIELDS_PER_EMBED:
         max_fields = MAX_FIELDS_PER_EMBED
 
-    embeds: List[disnake.Embed] = []
+    embeds: list[disnake.Embed] = []
     current_embed: Optional[disnake.Embed] = None
     current_field: str = ""
     current_field_chars: int = 0
@@ -190,7 +187,7 @@ def commands_overview_embeds(
 
         nsfw = "*(NSFW)*" if command.nsfw else ""
 
-        command_lines = f"{command.mention} *({type_})* {nsfw}\n" f"{command.description}\n\n"
+        command_lines = f"{command.mention} *({type_})* {nsfw}\n{command.description}\n\n"
 
         if current_embed is None:
             title = (

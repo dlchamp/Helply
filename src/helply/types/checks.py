@@ -1,3 +1,4 @@
+"""Checks and Cooldowns used with Helply attributes"""
 from typing import List, NamedTuple, Union
 
 __all__ = (
@@ -22,7 +23,7 @@ class CommandChecks(NamedTuple):
 
 
 class Cooldown(NamedTuple):
-    """Represents a commands.Cooldown
+    """Represents a commands.Cooldown.
 
     (*New in version: 0.4.0*)
 

@@ -1,3 +1,4 @@
+"""Helply AppCommand types"""
 import enum
 
 __all__ = ("AppCommandType",)
