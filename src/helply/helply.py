@@ -2,7 +2,7 @@
 
 Handles the creation and storing of the app commands and provides the methods to retrive them
 """
-from typing import Dict, List, Optional, Sequence, Union
+from typing import List, Optional, Sequence, Union
 
 import disnake
 import disnake.app_commands
@@ -56,7 +56,7 @@ class Helply:
         else:
             self.commands_to_ignore = set()
 
-        self._app_commands: Dict[int, AppCommand] = {}
+        self._app_commands: List[AppCommand] = []
 
     def _get_command_args(
         self, command: Union[disnake.APISlashCommand, disnake.Option]
@@ -202,8 +202,8 @@ class Helply:
                 invokable = self.bot.get_slash_command(name)
                 if not invokable:
                     return []
-                desc = self._get_command_desc(invokable)  # type: ignore
-                cooldown = self._parse_cooldowns(invokable)  # type: ignore
+                desc = self._get_command_desc(invokable)
+                cooldown = self._parse_cooldowns(invokable)
                 sub_commands.append(
                     SlashCommand(
                         id=command_id,
@@ -417,7 +417,7 @@ class Helply:
         Returns
         -------
         str
-            Command's cog_name or value of extras['catetory'], else "None"
+            Command's cog_name or value of extras['category'], else "None"
 
         """
         name = invokable.cog_name or invokable.extras.get("category")
@@ -437,19 +437,19 @@ class Helply:
                 continue
 
             if isinstance(command, disnake.APISlashCommand):
-                self._app_commands.update({c.id: c for c in self._handle_slash_command(command)})
+                self._app_commands.extend(self._handle_slash_command(command))
 
             elif isinstance(command, disnake.MessageCommand):
                 msg_command = self._handle_message_command(command)
 
                 if msg_command:
-                    self._app_commands[msg_command.id] = msg_command
+                    self._app_commands.append(msg_command)
 
             else:
                 user_command = self._handle_user_command(command)
 
                 if user_command:
-                    self._app_commands[user_command.id] = user_command
+                    self._app_commands.append(user_command)
 
     def get_all_commands(
         self,
@@ -502,7 +502,7 @@ class Helply:
 
         commands: List[AppCommand] = []
 
-        for command in self._app_commands.values():
+        for command in self._app_commands:
             if category and command.category != category:
                 continue
 
@@ -536,35 +536,17 @@ class Helply:
     # temporary alias - get_all_commands will be removed, eventually
     get_commands = get_all_commands
 
-    def get_command(self, id: int, locale: Optional[disnake.Locale] = None) -> Optional[AppCommand]:
-        """Get a command by its ID
-
-        Parameters
-        ----------
-        id: int
-            ID of the AppCommand
-        locale: Optional[disnake.Locale]
-            Specify locale to get a localized command instead.
-
-        Returns
-        -------
-        Optional[AppCommand]
-            The AppCommand with the specified ID.
-        """
-        command = self._app_commands.get(id)
-        if locale and command:
-            command = command.localize(locale)
-
-        return command
-
     def get_command_named(
         self,
         name: str,
         locale: Optional[disnake.Locale] = None,
         cmd_type: Optional[AppCommandType] = None,
     ) -> Optional[AppCommand]:
-        """Get a command by its name. if locale is provided, the provided name should
-        match the localized name.
+        """Get a command by its non-localized name.
+
+        !!! Note
+            When passing a locale, while the returned command will have a localized name,
+            the passed name should be the non-localized name.
 
         Parameters
         ----------
@@ -582,7 +564,7 @@ class Helply:
         Optional[AppCommand]
             The command that matches the provided name and type, if available.
         """
-        for command in self._app_commands.values():
+        for command in self._app_commands:
             if command.name == name and (cmd_type is None or command.type is cmd_type):
                 if locale:
                     return command.localize(locale)
