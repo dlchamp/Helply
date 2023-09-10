@@ -208,7 +208,7 @@ class Helply:
                     SlashCommand(
                         id=command_id,
                         name=name,
-                        _name=name,
+                        name_=name,
                         description=desc,
                         name_localizations=original_command.name_localizations,
                         description_localizations=original_command.description_localizations,
@@ -309,7 +309,7 @@ class Helply:
             SlashCommand(
                 id=command.id,
                 name=command.name,
-                _name=command.name,
+                name_=command.name,
                 description=desc,
                 name_localizations=command.name_localizations,
                 description_localizations=command.description_localizations,
@@ -352,7 +352,7 @@ class Helply:
         return MessageCommand(
             id=command.id,
             name=command.name,
-            _name=command.name,
+            name_=command.name,
             description=desc,
             name_localizations=command.name_localizations,
             checks=checks,
@@ -391,7 +391,7 @@ class Helply:
         return UserCommand(
             id=command.id,
             name=command.name,
-            _name=command.name,
+            name_=command.name,
             description=desc,
             name_localizations=command.name_localizations,
             checks=checks,
@@ -408,7 +408,8 @@ class Helply:
         """Get the command's cog or category name, if available
 
         `cog_name` would be derived from `disnake.ext.commands.Cog`, whereas
-        `category` would come from using [disnake-ext-plugins](https://github.com/DisnakeCommunity/disnake-ext-plugins)
+        `category` would come from setting extras if you're using something like
+        [disnake-ext-plugins](https://github.com/DisnakeCommunity/disnake-ext-plugins)
 
         Parameters
         ----------
@@ -542,11 +543,11 @@ class Helply:
         locale: Optional[disnake.Locale] = None,
         cmd_type: Optional[AppCommandType] = None,
     ) -> Optional[AppCommand]:
-        """Get a command by its non-localized name.
+        """Get a command by its name.
 
-        !!! Note
-            When passing a locale, while the returned command will have a localized name,
-            the passed name should be the non-localized name.
+        !!! Warning
+            When passing a locale, the provided name needs to match the localized name.
+            This works best when receiving a command name from autocomplete.
 
         Parameters
         ----------
