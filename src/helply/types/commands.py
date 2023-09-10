@@ -97,7 +97,7 @@ class AppCommand:
         if not isinstance(other, AppCommand):
             return False
 
-        return self.id == other.id or (
+        return (
             self._name == other._name
             and self.type == other.type
             and self.description == other.description
