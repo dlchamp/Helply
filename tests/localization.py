@@ -76,8 +76,7 @@ async def help_command(
 @help_command.autocomplete("command")
 async def help_command_autocomplete(inter: disnake.AppCommandInter, command: str) -> dict[str, str]:
     commands = helply.get_all_commands()
-
-    locale = disnake.Locale.de  # inter.locale
+    locale = inter.locale
 
     return {
         c.get_localized_name(locale): str(c.id)
