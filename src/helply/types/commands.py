@@ -31,7 +31,9 @@ class AppCommand:
     id : int
         The command's unique identifier.
     name: str
-        Command's  name
+        Command's name. (Can be localized)
+    name_: str
+        Command's non-localized name. (*Needed to maintain static non-localized name for mention*)
     description: str
         Command's description
     name_localizations: disnake.LocalizationValue
@@ -72,7 +74,7 @@ class AppCommand:
 
     id: int
     name: str
-    _name: str
+    name_: str
     description: str
     checks: CommandChecks
     type: AppCommandType
@@ -90,15 +92,16 @@ class AppCommand:
     def mention(self) -> str:
         """Return the clickable tag if SlashCommand, else bolded name."""
         if isinstance(self, SlashCommand):
-            return f"</{self._name}:{self.id}>"
-        return f"**{self._name}**"
+            return f"</{self.name_}:{self.id}>"
+        return f"**{self.name_}**"
 
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, AppCommand):
             return False
 
         return (
-            self._name == other._name
+            self.name == other.name
+            and self.name_ == other.name_
             and self.type == other.type
             and self.description == other.description
             and self.nsfw == other.nsfw
