@@ -43,7 +43,6 @@ isort = "^5.12.0"
 pre-commit = "^3.3.3"
 pyright = "^1.1.318"
 python-dotenv = "^1.0.0"
-slotscheck = "^0.17.0"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.5.1"
@@ -71,12 +70,6 @@ target-version = ["py38", "py39","py310","py311"]
 
 [tool.ruff.isort]
 combine-as-imports = true
-
-
-[tool.slotscheck]
-strict-imports = true
-require-superclass = true
-require-subclass = false
 
 [tool.pyright]
 typeCheckingMode = "strict"
