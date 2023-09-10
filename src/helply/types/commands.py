@@ -1,140 +1,30 @@
 """Helply command types"""
-from typing import Any, List, Optional
+from __future__ import annotations
 
-from disnake import Locale, LocalizationValue, Permissions
-
-from .abc_ import AppCommandBase, ArgumentBase
-from .checks import CommandChecks, Cooldown
-from .enums import AppCommandType
-from .localized import (
-    LocalizedAppCommand,
-    LocalizedArgument,
-    LocalizedMessageCommand,
-    LocalizedSlashCommand,
-    LocalizedUserCommand,
-)
+from dataclasses import dataclass, field
+from typing import TYPE_CHECKING, Any, List, Optional
 
 __all__ = (
-    "Argument",
     "AppCommand",
     "SlashCommand",
     "UserCommand",
     "MessageCommand",
 )
 
+if TYPE_CHECKING:
+    from disnake import Locale, LocalizationValue, Permissions
 
-class Argument(ArgumentBase):
-    """Represents a SlashCommand argument.
-
-    Attributes
-    ----------
-    name: str
-        Argument's non-localized name
-    description: str
-        Argument's non-localized description
-    required: bool
-        Whether or not the argument is required.
-    name_localizations: disnake.LocalizationValue
-        Contains localizations for the argument's name. (*New in version 0.3.0*)
-    description_localizations: disnake.LocalizationValue
-        Contains localizations for the argument's description. (*New in version 0.3.0*)
-
-    Methods
-    -------
-    get_localized_name(locale: disnake.Locale)
-        Return localized or non-localized name. (*New in version 0.3.0*)
-    get_localized_description(locale: disnake.Locale)
-        Return localized or non-localized description. (*New in version 0.3.0*)
-    localize(locale: disnake.Locale)
-        Return a LocalizedArgument (*New in version 0.3.0*)
-    """
-
-    __slots__ = (
-        "name_localizations",
-        "description_localizations",
-    )
-
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        required: bool,
-        name_localizations: LocalizationValue,
-        description_localizations: LocalizationValue,
-    ) -> None:
-        super().__init__(name=name, description=description, required=required)
-
-        self.name_localizations: LocalizationValue = name_localizations
-        self.description_localizations: LocalizationValue = description_localizations
-
-    def get_localized_name(self, locale: Locale) -> str:
-        """Return localized or non-localized name. specified by the provided locale.
-
-        If not available, return the non-localized name instead.
-
-        Parameters
-        ----------
-        locale: disnake.Local
-            The interaction locale
-
-        Returns
-        -------
-        str
-            The localized or non-localized name.
-        """
-        if not self.name_localizations or not self.name_localizations.data:
-            return self.name
-
-        return self.name_localizations.data.get(str(locale), self.name)
-
-    def get_localized_description(self, locale: Locale) -> str:
-        """Return localized or non-localized description. specified by the provided locale.
-
-        If not available, return the non-localized description instead.
-
-        Parameters
-        ----------
-        locale: disnake.Local
-            The interaction locale
-
-        Returns
-        -------
-        str
-            The localized or non-localized description.
-        """
-        if not self.description_localizations or not self.description_localizations.data:
-            return self.name
-
-        return self.description_localizations.data.get(str(locale), self.description)
-
-    def localize(self, locale: Locale) -> LocalizedArgument:
-        """Return a LocalizedArgument instance from this Argument.
-
-        LocalizedArgument instances are just simplified Arguments with localized attribute values
-
-        Parameters
-        ----------
-        locale: disnake.Locale
-            The locale that should be used to localize the argument.
-
-        Returns
-        -------
-        LocalizedArgument
-            This argument with localized name and description
-        """
-        return LocalizedArgument(
-            name=self.get_localized_name(locale),
-            description=self.get_localized_description(locale),
-            required=self.required,
-        )
+    from .argument import Argument
+    from .checks import CommandChecks, Cooldown
+    from .enums import AppCommandType
 
 
-class AppCommand(AppCommandBase):
-    """Represents an AppCommand.
+@dataclass
+class AppCommand:
+    """Base class for AppCommand and LocalizedAppCommand.
 
     AppCommands are classes that include various attributes from both
     `.ApplicationCommand` and `.InvokableApplicationCommand`
-
 
     Attributes
     ----------
@@ -148,6 +38,8 @@ class AppCommand(AppCommandBase):
         Contains localizations for the command's name. (*New in version 0.3.0*)
     checks : CommandChecks
         The command's permission and role requirements.
+    args: List[Argument]
+        Contains the command's arguments. (Only applies to SlashCommand)
     type: AppCommandType
         Type of command
     category: str
@@ -175,67 +67,46 @@ class AppCommand(AppCommandBase):
     get_localized_description(locale: disnake.Locale)
         Return localized or non-localized description. (*New in version 0.3.0*)
     localize(locale: disnake.Locale)
-        Return a LocalizedAppcommand, or sub-variant (*New in version 0.3.0*)
+        Return an AppCommand with localized attributes. (*New in version 0.3.0*)
     """
 
-    __slots__ = (
-        "name_localizations",
-        "description_localizations",
-    )
-
-    def __init__(
-        self,
-        id: int,
-        name: str,
-        description: str,
-        checks: CommandChecks,
-        type: AppCommandType,
-        name_localizations: LocalizationValue,
-        category: str,
-        dm_permission: bool,
-        nsfw: bool,
-        cooldown: Optional[Cooldown],
-        description_localizations: Optional[LocalizationValue] = None,
-        guild_id: Optional[int] = None,
-        default_member_permissions: Optional[Permissions] = None,
-    ) -> None:
-        super().__init__(
-            id=id,
-            name=name,
-            description=description,
-            checks=checks,
-            type=type,
-            category=category,
-            dm_permission=dm_permission,
-            nsfw=nsfw,
-            cooldown=cooldown,
-            guild_id=guild_id,
-            default_member_permissions=default_member_permissions,
-        )
-
-        self.name_localizations: LocalizationValue = name_localizations
-        self.description_localizations: Optional[LocalizationValue] = description_localizations
+    id: int
+    name: str
+    _name: str
+    description: str
+    checks: CommandChecks
+    type: AppCommandType
+    category: str
+    dm_permission: bool
+    nsfw: bool
+    name_localizations: LocalizationValue
+    description_localizations: Optional[LocalizationValue] = None
+    args: List[Argument] = field(default_factory=list)
+    cooldown: Optional[Cooldown] = None
+    guild_id: Optional[int] = None
+    default_member_permissions: Optional[Permissions] = None
 
     @property
     def mention(self) -> str:
-        """Return clickable mention if slash, else bolded name."""
-        if self.type is AppCommandType.SLASH:
-            return f"</{self.name}:{self.id}>"
-
-        return f"**{self.name}**"
+        """Return the clickable tag if SlashCommand, else bolded name."""
+        if isinstance(self, SlashCommand):
+            return f"</{self._name}:{self.id}>"
+        return f"**{self._name}**"
 
     def __eq__(self, other: Any) -> bool:
-        """Return True if self == other, else False"""
-        if not isinstance(other, self.__class__):
+        if not isinstance(other, AppCommand):
             return False
 
         return self.id == other.id or (
-            self.description == other.description
-            and self.checks == other.checks
-            and self.category == other.category
-            and self.cooldown == other.cooldown
+            self._name == other._name
+            and self.type == other.type
+            and self.description == other.description
             and self.nsfw == other.nsfw
-            and self.default_member_permissions == other.default_member_permissions
+            and self.category == other.category
+            and self.dm_permission == other.dm_permission
+            and self.dm_permission == other.dm_permission
+            and self.checks == other.checks
+            and self.cooldown == other.cooldown
         )
 
     def get_localized_name(self, locale: Locale) -> str:
@@ -246,7 +117,7 @@ class AppCommand(AppCommandBase):
         Parameters
         ----------
         locale: disnake.Locale
-            The interaction locale
+            The interaction locale that will be used to localize attributes.
 
         Returns
         -------
@@ -266,7 +137,7 @@ class AppCommand(AppCommandBase):
         Parameters
         ----------
         locale: disnake.Locale
-            The interaction locale
+            The interaction locale that will be used to localize attributes.
 
         Returns
         -------
@@ -278,70 +149,20 @@ class AppCommand(AppCommandBase):
 
         return self.description_localizations.data.get(str(locale), self.description)
 
-    def localize(self, locale: Locale) -> LocalizedAppCommand:
-        """Return a localized variant of the AppCommand.
+    def localize(self, locale: Locale) -> AppCommand:
+        """Return aAppCommand with localized attributes.
 
         Parameters
         ----------
-        locale: disnake.Locale
-            Locale key used to set new attributes.
+        locale: Locale
+            The interaction locale that will be used to localize attributes.
 
         Returns
         -------
-        LocalizedAppCommand
-            A localized variant of the AppCommand.
+        Appcommand
+            a AppCommand with localized attributes.
         """
-        name = self.get_localized_name(locale)
-        description = self.get_localized_description(locale)
-
-        if isinstance(self, SlashCommand):
-            args = [a.localize(locale) for a in self.args]
-            return LocalizedSlashCommand(
-                id=self.id,
-                _name=self.name,
-                name=name,
-                description=description,
-                args=args,
-                checks=self.checks,
-                type=self.type,
-                category=self.category,
-                nsfw=self.nsfw,
-                cooldown=self.cooldown,
-                dm_permission=self.dm_permission,
-                guild_id=self.guild_id,
-                default_member_permissions=self.default_member_permissions,
-            )
-
-        if isinstance(self, UserCommand):
-            return LocalizedUserCommand(
-                id=self.id,
-                _name=self.name,
-                name=name,
-                description=description,
-                checks=self.checks,
-                type=self.type,
-                dm_permission=self.dm_permission,
-                category=self.category,
-                nsfw=self.nsfw,
-                cooldown=self.cooldown,
-                guild_id=self.guild_id,
-                default_member_permissions=self.default_member_permissions,
-            )
-
-        return LocalizedMessageCommand(
-            id=self.id,
-            _name=self.name,
-            name=name,
-            description=description,
-            checks=self.checks,
-            type=self.type,
-            dm_permission=self.dm_permission,
-            category=self.category,
-            nsfw=self.nsfw,
-            cooldown=self.cooldown,
-            guild_id=self.guild_id,
-            default_member_permissions=self.default_member_permissions,
-        )
+        ...
 
 
 class SlashCommand(AppCommand):
@@ -387,45 +208,43 @@ class SlashCommand(AppCommand):
     get_localized_description(locale: disnake.Locale)
         Return localized or non-localized description. (*New in version 0.3.0*)
     localize(locale: disnake.Locale)
-        Return a LocalizedSlashCommand
+        Return a SlashCommand with localized attributes. (*New in version 0.3.0*)
     """
 
-    __slots__ = ("args",)
+    def localize(self, locale: Locale) -> SlashCommand:
+        """Return a localized instance of SlashCommand
 
-    def __init__(
-        self,
-        id: int,
-        name: str,
-        description: str,
-        checks: CommandChecks,
-        type: AppCommandType,
-        args: List[Argument],
-        name_localizations: LocalizationValue,
-        description_localizations: LocalizationValue,
-        category: str,
-        dm_permission: bool,
-        nsfw: bool,
-        cooldown: Optional[Cooldown],
-        guild_id: Optional[int] = None,
-        default_member_permissions: Optional[Permissions] = None,
-    ) -> None:
-        super().__init__(
-            id=id,
+        Parameters
+        ----------
+        locale: Locale
+            The locale to be used for localizing the command.
+
+        Returns
+        -------
+        SlashCommand
+            The localized SlashCommand.
+        """
+        args = [a.localize(locale) for a in self.args]
+        name = self.get_localized_name(locale)
+        desc = self.get_localized_description(locale)
+
+        return SlashCommand(
+            id=self.id,
             name=name,
-            description=description,
-            checks=checks,
-            type=type,
-            name_localizations=name_localizations,
-            description_localizations=description_localizations,
-            category=category,
-            dm_permission=dm_permission,
-            nsfw=nsfw,
-            cooldown=cooldown,
-            guild_id=guild_id,
-            default_member_permissions=default_member_permissions,
+            _name=self._name,
+            description=desc,
+            checks=self.checks,
+            type=self.type,
+            category=self.category,
+            dm_permission=self.dm_permission,
+            nsfw=self.nsfw,
+            name_localizations=self.name_localizations,
+            description_localizations=self.description_localizations,
+            cooldown=self.cooldown,
+            guild_id=self.guild_id,
+            default_member_permissions=self.default_member_permissions,
+            args=args,
         )
-
-        self.args: list[Argument] = args
 
 
 class UserCommand(AppCommand):
@@ -468,37 +287,40 @@ class UserCommand(AppCommand):
     get_localized_description(locale: disnake.Locale)
         Return localized or non-localized description. (*New in version 0.3.0*)
     localize(locale: disnake.Locale)
-        Return a LocalizedAppcommand, or sub-variant. (*New in version 0.3.0*)
+        Return a UserCommand with localized attributes. (*New in version 0.3.0*)
     """
 
-    def __init__(
-        self,
-        id: int,
-        name: str,
-        description: str,
-        checks: CommandChecks,
-        type: AppCommandType,
-        name_localizations: LocalizationValue,
-        category: str,
-        dm_permission: bool,
-        nsfw: bool,
-        cooldown: Optional[Cooldown],
-        guild_id: Optional[int] = None,
-        default_member_permissions: Optional[Permissions] = None,
-    ) -> None:
-        super().__init__(
-            id=id,
+    def localize(self, locale: Locale) -> UserCommand:
+        """Return a localized instance of UserCommand
+
+        Parameters
+        ----------
+        locale: Locale
+            The locale to be used for localizing the command.
+
+        Returns
+        -------
+        UserCommand
+            The localized UserCommand.
+        """
+        name = self.get_localized_name(locale)
+        desc = self.get_localized_description(locale)
+
+        return UserCommand(
+            id=self.id,
             name=name,
-            description=description,
-            checks=checks,
-            type=type,
-            name_localizations=name_localizations,
-            category=category,
-            dm_permission=dm_permission,
-            nsfw=nsfw,
-            cooldown=cooldown,
-            guild_id=guild_id,
-            default_member_permissions=default_member_permissions,
+            _name=self._name,
+            description=desc,
+            checks=self.checks,
+            type=self.type,
+            category=self.category,
+            dm_permission=self.dm_permission,
+            nsfw=self.nsfw,
+            name_localizations=self.name_localizations,
+            description_localizations=self.description_localizations,
+            cooldown=self.cooldown,
+            guild_id=self.guild_id,
+            default_member_permissions=self.default_member_permissions,
         )
 
 
@@ -541,35 +363,38 @@ class MessageCommand(AppCommand):
     get_localized_description(locale: disnake.Locale)
         Return localized or non-localized description. (*New in version 0.3.0*)
     localize(locale: disnake.Locale)
-        Return a LocalizedAppcommand, or sub-variant
+        Return a UserCommand with localized attributes. (*New in version 0.3.0*)
     """
 
-    def __init__(
-        self,
-        id: int,
-        name: str,
-        description: str,
-        checks: CommandChecks,
-        type: AppCommandType,
-        name_localizations: LocalizationValue,
-        category: str,
-        dm_permission: bool,
-        nsfw: bool,
-        cooldown: Optional[Cooldown],
-        guild_id: Optional[int] = None,
-        default_member_permissions: Optional[Permissions] = None,
-    ) -> None:
-        super().__init__(
-            id=id,
+    def localize(self, locale: Locale) -> MessageCommand:
+        """Return a localized instance of MessageCommand
+
+        Parameters
+        ----------
+        locale: Locale
+            The locale to be used for localizing the command.
+
+        Returns
+        -------
+        SlashCommand
+            The localized MessageCommand.
+        """
+        name = self.get_localized_name(locale)
+        desc = self.get_localized_description(locale)
+
+        return MessageCommand(
+            id=self.id,
             name=name,
-            description=description,
-            checks=checks,
-            type=type,
-            name_localizations=name_localizations,
-            category=category,
-            dm_permission=dm_permission,
-            nsfw=nsfw,
-            cooldown=cooldown,
-            guild_id=guild_id,
-            default_member_permissions=default_member_permissions,
+            _name=self._name,
+            description=desc,
+            checks=self.checks,
+            type=self.type,
+            category=self.category,
+            dm_permission=self.dm_permission,
+            nsfw=self.nsfw,
+            name_localizations=self.name_localizations,
+            description_localizations=self.description_localizations,
+            cooldown=self.cooldown,
+            guild_id=self.guild_id,
+            default_member_permissions=self.default_member_permissions,
         )

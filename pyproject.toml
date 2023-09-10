@@ -138,8 +138,7 @@ ignore = [
 
 [tool.ruff.per-file-ignores]
 "src/helply/helply" = ["PLW2901"] # returns a localized variant, get outta here.
-"src/helply/types/*" = ["ANN401"]
-"src/helply/types/abc_.py" = ["B024"] # it has no methods
+"src/helply/types/*" = ["ANN401","D105"]
 "examples/*" = ["ALL"]
 "tests/*" = ["ALL"]
 
