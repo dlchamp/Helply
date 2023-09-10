@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "helply"
-version = "0.4.1"
+version = "0.4.2"
 description = "A library that simplifies 'help' command creation for application commands in your discord bot."
 authors = ["DLCHAMP <contact@dlchamp.com>"]
 license = "MIT"
