@@ -2,7 +2,7 @@
 
 Handles the creation and storing of the app commands and provides the methods to retrive them
 """
-from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Union, overload
+from typing import Dict, List, Optional, Sequence, Union
 
 import disnake
 import disnake.app_commands
@@ -14,15 +14,10 @@ from .types import (
     Argument,
     CommandChecks,
     Cooldown,
-    LocalizedAppCommand,
     MessageCommand,
     SlashCommand,
     UserCommand,
 )
-
-if TYPE_CHECKING:
-    from .types.abc_ import AppCommandBase
-
 
 Bot = Union[
     commands.Bot,
@@ -213,6 +208,7 @@ class Helply:
                     SlashCommand(
                         id=command_id,
                         name=name,
+                        _name=name,
                         description=desc,
                         name_localizations=original_command.name_localizations,
                         description_localizations=original_command.description_localizations,
@@ -313,6 +309,7 @@ class Helply:
             SlashCommand(
                 id=command.id,
                 name=command.name,
+                _name=command.name,
                 description=desc,
                 name_localizations=command.name_localizations,
                 description_localizations=command.description_localizations,
@@ -355,6 +352,7 @@ class Helply:
         return MessageCommand(
             id=command.id,
             name=command.name,
+            _name=command.name,
             description=desc,
             name_localizations=command.name_localizations,
             checks=checks,
@@ -393,6 +391,7 @@ class Helply:
         return UserCommand(
             id=command.id,
             name=command.name,
+            _name=command.name,
             description=desc,
             name_localizations=command.name_localizations,
             checks=checks,
@@ -452,32 +451,6 @@ class Helply:
                 if user_command:
                     self._app_commands[user_command.id] = user_command
 
-    @overload
-    def get_all_commands(
-        self,
-        guild_id: Optional[int] = None,
-        *,
-        category: Optional[str] = None,
-        permissions: Optional[disnake.Permissions] = None,
-        include_nsfw: bool = True,
-        dm_only: bool = False,
-        locale: disnake.Locale,
-    ) -> List[LocalizedAppCommand]:
-        ...
-
-    @overload
-    def get_all_commands(
-        self,
-        guild_id: Optional[int] = None,
-        *,
-        category: Optional[str] = None,
-        permissions: Optional[disnake.Permissions] = None,
-        include_nsfw: bool = True,
-        dm_only: bool = False,
-        locale: None = None,
-    ) -> List[AppCommand]:
-        ...
-
     def get_all_commands(
         self,
         guild_id: Optional[int] = None,
@@ -487,7 +460,7 @@ class Helply:
         include_nsfw: bool = True,
         dm_only: bool = False,
         locale: Optional[disnake.Locale] = None,
-    ) -> Union[List[AppCommand], List[LocalizedAppCommand]]:
+    ) -> List[AppCommand]:
         """Retrieve a filtered list of AppCommand based on specified criteria.
 
         By default, this method should return all registered commands. Specify filters
@@ -520,14 +493,14 @@ class Helply:
 
         Returns
         -------
-        Union[List[AppCommand], List[LocalizedAppCommand]]
-            Resulting list of `AppCommand` or `LocalizedAppCommand`, if locale specified,
-            after filters have been applied.
+        List[AppCommand]
+            Resulting list of `AppCommand`. If locale is specified, the command will be returned
+            with localized attributes.
         """
         if not self._app_commands:
             self._walk_app_commands()
 
-        commands: List[AppCommandBase] = []
+        commands: List[AppCommand] = []
 
         for command in self._app_commands.values():
             if category and command.category != category:
@@ -558,22 +531,12 @@ class Helply:
             if command not in commands:
                 commands.append(command)
 
-        return commands  # type: ignore - I don't know how to fix this yet ;)
+        return commands
 
     # temporary alias - get_all_commands will be removed, eventually
     get_commands = get_all_commands
 
-    @overload
-    def get_command(self, id: int, locale: None = None) -> Optional[AppCommand]:
-        ...
-
-    @overload
-    def get_command(self, id: int, locale: disnake.Locale) -> Optional[LocalizedAppCommand]:
-        ...
-
-    def get_command(
-        self, id: int, locale: Optional[disnake.Locale] = None
-    ) -> Optional[Union[AppCommand, LocalizedAppCommand]]:
+    def get_command(self, id: int, locale: Optional[disnake.Locale] = None) -> Optional[AppCommand]:
         """Get a command by its ID
 
         Parameters
@@ -585,8 +548,8 @@ class Helply:
 
         Returns
         -------
-        Optional[Union[AppCommand, LocalizedAppCommand]]
-            The retrieved `AppCommand` or `LocalizedAppCommand` if locale specified.
+        Optional[AppCommand]
+            The AppCommand with the specified ID.
         """
         command = self._app_commands.get(id)
         if locale and command:
@@ -594,30 +557,12 @@ class Helply:
 
         return command
 
-    @overload
-    def get_command_named(
-        self,
-        name: str,
-        locale: None = None,
-        cmd_type: Optional[AppCommandType] = None,
-    ) -> Optional[AppCommand]:
-        ...
-
-    @overload
-    def get_command_named(
-        self,
-        name: str,
-        locale: disnake.Locale,
-        cmd_type: Optional[AppCommandType] = None,
-    ) -> Optional[LocalizedAppCommand]:
-        ...
-
     def get_command_named(
         self,
         name: str,
         locale: Optional[disnake.Locale] = None,
         cmd_type: Optional[AppCommandType] = None,
-    ) -> Optional[Union[AppCommand, LocalizedAppCommand]]:
+    ) -> Optional[AppCommand]:
         """Get a command by its name. if locale is provided, the provided name should
         match the localized name.
 
@@ -634,8 +579,8 @@ class Helply:
 
         Returns
         -------
-        Optional[Union[AppCommand, LocalizedAppCommand]]
-            The command that matches the provided name, if found.
+        Optional[AppCommand]
+            The command that matches the provided name and type, if available.
         """
         for command in self._app_commands.values():
             if command.name == name and (cmd_type is None or command.type is cmd_type):
@@ -643,32 +588,6 @@ class Helply:
                     return command.localize(locale)
 
                 return command
-
-    @overload
-    def get_commands_by_category(
-        self,
-        category: str,
-        *,
-        locale: disnake.Locale,
-        guild_id: Optional[int] = None,
-        permissions: Optional[disnake.Permissions] = None,
-        include_nsfw: bool = True,
-        dm_only: bool = False,
-    ) -> List[LocalizedAppCommand]:
-        ...
-
-    @overload
-    def get_commands_by_category(
-        self,
-        category: str,
-        *,
-        locale: None = None,
-        guild_id: Optional[int] = None,
-        permissions: Optional[disnake.Permissions] = None,
-        include_nsfw: bool = True,
-        dm_only: bool = False,
-    ) -> List[AppCommand]:
-        ...
 
     def get_commands_by_category(
         self,
@@ -679,7 +598,7 @@ class Helply:
         permissions: Optional[disnake.Permissions] = None,
         include_nsfw: bool = True,
         dm_only: bool = False,
-    ) -> Union[List[AppCommand], List[LocalizedAppCommand]]:
+    ) -> List[AppCommand]:
         """Retrieve a list of `AppCommand` or `LocalizedAppCommand`, if locale specified
         within the specified category.
 
@@ -709,9 +628,8 @@ class Helply:
 
         Returns
         -------
-        Union[List[AppCommand], List[LocalizedAppCommand]]
+        List[AppCommand]
             A list of commands within the specified category name.
-            If locale provided, a list of LocalizedAppCommand will be returned instead
 
         """
         return self.get_all_commands(
@@ -782,30 +700,12 @@ class Helply:
 
         return categories
 
-    @overload
-    def get_dm_only_commands(
-        self,
-        *,
-        include_nsfw: bool = False,
-        locale: None = None,
-    ) -> List[AppCommand]:
-        ...
-
-    @overload
-    def get_dm_only_commands(
-        self,
-        *,
-        include_nsfw: bool = False,
-        locale: disnake.Locale,
-    ) -> List[LocalizedAppCommand]:
-        ...
-
     def get_dm_only_commands(
         self,
         *,
         include_nsfw: bool = False,
         locale: Optional[disnake.Locale] = None,
-    ) -> Union[List[AppCommand], List[LocalizedAppCommand]]:
+    ) -> List[AppCommand]:
         """Return only commands with dm_permission set to True.
 
         Parameters
@@ -818,33 +718,10 @@ class Helply:
 
         Returns
         -------
-        Union[List[AppCommand], List[LocalizedAppCommand]]]
-            A list of `AppCommand`, or `LocalizedAppCommand` if locale specified, where
-            dm_permission = True
+        List[AppCommand]
+            A list of AppCommand where dm_permission is True.
         """
         return self.get_all_commands(dm_only=True, locale=locale, include_nsfw=include_nsfw)
-
-    @overload
-    def get_guild_commands(
-        self,
-        guild_id: int,
-        *,
-        include_nsfw: bool = False,
-        permissions: Optional[disnake.Permissions] = None,
-        locale: None = None,
-    ) -> List[AppCommand]:
-        ...
-
-    @overload
-    def get_guild_commands(
-        self,
-        guild_id: int,
-        *,
-        include_nsfw: bool = False,
-        permissions: Optional[disnake.Permissions] = None,
-        locale: disnake.Locale,
-    ) -> List[LocalizedAppCommand]:
-        ...
 
     def get_guild_commands(
         self,
@@ -853,7 +730,7 @@ class Helply:
         include_nsfw: bool = False,
         permissions: Optional[disnake.Permissions] = None,
         locale: Optional[disnake.Locale] = None,
-    ) -> Union[List[AppCommand], List[LocalizedAppCommand]]:
+    ) -> List[AppCommand]:
         """Return commands where guild_id is None or guild_id matches specified guild_id.
 
         !!! Note
@@ -874,9 +751,9 @@ class Helply:
 
         Returns
         -------
-        Union[List[AppCommand], List[LocalizedAppCommand]]
-            A list of `AppCommand`, or `LocalizedAppCommand` if locale specified, where
-            guild_id is not specified (global) or guild_id matches the specified guild_id.
+        List[AppCommand]
+            A list of AppCommand where guild_id is not specified (global) or guild_id matches
+            the specified guild_id.
         """
         return self.get_all_commands(
             guild_id, locale=locale, include_nsfw=include_nsfw, permissions=permissions

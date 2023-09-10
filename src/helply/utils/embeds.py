@@ -1,16 +1,10 @@
 """Embeds module adds some pre-configured embeds to streamline the creation of your help command."""
-from typing import Optional, Union
+from typing import List, Optional
 
 import disnake
 
 from ..helply import Helply
-from ..types import (
-    AppCommand,
-    AppCommandType,
-    LocalizedAppCommand,
-    LocalizedSlashCommand,
-    SlashCommand,
-)
+from ..types import AppCommand, AppCommandType
 
 MAX_CHARS_PER_FIELD = 1024
 """
@@ -34,7 +28,7 @@ as well.
 
 
 def command_detail_embed(
-    command: Union[AppCommand, LocalizedAppCommand],
+    command: AppCommand,
     *,
     thumbnail: Optional[disnake.File] = None,
     guild: Optional[disnake.Guild] = None,
@@ -105,7 +99,7 @@ def command_detail_embed(
         roles_as_string = f"**Required Roles**:\n{role_checks}"
         embed.add_field(name="Required Role(s)", value=roles_as_string, inline=True)
 
-    if isinstance(command, SlashCommand | LocalizedSlashCommand):
+    if command.type is AppCommandType.SLASH:
         embed.set_footer(text="[ required ] | ( optional )")
         if command.args:
             args: str = ""
@@ -122,14 +116,14 @@ def command_detail_embed(
 
 
 def commands_overview_embeds(
-    commands: list[Union[AppCommand, LocalizedAppCommand]],
+    commands: List[AppCommand],
     *,
     thumbnail: Optional[disnake.File] = None,
     max_field_chars: int = MAX_CHARS_PER_FIELD,
     max_fields: int = MAX_FIELDS_PER_EMBED,
     color: Optional[disnake.Color] = None,
     category: str = "",
-) -> list[disnake.Embed]:
+) -> List[disnake.Embed]:
     """Create and return one or more embeds containing all commands and descriptions.
 
     Parameters
