@@ -599,8 +599,7 @@ class Helply:
         include_nsfw: bool = True,
         dm_only: bool = False,
     ) -> List[AppCommand]:
-        """Retrieve a list of `AppCommand` or `LocalizedAppCommand`, if locale specified
-        within the specified category.
+        """Retrieve a list of AppCommands within a category
 
         By default, this method should return all registered commands within a category.
         Specify filters to narrow down the output results.

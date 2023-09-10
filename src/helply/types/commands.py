@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 @dataclass
 class AppCommand:
-    """Base class for AppCommand and LocalizedAppCommand.
+    """Base class for all AppCommand types.
 
     AppCommands are classes that include various attributes from both
     `.ApplicationCommand` and `.InvokableApplicationCommand`
