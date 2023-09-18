@@ -234,7 +234,7 @@ class SlashCommand(AppCommand):
         return SlashCommand(
             id=self.id,
             name=name,
-            _name=self._name,
+            name_=self.name_,
             description=desc,
             checks=self.checks,
             type=self.type,
@@ -312,7 +312,7 @@ class UserCommand(AppCommand):
         return UserCommand(
             id=self.id,
             name=name,
-            _name=self._name,
+            name_=self.name_,
             description=desc,
             checks=self.checks,
             type=self.type,
@@ -388,7 +388,7 @@ class MessageCommand(AppCommand):
         return MessageCommand(
             id=self.id,
             name=name,
-            _name=self._name,
+            name_=self.name_,
             description=desc,
             checks=self.checks,
             type=self.type,
