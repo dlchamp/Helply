@@ -172,11 +172,11 @@ def commands_overview_embeds(
 
     for command in commands:
         type_ = (
-            "Slash Command Details"
+            "Slash Command"
             if command.type is AppCommandType.SLASH
-            else "User Command Details"
+            else "User Command"
             if command.type is AppCommandType.USER
-            else "Message Command Details"
+            else "Message Command"
         )
 
         nsfw = "*(NSFW)*" if command.nsfw else ""
