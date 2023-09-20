@@ -526,7 +526,7 @@
         <span class=k>return</span> <span class=n>MessageCommand</span><span class=p>(</span>
             <span class=nb>id</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>id</span><span class=p>,</span>
             <span class=n>name</span><span class=o>=</span><span class=n>name</span><span class=p>,</span>
-            <span class=n>_name</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_name</span><span class=p>,</span>
+            <span class=n>name_</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>name_</span><span class=p>,</span>
             <span class=n>description</span><span class=o>=</span><span class=n>desc</span><span class=p>,</span>
             <span class=n>checks</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>checks</span><span class=p>,</span>
             <span class=nb>type</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>type</span><span class=p>,</span>
@@ -589,7 +589,7 @@
     <span class=k>return</span> <span class=n>MessageCommand</span><span class=p>(</span>
         <span class=nb>id</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>id</span><span class=p>,</span>
         <span class=n>name</span><span class=o>=</span><span class=n>name</span><span class=p>,</span>
-        <span class=n>_name</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_name</span><span class=p>,</span>
+        <span class=n>name_</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>name_</span><span class=p>,</span>
         <span class=n>description</span><span class=o>=</span><span class=n>desc</span><span class=p>,</span>
         <span class=n>checks</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>checks</span><span class=p>,</span>
         <span class=nb>type</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>type</span><span class=p>,</span>
@@ -747,7 +747,7 @@
         <span class=k>return</span> <span class=n>SlashCommand</span><span class=p>(</span>
             <span class=nb>id</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>id</span><span class=p>,</span>
             <span class=n>name</span><span class=o>=</span><span class=n>name</span><span class=p>,</span>
-            <span class=n>_name</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_name</span><span class=p>,</span>
+            <span class=n>name_</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>name_</span><span class=p>,</span>
             <span class=n>description</span><span class=o>=</span><span class=n>desc</span><span class=p>,</span>
             <span class=n>checks</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>checks</span><span class=p>,</span>
             <span class=nb>type</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>type</span><span class=p>,</span>
@@ -814,7 +814,7 @@
     <span class=k>return</span> <span class=n>SlashCommand</span><span class=p>(</span>
         <span class=nb>id</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>id</span><span class=p>,</span>
         <span class=n>name</span><span class=o>=</span><span class=n>name</span><span class=p>,</span>
-        <span class=n>_name</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_name</span><span class=p>,</span>
+        <span class=n>name_</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>name_</span><span class=p>,</span>
         <span class=n>description</span><span class=o>=</span><span class=n>desc</span><span class=p>,</span>
         <span class=n>checks</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>checks</span><span class=p>,</span>
         <span class=nb>type</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>type</span><span class=p>,</span>
@@ -964,7 +964,7 @@
         <span class=k>return</span> <span class=n>UserCommand</span><span class=p>(</span>
             <span class=nb>id</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>id</span><span class=p>,</span>
             <span class=n>name</span><span class=o>=</span><span class=n>name</span><span class=p>,</span>
-            <span class=n>_name</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_name</span><span class=p>,</span>
+            <span class=n>name_</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>name_</span><span class=p>,</span>
             <span class=n>description</span><span class=o>=</span><span class=n>desc</span><span class=p>,</span>
             <span class=n>checks</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>checks</span><span class=p>,</span>
             <span class=nb>type</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>type</span><span class=p>,</span>
@@ -1027,7 +1027,7 @@
     <span class=k>return</span> <span class=n>UserCommand</span><span class=p>(</span>
         <span class=nb>id</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>id</span><span class=p>,</span>
         <span class=n>name</span><span class=o>=</span><span class=n>name</span><span class=p>,</span>
-        <span class=n>_name</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_name</span><span class=p>,</span>
+        <span class=n>name_</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>name_</span><span class=p>,</span>
         <span class=n>description</span><span class=o>=</span><span class=n>desc</span><span class=p>,</span>
         <span class=n>checks</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>checks</span><span class=p>,</span>
         <span class=nb>type</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>type</span><span class=p>,</span>
