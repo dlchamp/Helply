@@ -63,7 +63,6 @@ while *"Removes the target member from the guild"* will appear as the command de
 ```python
 @bot.slash_command(
     name="kick",
-    description="Kick the target member",
     extras={"help": "Removes the target member from the guild"}
 )
 async def kick_member(...):
@@ -107,13 +106,14 @@ This will ensure that only commands the user has permissions to use will be retr
 Here, if the command is used within a guild, we want to show all commands available within the guild,
 including global commands, and only commands that the inter.author is able to use.
 
-> Important
+!!! Important
     Permissions are compared against `default_member_permissions`.  Setting this by default
-    hides commands from members unable to use them, Passing permissions also allows `helply` to ensure
-    these commands stay hidden, even in help responses.
+    hides commands from members unable to use them, Passing permissions also allows `Helply` to ensure
+    these commands stay hidden in help responses.
+
 ```py
-# construct AppCommandHelp with the provided bot and a sequence of commands to ignore
-# ignore commands will not appear in any help responses.
+# construct Helply with the provided bot and a sequence of commands to ignore
+# ignored commands will not appear in any help responses.
 helply = Helply(bot, commands_to_ignore=('help',))
 
 @bot.slash_command(name='help')
@@ -129,7 +129,9 @@ async def help_command(inter: disnake.ApplicationCommandInteraction):
         permissions = None
         dm_only = True
 
-    commands = helply.get_all_commands(guild_id, permissions=permissions, dm_only=dm_only)
+    commands = helply.get_commands(
+        guild_id, permissions=permissions, dm_only=dm_only, locale=inter.locale
+    )
 ```
 
 ## Support
