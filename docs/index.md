@@ -90,7 +90,19 @@ async def kick_member(inter: disnake.GuildCommandInteraction, member: disnake.Me
 
 
 ### Cogs, Categories, and disnake-ext-plugin support
-`Helply` is able to parse the cog or category a command belongs to.  This is useful if you wish to display an overview of command available within a category.  If you are using cogs, you do not have to do anything extra.  The cog associated with a command will be parsed automatically. However, if you're using [disnake-ext-plugins](https://github.com/DisnakeCommunity/disnake-ext-plugins), a command's cog will always be None.  So, to set a commands category, we go back to the `extras` keyword to set the command's category:
+`Helply` is able to parse the cog or category a command belongs to.  This is useful if you wish to display an overview of command available within a category.
+If you're using [disnake-ext-plugins](https://github.com/DisnakeCommunity/disnake-ext-plugins), a "plugin" key is automatically set within the command's `extras` dict and its value will be used instead.  
+Finally, you may overwrite this category simply by assigning a value to a "category" key in the command's extras.
+
+The following order of priority is used to set a command's category.
+
+1. A check for a "category" key in command.extras  
+2. A check for a "plugin" key in command.extras  
+3. The cog associated with the command, if applicable  
+4. If all previous checks fail, category is set to None  
+
+
+An example of manually setting or overriding a command's category:
 
 ```py
 @some_plugin.slash_command(name='command', extras={"category": "General"})
@@ -98,7 +110,6 @@ async def some_command(inter: disnake.ApplicationCommandInteractions):
     ...
 
 ```
-
 ### Filtering Commands
 When retrieving commands from `Helply`, you may choose to pass in a member's `guild_permissions`.
 This will ensure that only commands the user has permissions to use will be retrieved.
