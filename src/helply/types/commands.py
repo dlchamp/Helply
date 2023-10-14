@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 __all__ = (
     "AppCommand",
@@ -59,6 +59,8 @@ class AppCommand:
         The ID of the guild where the command is available.
     default_member_permissions : Optional[Permissions]
         Default member permissions required to use this command.
+    extras: Optional[Dict[str, Any]]
+        A dict of user provided extras for the command.
     mention : str
         Get the command as a mentionable if slash command, else return bolded name.
 
@@ -87,6 +89,7 @@ class AppCommand:
     cooldown: Optional[Cooldown] = None
     guild_id: Optional[int] = None
     default_member_permissions: Optional[Permissions] = None
+    extras: Optional[Dict[str, Any]] = None
 
     @property
     def mention(self) -> str:
@@ -201,6 +204,8 @@ class SlashCommand(AppCommand):
         The ID of the guild where the command is available.
     default_member_permissions : Optional[Permissions]
         Default member permissions required to use this command.
+    extras: Optional[Dict[str, Any]]
+        A dict of user provided extras for the command.
     mention : str
         Get the command as a mentionable if slash command, else return bolded name.
 
@@ -247,6 +252,7 @@ class SlashCommand(AppCommand):
             guild_id=self.guild_id,
             default_member_permissions=self.default_member_permissions,
             args=args,
+            extras=self.extras,
         )
 
 
@@ -280,6 +286,8 @@ class UserCommand(AppCommand):
         The ID of the guild where the command is available.
     default_member_permissions : Optional[Permissions]
         Default member permissions required to use this command.
+    extras: Optional[Dict[str, Any]]
+        A dict of user provided extras for the command.
     mention : str
         Get the command as a mentionable if slash command, else return bolded name.
 
@@ -324,6 +332,7 @@ class UserCommand(AppCommand):
             cooldown=self.cooldown,
             guild_id=self.guild_id,
             default_member_permissions=self.default_member_permissions,
+            extras=self.extras,
         )
 
 
@@ -356,6 +365,8 @@ class MessageCommand(AppCommand):
         The ID of the guild where the command is available.
     default_member_permissions : Optional[Permissions]
         Default member permissions required to use this command.
+    extras: Optional[Dict[str, Any]]
+        A dict of user provided extras for the command.
     mention : str
         Get the command as a mentionable if slash command, else return bolded name.
 
@@ -400,4 +411,5 @@ class MessageCommand(AppCommand):
             cooldown=self.cooldown,
             guild_id=self.guild_id,
             default_member_permissions=self.default_member_permissions,
+            extras=self.extras,
         )
