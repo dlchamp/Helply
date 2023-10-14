@@ -408,16 +408,15 @@ class Helply:
             extras=invokable.extras,
         )
 
-    def _get_command_category(
-        self, invokable: commands.InvokableApplicationCommand
-    ) -> Optional[str]:
+    def _get_command_category(self, invokable: commands.InvokableApplicationCommand) -> str:
         """Get the command's category, plugin, or cog name, if available
 
         Category is set by the following priority:
         1. Check command.extras for a `category` key.
         2. If not found, `plugin` key is checked for
         (in the case of using [disnake-ext-plugins](https://github.com/DisnakeCommunity/disnake-ext-plugins))
-        3. If still not found, the value of `command.cog_name` will be used.
+        3. If still not found, the value of `command.cog_name` will be returned.
+        4. If cog_name is None, "" is returned
 
         Parameters
         ----------
@@ -426,11 +425,14 @@ class Helply:
         Returns
         -------
         Optional[str]
-            Name of the category, plugin, or cog the command belongs to, or None.
+            Name of the category, plugin, or cog the command belongs to, or "".
 
         """
         return (
-            invokable.extras.get("category") or invokable.extras.get("plugin") or invokable.cog_name
+            invokable.extras.get("category")
+            or invokable.extras.get("plugin")
+            or invokable.cog_name
+            or ""
         )
 
     def _walk_app_commands(self) -> None:
@@ -580,7 +582,7 @@ class Helply:
 
     def get_commands_by_category(
         self,
-        category: Optional[str] = None,
+        category: str,
         *,
         locale: Optional[disnake.Locale] = None,
         guild_id: Optional[int] = None,
@@ -595,9 +597,8 @@ class Helply:
 
         Parameters
         ----------
-        category: Optional[str]
-            Category for which commands are in. If None provided, only commands without a category
-            will be returned.
+        category: str
+            Category for which commands are in.
         locale: Optional[disnake.Locale]
             Include locale to get localized commands.
         guild_id : Optional[int]
@@ -637,7 +638,7 @@ class Helply:
         permissions: Optional[disnake.Permissions] = None,
         include_nsfw: bool = True,
         dm_only: bool = False,
-    ) -> List[Union[None, str]]:
+    ) -> List[str]:
         """Return a unique list of command categories.
 
         Useful if you wish to have an autocomplete for users to select from available
@@ -673,10 +674,10 @@ class Helply:
 
         Returns
         -------
-        List[Union[None, str]
+        List[str]
             A list of unique command categories.
         """
-        categories: List[Union[None, str]] = []
+        categories: List[str] = []
 
         for command in self.get_all_commands(
             guild_id,
