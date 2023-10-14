@@ -48,7 +48,7 @@ class AppCommand:
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
-    category: Optional[str]
+    category: str
         Name of "category", "plugin" or "cog" the command belongs to.
     description_localizations: Optional[LocalizationValue]
         Contains localization information for the command's description. (*SlashCommand only*)
@@ -83,7 +83,7 @@ class AppCommand:
     dm_permission: bool
     nsfw: bool
     name_localizations: LocalizationValue
-    category: Optional[str]
+    category: str
     description_localizations: Optional[LocalizationValue] = None
     args: List[Argument] = field(default_factory=list)
     cooldown: Optional[Cooldown] = None
@@ -196,7 +196,7 @@ class SlashCommand(AppCommand):
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
-    category: Optional[str]
+    category: str
         Name of "category", "plugin" or "cog" the command belongs to.
     cooldown: Optional[Cooldown]
         The configured cooldown, if available. (*New in 0.4.0*)
@@ -278,7 +278,7 @@ class UserCommand(AppCommand):
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
-    category: Optional[str]
+    category: str
         Name of "category", "plugin" or "cog" the command belongs to.
     cooldown: Optional[Cooldown]
         The configured cooldown, if available. (*New in 0.4.0*)
@@ -357,7 +357,7 @@ class MessageCommand(AppCommand):
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
-    category: Optional[str]
+    category: str
         Name of "category", "plugin" or "cog" the command belongs to.
     cooldown: Optional[Cooldown]
         The configured cooldown, if available. (*New in 0.4.0*)
