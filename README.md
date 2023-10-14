@@ -98,7 +98,7 @@ Finally, you may overwrite this category simply by assigning a value to a "categ
 1. A check for a "category" key in command.extras
 2. A check for a "plugin" key in command.extras
 3. The cog associated with the command, if applicable
-4. If all previous checks fail, category is set to None
+4. If all previous checks fail, category is set to ""
 
 
 An example of manually setting or overriding a command's category:
