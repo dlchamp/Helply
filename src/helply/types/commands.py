@@ -44,12 +44,12 @@ class AppCommand:
         Contains the command's arguments. (Only applies to SlashCommand)
     type: AppCommandType
         Type of command
-    category: str
-        Name of cog or category the command belongs to
     dm_permission : bool
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
+    category: Optional[str]
+        Name of "category", "plugin" or "cog" the command belongs to.
     description_localizations: Optional[LocalizationValue]
         Contains localization information for the command's description. (*SlashCommand only*)
         (*New in version 0.3.0*)
@@ -80,10 +80,10 @@ class AppCommand:
     description: str
     checks: CommandChecks
     type: AppCommandType
-    category: str
     dm_permission: bool
     nsfw: bool
     name_localizations: LocalizationValue
+    category: Optional[str]
     description_localizations: Optional[LocalizationValue] = None
     args: List[Argument] = field(default_factory=list)
     cooldown: Optional[Cooldown] = None
@@ -192,12 +192,12 @@ class SlashCommand(AppCommand):
         The command's permission and role requirements.
     type: AppCommandType
         Type of command
-    category: str
-        Name of cog or category the command belongs to
     dm_permission : bool
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
+    category: Optional[str]
+        Name of "category", "plugin" or "cog" the command belongs to.
     cooldown: Optional[Cooldown]
         The configured cooldown, if available. (*New in 0.4.0*)
     guild_id : Optional[int]
@@ -274,12 +274,12 @@ class UserCommand(AppCommand):
         The command's permission and role requirements.
     type: AppCommandType
         Type of command
-    category: str
-        Name of cog or category the command belongs to
     dm_permission : bool
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
+    category: Optional[str]
+        Name of "category", "plugin" or "cog" the command belongs to.
     cooldown: Optional[Cooldown]
         The configured cooldown, if available. (*New in 0.4.0*)
     guild_id : Optional[int]
@@ -353,12 +353,12 @@ class MessageCommand(AppCommand):
         The command's permission and role requirements.
     type: AppCommandType
         Type of command
-    category: str
-        Name of cog or category the command belongs to
     dm_permission : bool
         Whether the command is available in DMs or not.
     nsfw : bool
         Whether the command is NSFW (Not Safe For Work).
+    category: Optional[str]
+        Name of "category", "plugin" or "cog" the command belongs to.
     cooldown: Optional[Cooldown]
         The configured cooldown, if available. (*New in 0.4.0*)
     guild_id : Optional[int]
