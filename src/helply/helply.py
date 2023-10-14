@@ -219,6 +219,7 @@ class Helply:
                         nsfw=nsfw,
                         cooldown=cooldown,
                         category=category,
+                        extras=invokable.extras,
                     )
                 )
 
@@ -322,6 +323,7 @@ class Helply:
                 guild_id=command.guild_id,
                 default_member_permissions=invokable.default_member_permissions,
                 category=category,
+                extras=invokable.extras,
             )
         ]
 
@@ -363,6 +365,7 @@ class Helply:
             guild_id=command.guild_id,
             default_member_permissions=invokable.default_member_permissions,
             category=category,
+            extras=invokable.extras,
         )
 
     def _handle_user_command(self, command: disnake.APIUserCommand) -> Optional[UserCommand]:
@@ -402,6 +405,7 @@ class Helply:
             guild_id=command.guild_id,
             default_member_permissions=invokable.default_member_permissions,
             category=category,
+            extras=invokable.extras,
         )
 
     def _get_command_category(self, invokable: commands.InvokableApplicationCommand) -> str:
