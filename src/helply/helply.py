@@ -408,12 +408,16 @@ class Helply:
             extras=invokable.extras,
         )
 
-    def _get_command_category(self, invokable: commands.InvokableApplicationCommand) -> str:
-        """Get the command's cog or category name, if available
+    def _get_command_category(
+        self, invokable: commands.InvokableApplicationCommand
+    ) -> Optional[str]:
+        """Get the command's category, plugin, or cog name, if available
 
-        `cog_name` would be derived from `disnake.ext.commands.Cog`, whereas
-        `category` would come from setting extras if you're using something like
-        [disnake-ext-plugins](https://github.com/DisnakeCommunity/disnake-ext-plugins)
+        Category is set by the following priority:
+        1. Check command.extras for a `category` key.
+        2. If not found, `plugin` key is checked for
+        (in the case of using [disnake-ext-plugins](https://github.com/DisnakeCommunity/disnake-ext-plugins))
+        3. If still not found, the value of `command.cog_name` will be used.
 
         Parameters
         ----------
@@ -421,15 +425,13 @@ class Helply:
 
         Returns
         -------
-        str
-            Command's cog_name or value of extras['category'], else "None"
+        Optional[str]
+            Name of the category, plugin, or cog the command belongs to, or None.
 
         """
-        name = invokable.cog_name or invokable.extras.get("category")
-        if not name:
-            name = "None"
-
-        return name
+        return (
+            invokable.extras.get("category") or invokable.extras.get("plugin") or invokable.cog_name
+        )
 
     def _walk_app_commands(self) -> None:
         """Retrieve all global and guild-specific application commands."""
