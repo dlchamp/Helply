@@ -580,7 +580,7 @@ class Helply:
 
     def get_commands_by_category(
         self,
-        category: str,
+        category: Optional[str] = None,
         *,
         locale: Optional[disnake.Locale] = None,
         guild_id: Optional[int] = None,
@@ -595,8 +595,9 @@ class Helply:
 
         Parameters
         ----------
-        category: str
-            Category for which commands are in.
+        category: Optional[str]
+            Category for which commands are in. If None provided, only commands without a category
+            will be returned.
         locale: Optional[disnake.Locale]
             Include locale to get localized commands.
         guild_id : Optional[int]
@@ -636,7 +637,7 @@ class Helply:
         permissions: Optional[disnake.Permissions] = None,
         include_nsfw: bool = True,
         dm_only: bool = False,
-    ) -> List[str]:
+    ) -> List[Union[None, str]]:
         """Return a unique list of command categories.
 
         Useful if you wish to have an autocomplete for users to select from available
@@ -672,10 +673,10 @@ class Helply:
 
         Returns
         -------
-        List[str]
+        List[Union[None, str]
             A list of unique command categories.
         """
-        categories: List[str] = []
+        categories: List[Union[None, str]] = []
 
         for command in self.get_all_commands(
             guild_id,
