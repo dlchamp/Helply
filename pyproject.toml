@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "helply"
-version = "0.4.5"
+version = "0.5.0"
 description = "A library that simplifies 'help' command creation for application commands in your discord bot."
 authors = ["DLCHAMP <contact@dlchamp.com>"]
 license = "MIT"
@@ -34,6 +34,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
+disnake = "^2.9.2"
 
 
 [tool.poetry.group.dev.dependencies]

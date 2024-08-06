@@ -35,7 +35,7 @@ async def kick_member(inter: disnake.GuildCommandInteraction, member: disnake.Me
     """
 
 
-@bot.slash_command(name="command1", guild_ids=[947543739671412878, 1041563016199680090])
+@bot.slash_command(name="command1", guild_ids=[947543739671412878])
 @commands.cooldown(1, 15, commands.BucketType.default)
 async def command1(inter):
     """A cool slash command"""
@@ -44,13 +44,37 @@ async def command1(inter):
 @command1.sub_command_group(name="child")
 @commands.cooldown(1, 10, commands.BucketType.user)
 async def command_group(inter):
-    ...
+    """A cool slash command's child."""
 
 
-@command_group.sub_command(name="grandchild")
+@command1.sub_command(name="child2")
+@commands.cooldown(1, 10, commands.BucketType.user)
+async def command_child2(inter):
+    """A cool slash command's second child sub command."""
+
+
+@command_group.sub_command(name="grandchild1")
 @commands.cooldown(1, 20, commands.BucketType.channel)
-async def command_grandchild(inter):
-    ...
+async def command_grandchild1(inter):
+    """A cool slash command's grandchild."""
+
+
+@command_group.sub_command(name="grandchild2")
+@commands.cooldown(1, 20, commands.BucketType.channel)
+async def command_grandchild2(inter):
+    """A cool slash command's grandchild."""
+
+
+@command_group.sub_command(name="grandchild3")
+@commands.cooldown(1, 20, commands.BucketType.channel)
+async def command_grandchild3(inter):
+    """A cool slash command's grandchild."""
+
+
+@command_group.sub_command(name="grandchild4")
+@commands.cooldown(1, 20, commands.BucketType.channel)
+async def command_grandchild4(inter):
+    """A cool slash command's grandchild."""
 
 
 @bot.slash_command(name="command2")
@@ -66,8 +90,7 @@ async def command2(inter, arg1: str, arg2: int | None = None):
 
 @bot.user_command(name="command3", extras={"help": "A user command with checks"})
 @commands.has_guild_permissions(moderate_members=True)
-async def command3(inter, user: disnake.Member):
-    ...
+async def command3(inter, user: disnake.Member): ...
 
 
 @bot.slash_command(name="help")
@@ -90,10 +113,11 @@ async def help_command(
         )
         return
 
-    # Since autocomplete for name is a dict[name, str(id)], name in this case
-    # will be the str(id), convert it to int and try to find the command.
+    # Since command IDs are shared between commands, sub command groups,
+    # and sub commands, we can only accurately get them by their fully
+    # qualified name
     if name:
-        command = helply.get_command(int(name))
+        command = helply.get_command_named((name))
         if command is None:
             await inter.response.send_message(
                 "It appears this command is not available.", ephemeral=True
@@ -120,8 +144,8 @@ async def help_command(
 
         category_embeds = utils.commands_overview_embeds(
             commands,
-            max_fields=3,
-            max_field_chars=300,
+            max_fields=1,
+            max_field_chars=25,
             color=disnake.Color.random(),
             category=category,
         )
@@ -144,7 +168,11 @@ async def help_command(
             return
 
         command_embeds = utils.commands_overview_embeds(
-            commands, max_fields=3, max_field_chars=300, color=disnake.Color.random()
+            commands,
+            max_fields=1,
+            max_field_chars=100,
+            color=disnake.Color.random(),
+            thumbnail_url=bot.user.avatar.url,
         )
 
         if len(command_embeds) > 1:
@@ -170,7 +198,7 @@ async def autocomplete_command_names(
         guild_id, dm_only=dm_only, include_nsfw=nsfw, permissions=permissions
     )
 
-    return {c.name: str(c.id) for c in commands}
+    return [c.name for c in commands if string in c.name.casefold()]
 
 
 @help_command.autocomplete("category")

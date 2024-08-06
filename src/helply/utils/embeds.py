@@ -1,4 +1,5 @@
 """Embeds module adds some pre-configured embeds to streamline the creation of your help command."""
+
 from typing import List, Optional
 
 import disnake
@@ -30,7 +31,7 @@ as well.
 def command_detail_embed(
     command: AppCommand,
     *,
-    thumbnail: Optional[disnake.File] = None,
+    thumbnail_url: Optional[str] = None,
     guild: Optional[disnake.Guild] = None,
     color: Optional[disnake.Color] = None,
 ) -> disnake.Embed:
@@ -40,8 +41,8 @@ def command_detail_embed(
     ----------
     command: AppCommand
         The `AppCommand` retrieved from `AppCommandHelp.get_command_named`
-    thumbnail: Optional[disnake.File]
-        A `disnake.File` converted image to be set as the embed thumbnail.
+    thumbnail_url: Optional[str]
+        The image's URL. - *changed in 0.5.0 - thumbnail -> thumbnail_url*
     guild: Optional[disnake.Guild]
         Guild where this embed will be displayed. Used to convert
         any role checks into role objects
@@ -70,15 +71,17 @@ def command_detail_embed(
     type_ = (
         "Slash Command Details"
         if command.type is AppCommandType.SLASH
-        else "User Command Details"
-        if command.type is AppCommandType.USER
-        else "Message Command Details"
+        else (
+            "User Command Details"
+            if command.type is AppCommandType.USER
+            else "Message Command Details"
+        )
     )
 
     embed = disnake.Embed(description=f"{command.mention}\n{command.description}", color=color)
     embed.set_author(name=f'{type_} {"(NSFW)" if command.nsfw else ""}')
-    if thumbnail:
-        embed.set_thumbnail(file=thumbnail)
+    if thumbnail_url:
+        embed.set_thumbnail(url=thumbnail_url)
 
     if command.cooldown:
         cooldown = command.cooldown
@@ -118,7 +121,7 @@ def command_detail_embed(
 def commands_overview_embeds(
     commands: List[AppCommand],
     *,
-    thumbnail: Optional[disnake.File] = None,
+    thumbnail_url: Optional[str] = None,
     max_field_chars: int = MAX_CHARS_PER_FIELD,
     max_fields: int = MAX_FIELDS_PER_EMBED,
     color: Optional[disnake.Color] = None,
@@ -130,8 +133,8 @@ def commands_overview_embeds(
     ----------
     commands: List[AppCommand]
         List of `AppCommand` received from `AppCommandHelp.get_all_commands`
-    thumbnail: Optional[disnake.File]
-        A `disnake.File` converted image to be set as the embed thumbnail.
+    thumbnail_url: Optional[str]
+        The image's URL. - *changed in 0.5.0 - thumbnail -> thumbnail_url*
     max_field_chars: int
         Max number of characters per embed field description, default is MAX_CHARS_PER_FIELD (1024)
     max_fields: int
@@ -165,6 +168,13 @@ def commands_overview_embeds(
     if max_fields > MAX_FIELDS_PER_EMBED:
         max_fields = MAX_FIELDS_PER_EMBED
 
+    msg = "%s must be greater or equal to one. Got %s"
+    if max_field_chars <= 0:
+        raise ValueError(msg % ("'max_field_chars'", str(max_field_chars)))
+
+    if max_fields <= 0:
+        raise ValueError(msg % ("'max_fields'", str(max_fields)))
+
     embeds: list[disnake.Embed] = []
     current_embed: Optional[disnake.Embed] = None
     current_field: str = ""
@@ -189,7 +199,7 @@ def commands_overview_embeds(
                 if not embeds
                 else f"{category} Commands Overview (continued)"
             )
-            current_embed = _create_base_embed(title, color, thumbnail)
+            current_embed = _create_base_embed(title, color, thumbnail_url)
             current_field_chars = 0
 
         if current_field_chars + len(command_lines) <= max_field_chars:
@@ -212,9 +222,11 @@ def commands_overview_embeds(
 
 
 def _create_base_embed(
-    title: str, color: Optional[disnake.Color] = None, thumbnail: Optional[disnake.File] = None
+    title: str,
+    color: Optional[disnake.Color] = None,
+    thumbnail_url: Optional[str] = None,
 ) -> disnake.Embed:
     embed = disnake.Embed(title=title.strip(), color=color)
-    if thumbnail:
-        embed.set_thumbnail(file=thumbnail)
+    if thumbnail_url:
+        embed.set_thumbnail(url=thumbnail_url)
     return embed

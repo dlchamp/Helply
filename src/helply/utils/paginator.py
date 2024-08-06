@@ -6,6 +6,7 @@ multiple embeds.
     This can be used for pretty much any list of
     [disnake.Embed](https://docs.disnake.dev/en/latest/api/messages.html#disnake.Embed)
 """
+
 from __future__ import annotations
 
 from typing import List, Optional
@@ -128,7 +129,7 @@ class Paginator(disnake.ui.View):
 
     @disnake.ui.button(label="", style=disnake.ButtonStyle.primary, disabled=True)
     async def _page_counter(
-        self, _: disnake.ui.Button[Paginator], inter: disnake.MessageInteraction
+        self, _: disnake.ui.Button[Paginator], __: disnake.MessageInteraction
     ) -> None:
         """Just a page counter and cannot be interacted with."""
 
