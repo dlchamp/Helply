@@ -172,7 +172,7 @@ async def help_command(
             max_fields=1,
             max_field_chars=100,
             color=disnake.Color.random(),
-            thumbnail=bot.user.avatar.url,
+            thumbnail_url=bot.user.avatar.url,
         )
 
         if len(command_embeds) > 1:
