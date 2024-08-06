@@ -9,8 +9,7 @@ in your disnake bot.
 :license: MIT, see [LICENSE](MIT LICENSE) for more details.
 """
 
-
-__version__ = "0.4.5"
+__version__ = "0.5.0"
 
 
 from .helply import Helply
