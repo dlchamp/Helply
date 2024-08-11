@@ -441,7 +441,7 @@ class Helply:
     async def _walk_app_commands_coro(self) -> List[AppCommand]:
         """Implement `self._walk_app_commands` as a coroutine.
 
-        Coroutines are required to as listener callbacks.
+        Coroutines are required as listener callbacks.
         This allows us to load all the bot's app commands at start up.
         """
         return self._walk_app_commands()
