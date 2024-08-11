@@ -2,6 +2,7 @@
 
 Handles the creation and storing of the app commands and provides the methods to retrive them
 """
+
 from typing import List, Optional, Sequence, Union
 
 import disnake
@@ -57,6 +58,8 @@ class Helply:
             self.commands_to_ignore = set()
 
         self._app_commands: List[AppCommand] = []
+
+        self.bot.add_listener(self._walk_app_commands_coro, "on_ready")
 
     def _get_command_args(
         self, command: Union[disnake.APISlashCommand, disnake.Option]
@@ -435,8 +438,19 @@ class Helply:
             or ""
         )
 
-    def _walk_app_commands(self) -> None:
+    async def _walk_app_commands_coro(self) -> List[AppCommand]:
+        """Implement `self._walk_app_commands` as a coroutine.
+
+        Coroutines are required as listener callbacks.
+        This allows us to load all the bot's app commands at start up.
+        """
+        return self._walk_app_commands()
+
+    def _walk_app_commands(self) -> List[AppCommand]:
         """Retrieve all global and guild-specific application commands."""
+        if self._app_commands:
+            return self._app_commands
+
         all_commands = self.bot.global_application_commands
         for guild in self.bot.guilds:
             all_commands.extend(self.bot.get_guild_application_commands(guild.id))
@@ -460,7 +474,9 @@ class Helply:
                 if user_command:
                     self._app_commands.append(user_command)
 
-    def get_all_commands(
+        return self._app_commands
+
+    def get_commands(
         self,
         guild_id: Optional[int] = None,
         *,
@@ -475,9 +491,6 @@ class Helply:
         By default, this method should return all registered commands. Specify filters
         to narrow down the output results.
 
-        !!! Warning
-            This method is deprecated as of *version 0.4.0* and will be replaced by it's current
-            alias `get_commands`.
 
         Parameters
         ----------
@@ -543,7 +556,7 @@ class Helply:
         return commands
 
     # temporary alias - get_all_commands will be removed, eventually
-    get_commands = get_all_commands
+    get_all_commands = get_commands
 
     def get_command_named(
         self,
@@ -573,7 +586,7 @@ class Helply:
         Optional[AppCommand]
             The command that matches the provided name and type, if available.
         """
-        for command in self._app_commands:
+        for command in self.get_commands():
             if command.name == name and (cmd_type is None or command.type is cmd_type):
                 if locale:
                     return command.localize(locale)
@@ -622,7 +635,7 @@ class Helply:
             A list of commands within the specified category name.
 
         """
-        return self.get_all_commands(
+        return self.get_commands(
             guild_id,
             category=category,
             permissions=permissions,
@@ -679,7 +692,7 @@ class Helply:
         """
         categories: List[str] = []
 
-        for command in self.get_all_commands(
+        for command in self.get_commands(
             guild_id,
             permissions=permissions,
             include_nsfw=include_nsfw,
@@ -711,7 +724,7 @@ class Helply:
         List[AppCommand]
             A list of AppCommand where dm_permission is True.
         """
-        return self.get_all_commands(dm_only=True, locale=locale, include_nsfw=include_nsfw)
+        return self.get_commands(dm_only=True, locale=locale, include_nsfw=include_nsfw)
 
     def get_guild_commands(
         self,
@@ -745,7 +758,7 @@ class Helply:
             A list of AppCommand where guild_id is not specified (global) or guild_id matches
             the specified guild_id.
         """
-        return self.get_all_commands(
+        return self.get_commands(
             guild_id, locale=locale, include_nsfw=include_nsfw, permissions=permissions
         )
 
