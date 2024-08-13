@@ -75,7 +75,7 @@ combine-as-imports = true
 [tool.pyright]
 typeCheckingMode = "strict"
 pythonVersion = "3.8"
-ignore = ["tests/","docs/", "site/", "examples/"]
+ignore = ["tests/","docs/", "site/", "examples/", "setup.py"]
 
 [tool.ruff]
 line-length = 100
@@ -138,10 +138,11 @@ ignore = [
 ]
 
 [tool.ruff.per-file-ignores]
-"src/helply/helply" = ["PLW2901"] # returns a localized variant, get outta here.
+"src/helply/helply" = ["PLW2901"] # returns a localized variant.
 "src/helply/types/*" = ["ANN401","D105"]
 "examples/*" = ["ALL"]
 "tests/*" = ["ALL"]
+"setup.py" = ["ALL"]
 
 [tool.ruff.pydocstyle]
 convention = "numpy"
