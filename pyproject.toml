@@ -139,8 +139,9 @@ ignore = [
     # contradicting return rules. But why?
     "RET502", # do not explicitly return None
     "RET503", # explicitly return None.
-
+    "UP038",  # can't use | in 3.8
     "FBT001", # positional boolean?  what?
+    "ANN401", # sometimes I just need any kwargs
 ]
 
 [tool.ruff.per-file-ignores]
