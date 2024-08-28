@@ -19,15 +19,13 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Topic :: Software Development :: Libraries",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Utilities",
         "Typing :: Typed",
     ],
     python_requires=">=3.8.1,<4.0",
-    install_requires=[
-        "disnake>=2.9.2",
-    ],
     extras_require={
         "dev": [
             "ruff>=0.0.275",
@@ -50,6 +48,7 @@ setup(
         ],
         "lint": [
             "disnake>=2.9.0",
+            "nextcord >= 2.6.0"
         ],
     },
 )
