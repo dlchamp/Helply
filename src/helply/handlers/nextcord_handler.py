@@ -1,15 +1,18 @@
+"""Nextcord specific application command handler."""
 from __future__ import annotations
-from typing import TYPE_CHECKING, List, Optional, Sequence, Union, Callable, Any
 
+from typing import TYPE_CHECKING, Any, Callable, List, Optional, Sequence, Union
 
-from nextcord.ext import commands
 from nextcord import (
     BaseApplicationCommand,
-    SlashApplicationCommand,
-    UserApplicationCommand,
     MessageApplicationCommand,
+    SlashApplicationCommand,
     SlashApplicationSubcommand,
+    UserApplicationCommand,
 )
+from nextcord.ext import commands
+
+from .. import errors
 from ..types import (
     AppCommand,
     AppCommandType,
@@ -20,9 +23,7 @@ from ..types import (
     SlashCommand,
     UserCommand,
 )
-from .. import errors
 from ..utils import utils
-
 
 BotT = Union[commands.Bot, commands.AutoShardedBot]
 CooldownT = Union[commands.CooldownMapping, commands.DynamicCooldownMapping]
@@ -230,8 +231,7 @@ class NextcordCommandHandler:
         self,
         command: ApplicationCommands,
     ) -> CommandChecks:
-        """Parse the checks associated with a command and extract registered permissions and roles."""
-
+        """Parse the role and permissions checks."""
         permissions: List[str] = []
         roles: List[Union[str, int]] = []
 

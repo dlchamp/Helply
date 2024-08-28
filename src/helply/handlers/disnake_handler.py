@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, List, Optional, Sequence, Union
+"""Disnake specific application command handler."""
+from typing import List, Optional, Sequence, Union
 
 import disnake
 import disnake.app_commands
@@ -14,7 +15,6 @@ from ..types import (
     SlashCommand,
     UserCommand,
 )
-
 
 Bot = Union[
     commands.Bot,
@@ -229,7 +229,7 @@ class DisnakeCommandHandler:
                 dm_permission=command.dm_permission,
                 nsfw=command.nsfw,
                 cooldown=cooldown,
-                guild_ids=set((command.guild_id,)) if command.guild_id else None,
+                guild_ids={command.guild_id} if command.guild_id else None,
                 default_member_permissions=invokable.default_member_permissions,
                 category=category,
                 extras=invokable.extras,
@@ -260,7 +260,7 @@ class DisnakeCommandHandler:
             dm_permission=command.dm_permission,
             nsfw=command.nsfw,
             cooldown=cooldown,
-            guild_ids=set((command.guild_id,)) if command.guild_id else None,
+            guild_ids={command.guild_id} if command.guild_id else None,
             default_member_permissions=invokable.default_member_permissions,
             category=category,
             extras=invokable.extras,
@@ -289,7 +289,7 @@ class DisnakeCommandHandler:
             dm_permission=command.dm_permission,
             nsfw=command.nsfw,
             cooldown=cooldown,
-            guild_ids=set((command.guild_id,)) if command.guild_id else None,
+            guild_ids={command.guild_id} if command.guild_id else None,
             default_member_permissions=invokable.default_member_permissions,
             category=category,
             extras=invokable.extras,
