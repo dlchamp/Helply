@@ -1,12 +1,11 @@
 import os
-from discord import Interaction
+
 import nextcord
-from nextcord.ext import commands, application_checks
 from dotenv import load_dotenv
+from nextcord.ext import application_checks, commands
 
 from helply.helply import Helply
 from helply.utils import command_detail_embed
-
 
 load_dotenv()
 
