@@ -5,7 +5,7 @@ from operator import attrgetter
 from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Optional, TypeVar
 
 if TYPE_CHECKING:
-    from ..__wrappers import Guild, Role
+    from ..__wrappers import wrapper
     from ..types import CommandChecks
 
 T = TypeVar("T")
@@ -59,7 +59,7 @@ def get(iterable: Iterable[T], **attrs: Any) -> Optional[T]:  # type: ignore[rep
     return None
 
 
-def roles_from_checks(checks: CommandChecks, guild: Guild) -> List[Role]:
+def roles_from_checks(checks: CommandChecks, guild: wrapper.Guild) -> List[wrapper.Role]:
     """Parse the command's role checks and return a list of `Role`.
 
     Parameters

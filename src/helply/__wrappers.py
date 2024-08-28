@@ -42,19 +42,19 @@ else:
     installed_wrapper = "nextcord"
 
 if installed_wrapper == "disnake":
-    from disnake import Color, Embed, Guild, Locale, Permissions, Role, version_info
+    import disnake as wrapper
     from disnake.ext.commands import Bot
 
     from .handlers.disnake_handler import DisnakeCommandHandler as CommandHandler
 
 else:
-    from nextcord import Color, Embed, Guild, Locale, Permissions, Role, version_info
+    import nextcord as wrapper
     from nextcord.ext.commands import Bot
 
     from .handlers.nextcord_handler import NextcordCommandHandler as CommandHandler
 
 
-if version_info.major < 2:  # noqa: PLR2004
+if wrapper.version_info.major < 2:  # noqa: PLR2004
     msg = f"Helply requires at least version 2 of {installed_wrapper}"
     raise RuntimeError(msg)
 
@@ -62,10 +62,5 @@ if version_info.major < 2:  # noqa: PLR2004
 __all__ = (
     "Bot",
     "CommandHandler",
-    "Permissions",
-    "Guild",
-    "Locale",
-    "Color",
-    "Embed",
-    "Role",
+    "wrapper",
 )

@@ -12,7 +12,7 @@ __all__ = (
 )
 
 if TYPE_CHECKING:
-    from ..__wrappers import Locale, Permissions
+    from ..__wrappers import wrapper
     from .argument import Argument
     from .checks import CommandChecks, Cooldown
     from .enums import AppCommandType
@@ -78,7 +78,7 @@ class AppCommand:
     args: List[Argument] = field(default_factory=list)
     cooldown: Optional[Cooldown] = None
     guild_ids: Optional[set[int]] = field(default_factory=set)
-    default_member_permissions: Optional[Union[Permissions, int]] = None
+    default_member_permissions: Optional[Union[wrapper.Permissions, int]] = None
     extras: Optional[Dict[str, Any]] = None
 
     def __post_init__(self) -> None:
@@ -109,7 +109,7 @@ class AppCommand:
             and self.cooldown == other.cooldown
         )
 
-    def get_localized_name(self, locale: Locale) -> str:
+    def get_localized_name(self, locale: wrapper.Locale) -> str:
         """Return localized or non-localized name. specified by the provided locale.
 
         If not available return the non-localized name instead.
@@ -133,7 +133,7 @@ class AppCommand:
 
         return data.get(str(locale), self.name)
 
-    def get_localized_description(self, locale: Locale) -> str:
+    def get_localized_description(self, locale: wrapper.Locale) -> str:
         """Return localized or non-localized description. specified by the provided locale.
 
         If not available, Return the non-localized description instead.
@@ -157,44 +157,20 @@ class AppCommand:
 
         return data.get(str(locale), self.description)
 
-    def localize(self, locale: Locale) -> AppCommand:
-        """Return aAppCommand with localized attributes.
+    def localize(self, locale: wrapper.Locale) -> AppCommand:
+        """Return a localized instance of UserCommand
 
         Parameters
         ----------
-        locale: Locale
-            The interaction locale that will be used to localize attributes.
+        locale: wrapper.Locale
+            The locale to be used for localizing the command.
 
         Returns
         -------
-        Appcommand
-            a AppCommand with localized attributes.
+        UserCommand
+            The localized UserCommand.
         """
-        command = self.copy()
-        command.name = self.get_localized_name(locale)
-        command.description = self.get_localized_description(locale)
-        return command
-
-    def copy(self) -> AppCommand:
-        """Copy the AppCommand - used to localize"""
-        return AppCommand(
-            id=self.id,
-            name=self.name,
-            name_=self.name_,
-            description=self.description,
-            checks=self.checks,
-            type=self.type,
-            dm_permission=self.dm_permission,
-            nsfw=self.nsfw,
-            category=self.category,
-            name_localizations=self.name_localizations,
-            description_localizations=self.description_localizations,
-            args=self.args,
-            cooldown=self.cooldown,
-            guild_ids=self.guild_ids,
-            default_member_permissions=self.default_member_permissions,
-            extras=self.extras,
-        )
+        ...
 
 
 class SlashCommand(AppCommand):
@@ -245,12 +221,12 @@ class SlashCommand(AppCommand):
         Return a SlashCommand with localized attributes. (*New in version 0.3.0*)
     """
 
-    def localize(self, locale: Locale) -> SlashCommand:
+    def localize(self, locale: wrapper.Locale) -> SlashCommand:
         """Return a localized instance of SlashCommand
 
         Parameters
         ----------
-        locale: Locale
+        locale: wrapper.Locale
             The locale to be used for localizing the command.
 
         Returns
@@ -327,12 +303,12 @@ class UserCommand(AppCommand):
         Return a UserCommand with localized attributes. (*New in version 0.3.0*)
     """
 
-    def localize(self, locale: Locale) -> UserCommand:
+    def localize(self, locale: wrapper.Locale) -> UserCommand:
         """Return a localized instance of UserCommand
 
         Parameters
         ----------
-        locale: Locale
+        locale: wrapper.Locale
             The locale to be used for localizing the command.
 
         Returns
@@ -356,7 +332,7 @@ class UserCommand(AppCommand):
             name_localizations=self.name_localizations,
             description_localizations=self.description_localizations,
             cooldown=self.cooldown,
-            guild_id=self.guild_id,
+            guild_ids=self.guild_ids,
             default_member_permissions=self.default_member_permissions,
             extras=self.extras,
         )
@@ -406,12 +382,12 @@ class MessageCommand(AppCommand):
         Return a UserCommand with localized attributes. (*New in version 0.3.0*)
     """
 
-    def localize(self, locale: Locale) -> MessageCommand:
+    def localize(self, locale: wrapper.Locale) -> MessageCommand:
         """Return a localized instance of MessageCommand
 
         Parameters
         ----------
-        locale: Locale
+        locale: wrapper.Locale
             The locale to be used for localizing the command.
 
         Returns
@@ -435,7 +411,7 @@ class MessageCommand(AppCommand):
             name_localizations=self.name_localizations,
             description_localizations=self.description_localizations,
             cooldown=self.cooldown,
-            guild_id=self.guild_id,
+            guild_ids=self.guild_ids,
             default_member_permissions=self.default_member_permissions,
             extras=self.extras,
         )

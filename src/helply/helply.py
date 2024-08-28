@@ -5,7 +5,7 @@ Handles the creation and storing of the app commands and provides the methods to
 
 from typing import List, Optional, Sequence, Union
 
-from .__wrappers import Bot, CommandHandler, Locale, Permissions
+from .__wrappers import Bot, CommandHandler, wrapper
 from .types import AppCommand, AppCommandType
 
 
@@ -45,10 +45,10 @@ class Helply:
         self,
         guild_id: Optional[int] = None,
         *,
-        permissions: Optional[Permissions] = None,
+        permissions: Optional[wrapper.Permissions] = None,
         include_nsfw: bool = False,
         dm_only: bool = False,
-        locale: Optional[Locale] = None,
+        locale: Optional[wrapper.Locale] = None,
     ) -> List[AppCommand]:
         """Retrieve AppCommands based on the provided arguments.
 
@@ -113,7 +113,7 @@ class Helply:
     def get_command_named(
         self,
         name: str,
-        locale: Optional[Locale] = None,
+        locale: Optional[wrapper.Locale] = None,
         cmd_type: Optional[AppCommandType] = None,
     ) -> Optional[AppCommand]:
         """Get a command by its name.
@@ -149,7 +149,7 @@ class Helply:
         self,
         *,
         include_nsfw: bool = False,
-        locale: Optional[Locale] = None,
+        locale: Optional[wrapper.Locale] = None,
     ) -> List[AppCommand]:
         """Return only commands with dm_permission set to True.
 
@@ -173,8 +173,8 @@ class Helply:
         guild_id: int,
         *,
         include_nsfw: bool = False,
-        permissions: Optional[Permissions] = None,
-        locale: Optional[Locale] = None,
+        permissions: Optional[wrapper.Permissions] = None,
+        locale: Optional[wrapper.Locale] = None,
     ) -> List[AppCommand]:
         """Return commands where guild_id is None or guild_id matches specified guild_id.
 

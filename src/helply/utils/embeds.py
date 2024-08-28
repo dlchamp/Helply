@@ -2,7 +2,7 @@
 
 from typing import List, Optional
 
-from ..__wrappers import Color, Embed, Guild
+from ..__wrappers import wrapper
 from ..types import AppCommand, AppCommandType
 from . import utils
 
@@ -31,9 +31,9 @@ def command_detail_embed(
     command: AppCommand,
     *,
     thumbnail_url: Optional[str] = None,
-    guild: Optional[Guild] = None,
-    color: Optional[Color] = None,
-) -> Embed:
+    guild: Optional[wrapper.Guild] = None,
+    color: Optional[wrapper.Color] = None,
+) -> wrapper.Embed:
     """Create and return an embed showing command details.
 
     Parameters
@@ -64,7 +64,7 @@ def command_detail_embed(
 
     Returns
     -------
-    disnake.Embed
+    Embed
         The created embed containing the command details.
     """
     type_ = (
@@ -77,7 +77,7 @@ def command_detail_embed(
         )
     )
 
-    embed = Embed(description=f"{command.mention}\n{command.description}", color=color)
+    embed = wrapper.Embed(description=f"{command.mention}\n{command.description}", color=color)
     embed.set_author(name=f'{type_} {"(NSFW)" if command.nsfw else ""}')
     if thumbnail_url:
         embed.set_thumbnail(url=thumbnail_url)
@@ -119,9 +119,9 @@ def commands_overview_embeds(
     thumbnail_url: Optional[str] = None,
     max_field_chars: int = MAX_CHARS_PER_FIELD,
     max_fields: int = MAX_FIELDS_PER_EMBED,
-    color: Optional[Color] = None,
+    color: Optional[wrapper.Color] = None,
     category: str = "",
-) -> List[Embed]:
+) -> List[wrapper.Embed]:
     """Create and return one or more embeds containing all commands and descriptions.
 
     Parameters
@@ -170,8 +170,8 @@ def commands_overview_embeds(
     if max_fields <= 0:
         raise ValueError(msg % ("'max_fields'", str(max_fields)))
 
-    embeds: list[Embed] = []
-    current_embed: Optional[Embed] = None
+    embeds: list[wrapper.Embed] = []
+    current_embed: Optional[wrapper.Embed] = None
     current_field: str = ""
     current_field_chars: int = 0
 
@@ -218,10 +218,10 @@ def commands_overview_embeds(
 
 def _create_base_embed(
     title: str,
-    color: Optional[Color] = None,
+    color: Optional[wrapper.Color] = None,
     thumbnail_url: Optional[str] = None,
-) -> Embed:
-    embed = Embed(title=title.strip(), color=color)
+) -> wrapper.Embed:
+    embed = wrapper.Embed(title=title.strip(), color=color)
     if thumbnail_url:
         embed.set_thumbnail(url=thumbnail_url)
     return embed
