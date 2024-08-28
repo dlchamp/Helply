@@ -1,8 +1,10 @@
-from typing import List, Tuple, Dict, Union, TYPE_CHECKING
+"""Handle multiple discord wrappers - inspired by mafic: https://github.com/ooliver1/mafic"""
 import os
-from helply import errors
+from typing import List, Tuple
 
-from pkg_resources import get_distribution, DistributionNotFound
+from pkg_resources import DistributionNotFound, get_distribution
+
+from helply import errors
 
 try:
     import dotenv
@@ -40,20 +42,21 @@ else:
     installed_wrapper = "nextcord"
 
 if installed_wrapper == "disnake":
-    from disnake import version_info
+    from disnake import Color, Embed, Guild, Locale, Permissions, Role, version_info
     from disnake.ext.commands import Bot
+
     from .handlers.disnake_handler import DisnakeCommandHandler as CommandHandler
-    from disnake import Permissions, Guild, Locale
 
 else:
-    from nextcord import version_info
-    from .handlers.nextcord_handler import NextcordCommandHandler as CommandHandler
+    from nextcord import Color, Embed, Guild, Locale, Permissions, Role, version_info
     from nextcord.ext.commands import Bot
-    from nextcord import Permissions, Guild, Locale
+
+    from .handlers.nextcord_handler import NextcordCommandHandler as CommandHandler
 
 
-if version_info.major < 2:
-    raise RuntimeError(f"Helply requires at least version 2 of {installed_wrapper}.")
+if version_info.major < 2:  # noqa: PLR2004
+    msg = f"Helply requires at least version 2 of {installed_wrapper}"
+    raise RuntimeError(msg)
 
 
 __all__ = (
@@ -62,4 +65,7 @@ __all__ = (
     "Permissions",
     "Guild",
     "Locale",
+    "Color",
+    "Embed",
+    "Role",
 )
