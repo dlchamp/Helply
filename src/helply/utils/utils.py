@@ -1,8 +1,11 @@
+"""Helpy utilities."""
 from __future__ import annotations
-from typing import Optional, Callable, Iterable, TypeVar, Any, TYPE_CHECKING, List
+
 from operator import attrgetter
+from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Optional, TypeVar
 
 if TYPE_CHECKING:
+    from ..__wrappers import Guild, Role
     from ..types import CommandChecks
 
 T = TypeVar("T")
@@ -56,19 +59,19 @@ def get(iterable: Iterable[T], **attrs: Any) -> Optional[T]:  # type: ignore[rep
     return None
 
 
-def roles_from_checks(checks: CommandChecks, guild: Any) -> List[Any]:
-    """Parse the command's role checks and return a list of `disnake.Role`.
+def roles_from_checks(checks: CommandChecks, guild: Guild) -> List[Role]:
+    """Parse the command's role checks and return a list of `Role`.
 
     Parameters
     ----------
     checks : CommandChecks
         A command's checks
-    guild: Any
+    guild: Guild
         An instance of Guild from the installed wrapper.
 
     Returns
     -------
-    List[Any]
+    List[Role]
         `Roles` that have been successfully converted from name or ID.
     """
     role_checks = checks.roles
