@@ -46,9 +46,6 @@ setup(
             "mkdocs-literate-nav>=0.6.0",
             "mkdocs-minify-plugin>=0.7.1",
         ],
-        "lint": [
-            "disnake>=2.9.0",
-            "nextcord >= 2.6.0"
-        ],
+        "lint": ["disnake>=2.9.0", "nextcord >= 2.6.0"],
     },
 )
