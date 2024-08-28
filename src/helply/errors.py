@@ -1,3 +1,4 @@
+"""Helpy errors."""
 from typing import List
 
 
