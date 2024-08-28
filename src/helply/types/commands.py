@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 __all__ = (
     "AppCommand",
@@ -12,8 +12,7 @@ __all__ = (
 )
 
 if TYPE_CHECKING:
-    from disnake import Locale, LocalizationValue, Permissions
-
+    from ..__wrappers import Locale, Permissions
     from .argument import Argument
     from .checks import CommandChecks, Cooldown
     from .enums import AppCommandType
@@ -36,7 +35,7 @@ class AppCommand:
         Command's non-localized name. (*Needed to maintain static non-localized name for mention*)
     description: str
         Command's description
-    name_localizations: disnake.LocalizationValue
+    name_localizations: Optional[Any]
         Contains localizations for the command's name. (*New in version 0.3.0*)
     checks : CommandChecks
         The command's permission and role requirements.
@@ -50,28 +49,19 @@ class AppCommand:
         Whether the command is NSFW (Not Safe For Work).
     category: str
         Name of "category", "plugin" or "cog" the command belongs to.
-    description_localizations: Optional[LocalizationValue]
+    description_localizations: Optional[Any]
         Contains localization information for the command's description. (*SlashCommand only*)
         (*New in version 0.3.0*)
     cooldown: Optional[Cooldown]
         The configured cooldown, if available. (*New in 0.4.0*)
-    guild_id : Optional[int]
-        The ID of the guild where the command is available.
+    guild_ids: Optional[set[int]]
+        Guild IDs this command is registered to.
     default_member_permissions : Optional[Permissions]
         Default member permissions required to use this command.
     extras: Optional[Dict[str, Any]]
         A dict of user provided extras for the command.
     mention : str
         Get the command as a mentionable if slash command, else return bolded name.
-
-    Methods
-    -------
-    get_localized_name(locale: Optional[Locale])
-        Return localized or non-localized name. (*New in version 0.3.0*)
-    get_localized_description(locale: disnake.Locale)
-        Return localized or non-localized description. (*New in version 0.3.0*)
-    localize(locale: disnake.Locale)
-        Return an AppCommand with localized attributes. (*New in version 0.3.0*)
     """
 
     id: int
@@ -82,14 +72,18 @@ class AppCommand:
     type: AppCommandType
     dm_permission: bool
     nsfw: bool
-    name_localizations: LocalizationValue
     category: str
-    description_localizations: Optional[LocalizationValue] = None
+    name_localizations: Optional[Any] = None
+    description_localizations: Optional[Any] = None
     args: List[Argument] = field(default_factory=list)
     cooldown: Optional[Cooldown] = None
-    guild_id: Optional[int] = None
-    default_member_permissions: Optional[Permissions] = None
+    guild_ids: Optional[set[int]] = field(default_factory=set)
+    default_member_permissions: Optional[Union[Permissions, int]] = None
     extras: Optional[Dict[str, Any]] = None
+
+    def __post_init__(self) -> None:
+        if self.guild_ids is None:
+            self.guild_ids = set()
 
     @property
     def mention(self) -> str:
@@ -130,10 +124,14 @@ class AppCommand:
         str
             The localized or non-localized name.
         """
-        if not self.name_localizations.data:
+        data = self.name_localizations
+        if not (isinstance(self.name_localizations, Dict)):
+            data = data.data  # type: ignore[reportOptionalMemberAccess]
+
+        if not data:
             return self.name
 
-        return self.name_localizations.data.get(str(locale), self.name)
+        return data.get(str(locale), self.name)
 
     def get_localized_description(self, locale: Locale) -> str:
         """Return localized or non-localized description. specified by the provided locale.
@@ -150,10 +148,14 @@ class AppCommand:
         str
             The localized or non-localized description.
         """
-        if not self.description_localizations or not self.description_localizations.data:
+        data = self.description_localizations
+        if data and not (isinstance(self.description_localizations, Dict)):
+            data = data.data  # type: ignore[reportOptionalMemberAccess]
+
+        if not data:
             return self.description
 
-        return self.description_localizations.data.get(str(locale), self.description)
+        return data.get(str(locale), self.description)
 
     def localize(self, locale: Locale) -> AppCommand:
         """Return aAppCommand with localized attributes.
@@ -168,7 +170,31 @@ class AppCommand:
         Appcommand
             a AppCommand with localized attributes.
         """
-        ...
+        command = self.copy()
+        command.name = self.get_localized_name(locale)
+        command.description = self.get_localized_description(locale)
+        return command
+
+    def copy(self) -> AppCommand:
+        """Copy the AppCommand - used to localize"""
+        return AppCommand(
+            id=self.id,
+            name=self.name,
+            name_=self.name_,
+            description=self.description,
+            checks=self.checks,
+            type=self.type,
+            dm_permission=self.dm_permission,
+            nsfw=self.nsfw,
+            category=self.category,
+            name_localizations=self.name_localizations,
+            description_localizations=self.description_localizations,
+            args=self.args,
+            cooldown=self.cooldown,
+            guild_ids=self.guild_ids,
+            default_member_permissions=self.default_member_permissions,
+            extras=self.extras,
+        )
 
 
 class SlashCommand(AppCommand):
@@ -200,7 +226,7 @@ class SlashCommand(AppCommand):
         Name of "category", "plugin" or "cog" the command belongs to.
     cooldown: Optional[Cooldown]
         The configured cooldown, if available. (*New in 0.4.0*)
-    guild_id : Optional[int]
+    guild_ids : Optional[set[int]]
         The ID of the guild where the command is available.
     default_member_permissions : Optional[Permissions]
         Default member permissions required to use this command.
@@ -249,7 +275,7 @@ class SlashCommand(AppCommand):
             name_localizations=self.name_localizations,
             description_localizations=self.description_localizations,
             cooldown=self.cooldown,
-            guild_id=self.guild_id,
+            guild_ids=self.guild_ids,
             default_member_permissions=self.default_member_permissions,
             args=args,
             extras=self.extras,
