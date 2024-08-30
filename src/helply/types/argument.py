@@ -79,7 +79,7 @@ class Argument:
             The localized or non-localized description.
         """
         if not self.description_localizations or not self.description_localizations.data:
-            return self.name
+            return self.description
 
         return self.description_localizations.data.get(str(locale), self.description)
 
