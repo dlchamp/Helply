@@ -444,6 +444,7 @@ class Helply:
         Coroutines are required as listener callbacks.
         This allows us to load all the bot's app commands at start up.
         """
+        await self.bot.wait_until_ready()
         return self._walk_app_commands()
 
     def _walk_app_commands(self) -> List[AppCommand]:
@@ -587,6 +588,9 @@ class Helply:
         Optional[AppCommand]
             The command that matches the provided name and type, if available.
         """
+        if not self._app_commands:
+            self._walk_app_commands()
+
         for command in self._app_commands:
             if command.name == name and (cmd_type is None or command.type is cmd_type):
                 if locale:
