@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="helply",
-    version="0.6.1",
+    version="0.6.2",
     description="A library that simplifies 'help' command creation for application commands in your discord bot.",
     author="DLCHAMP",
     author_email="contact@dlchamp.com",
