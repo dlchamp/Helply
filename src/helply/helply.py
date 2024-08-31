@@ -525,6 +525,7 @@ class Helply:
         commands: List[AppCommand] = []
 
         for command in self._app_commands:
+
             if category and command.category != category:
                 continue
 
@@ -586,7 +587,7 @@ class Helply:
         Optional[AppCommand]
             The command that matches the provided name and type, if available.
         """
-        for command in self.get_commands():
+        for command in self._app_commands:
             if command.name == name and (cmd_type is None or command.type is cmd_type):
                 if locale:
                     return command.localize(locale)
